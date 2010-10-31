@@ -1,0 +1,50 @@
+#pragma once
+///
+/// Code to help with confiruation -- like the list of methods that shouldn't be translated or a list of classes that
+/// we are not capable of doing.
+///
+
+#include <vector>
+#include <string>
+#include <set>
+#include <map>
+
+class WrapperConfigurationInfo
+{
+public:
+	/// Returns a list of classes that the infrastructure isn't capable of handling.
+	static std::vector<std::string> RemoveBrokenClasses(const std::vector<std::string> &class_list);
+
+	/// A list of methods that we should skip for whatever reason.
+	static std::set<std::string> GetListOfBadMethods (void);
+
+	/// Init the type translation system....
+	static void InitTypeTranslators();
+
+	/// List of libraries that are no good - this is if you scan a complete list of the root libraries.
+	static std::vector<std::string> RemoveBadLibraries (const std::vector<std::string> &library_list);
+
+	/// Is this library restricted to what it is allowed to link to?
+	static bool IsLibraryLinkRestricted(const std::string &library_name);
+
+	/// What is the list it can link to? A null list means it cna't link to anything!!
+	static std::vector<std::string> AllowedLibraryLinks (const std::string &library_name);
+
+	/// What libraries are explicitly blocked?
+	static std::vector<std::string> DisallowedLibraryLinks (const std::string &library_name);
+
+	/// What needs to be checked?
+	static bool CheckAllowedLibraries (const std::string &library_name);
+	static bool CheckDisallowedLibraries (const std::string &library_name);
+
+	/// Return a list of classes that violate the cross referencing rule for a given library name.
+	static std::vector<std::string> BadClassLibraryCrossReference (const std::string &library_name, const std::vector<std::string> &class_list);
+
+	/// Return a list of all root dll's we can find by scanning the root library
+	static std::vector<std::string> GetAllRootDLLS (void);
+private:
+	static std::map<std::string, std::vector<std::string> > _allowed_library_links;
+	static std::map<std::string, std::vector<std::string> > _disallowed_library_links;
+	static bool _allowed_library_links_ok;
+	static void init_allowed_library_links(void);
+};
