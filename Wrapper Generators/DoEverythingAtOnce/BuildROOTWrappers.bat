@@ -24,7 +24,7 @@ if not exist FindBadRootHeadersStatus.txt (
   )
 
 REM Copy down the templates
-copy release\cpp_template_project.vcproj .
+copy release\cpp_template_project.vcxproj .
 copy release\solution_template.sln .
 
 REM Next, build the wrapers!
