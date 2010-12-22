@@ -32,7 +32,7 @@ echo "Building the wrappers"
 "release\ROOT.NET Library Converter" -d ..\Wrappers\%2
 
 REM Copy over the property sheet...
-copy "ROOT Directories.vsprops" ..\Wrappers\%2\
+copy "ROOT Directories.props" ..\Wrappers\%2\
 
 REM And build the thing!
 devenv "..\Wrappers\%2\ROOT.NET Lib.sln" /build "Release"
