@@ -17,8 +17,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ROOT.NET Monolithic Convert
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConverterLibrary", "ConverterLibrary\ConverterLibrary.vcxproj", "{03433C15-E459-4C8C-A7A5-3D2D63C7E655}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DoEverythingAtOnce", "DoEverythingAtOnce\DoEverythingAtOnce.vcxproj", "{1676DE30-3331-431B-BE94-5E0C4A44193A}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "t_RootClassInfo", "t_RootClassInfo\t_RootClassInfo.vcxproj", "{20C30E4A-C6FC-4688-9572-DCE359560A0A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "t_MethodInherritance", "t_MethodInherritance\t_MethodInherritance.vcxproj", "{672F2BDF-F6CE-48CE-8933-2091C1294751}"
@@ -30,6 +28,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUtilities", "TestUtilities\TestUtilities.csproj", "{E17CF80B-CBBE-4482-A53A-4F4D8A3CB93F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "t_Utilities", "t_Utilities\t_Utilities.vcxproj", "{26272BD0-3374-4049-B6EF-6469556FD203}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DoEverythingAtOnce", "DoEverythingAtOnce\DoEverythingAtOnce.vcxproj", "{5292C5CA-FE39-455E-9A06-2542B66CB698}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -84,14 +84,6 @@ Global
 		{03433C15-E459-4C8C-A7A5-3D2D63C7E655}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{03433C15-E459-4C8C-A7A5-3D2D63C7E655}.Release|Win32.ActiveCfg = Release|Win32
 		{03433C15-E459-4C8C-A7A5-3D2D63C7E655}.Release|Win32.Build.0 = Release|Win32
-		{1676DE30-3331-431B-BE94-5E0C4A44193A}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{1676DE30-3331-431B-BE94-5E0C4A44193A}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{1676DE30-3331-431B-BE94-5E0C4A44193A}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{1676DE30-3331-431B-BE94-5E0C4A44193A}.Debug|Win32.ActiveCfg = Debug|Win32
-		{1676DE30-3331-431B-BE94-5E0C4A44193A}.Release|Any CPU.ActiveCfg = Release|Win32
-		{1676DE30-3331-431B-BE94-5E0C4A44193A}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{1676DE30-3331-431B-BE94-5E0C4A44193A}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{1676DE30-3331-431B-BE94-5E0C4A44193A}.Release|Win32.ActiveCfg = Release|Win32
 		{20C30E4A-C6FC-4688-9572-DCE359560A0A}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{20C30E4A-C6FC-4688-9572-DCE359560A0A}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{20C30E4A-C6FC-4688-9572-DCE359560A0A}.Debug|Mixed Platforms.Build.0 = Debug|Win32
@@ -152,6 +144,16 @@ Global
 		{26272BD0-3374-4049-B6EF-6469556FD203}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{26272BD0-3374-4049-B6EF-6469556FD203}.Release|Win32.ActiveCfg = Release|Win32
 		{26272BD0-3374-4049-B6EF-6469556FD203}.Release|Win32.Build.0 = Release|Win32
+		{5292C5CA-FE39-455E-9A06-2542B66CB698}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{5292C5CA-FE39-455E-9A06-2542B66CB698}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{5292C5CA-FE39-455E-9A06-2542B66CB698}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{5292C5CA-FE39-455E-9A06-2542B66CB698}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5292C5CA-FE39-455E-9A06-2542B66CB698}.Debug|Win32.Build.0 = Debug|Win32
+		{5292C5CA-FE39-455E-9A06-2542B66CB698}.Release|Any CPU.ActiveCfg = Release|Win32
+		{5292C5CA-FE39-455E-9A06-2542B66CB698}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{5292C5CA-FE39-455E-9A06-2542B66CB698}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{5292C5CA-FE39-455E-9A06-2542B66CB698}.Release|Win32.ActiveCfg = Release|Win32
+		{5292C5CA-FE39-455E-9A06-2542B66CB698}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

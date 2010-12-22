@@ -9,16 +9,26 @@ set "ROOTSYS=%1"
 set "PATH=%1\bin;%PATH%"
 
 REM Build everything so we can actually run programs! :-)
-devenv "Wrapper Generators.sln" /build "Release|Win32"
+echo "Building code to do the translation..."
+devenv /nologo "Wrapper Generators.sln" /project "FindBadRootHeaders" /build "Release|Win32"
+devenv /nologo "Wrapper Generators.sln" /project "ROOT.NET Library Converter" /build "Release|Win32"
 
 REM Find all bad headers in this distro of ROOT.
-release\FindBadRootHeaders
+
+if not exist FindBadRootHeadersStatus.txt (
+  echo Looking for bad ROOT headers - this will take a few minuts...
+  release\FindBadRootHeaders > FindBadRootheaders.log
+  echo Done with finding headers > FindBadRootHeadersStatus.txt
+) else (
+  echo Using header scan results from last run. Remove FindBadRootHeadersStatus.txt to force re-run"
+  )
 
 REM Copy down the templates
 copy release\cpp_template_project.vcproj .
 copy release\solution_template.sln .
 
 REM Next, build the wrapers!
+echo "Building the wrappers"
 "release\ROOT.NET Library Converter" -d ..\Wrappers\%2
 
 REM Copy over the property sheet...
