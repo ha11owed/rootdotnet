@@ -49,6 +49,21 @@ void ClassInterfaceRepositoryState::request_class_translation(const std::string 
 	/// Finally, make sure we know how to translate the thing properly when it gets referenced in code.
 	///
 
+	register_class_translation(class_name);
+}
+
+///
+/// Register a class for translation. We do this to make sure that
+/// later on when the class gets referenced our type system knows about
+/// it and will register it.
+///
+void ClassInterfaceRepositoryState::register_class_translation (const string &class_name)
+{
+	TClass *cls = gROOT->GetClass(class_name.c_str());
+	if (cls == 0) {
+		return;
+	}
+
 	bool is_from_tobj = cls->InheritsFrom("TObject");
 
 	CPPNetTypeMapper::instance()->AddTypeMapper (new TTROOTClass(class_name, is_from_tobj));
@@ -81,6 +96,14 @@ void ClassInterfaceRepositoryState::request_enum_translation(const std::string &
 	/// Now, add a transltor for the enum.
 	///
 
+	register_enum_translation(enum_name);
+}
+
+///
+/// Register an emum so the type system knows about it
+///
+void ClassInterfaceRepositoryState::register_enum_translation (const std::string &enum_name)
+{
 	CPPNetTypeMapper::instance()->AddTypeMapper (new TTROOTenum (enum_name));
 }
 

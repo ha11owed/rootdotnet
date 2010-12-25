@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <algorithm>
+#include <exception>
+#include <iterator>
 
 #include "TROOT.h"
 #include "TClass.h"
@@ -19,9 +21,12 @@ using std::find;
 using std::for_each;
 using std::pair;
 using std::make_pair;
+using std::transform;
+using std::back_inserter;
 
 using std::cout;
 using std::endl;
+using std::exception;
 
 std::map<std::string, std::vector<std::pair<std::string, unsigned int> > > ROOTHelpers::_all_enums;
 
@@ -31,7 +36,10 @@ class load_library
 public:
 	inline void operator() (const string &lib)
 	{
-		gSystem->Load (lib.c_str());
+		int result = gSystem->Load (lib.c_str());
+		if (result != 0 && result != 1) {
+			throw exception (("Failed to load library '" + lib + "'").c_str());
+		}
 	}
 };
 
@@ -61,6 +69,28 @@ vector<string> ROOTHelpers::GetAllClassesInLibraries(const vector<string> &libra
 	for_each (library_names.begin(), library_names.end(), load_library());
 
 	///
+	/// Re-do the library names into something that we will be able to use below. Mostly, this means
+	/// removing any directories and .dll or .so's.
+	///
+
+	vector<string> shortLibNames;
+	transform(
+		library_names.begin(), library_names.end(),
+		back_inserter<vector<string> >(shortLibNames),
+		[] (const string &s) -> string {
+			string lib (s);
+			auto lastDir = lib.find_last_of('\\');
+			if (lastDir != lib.npos) {
+				lib = lib.substr(lastDir+1);
+			}
+			auto lastDot = lib.find_last_of('.');
+			if (lastDot != lib.npos) {
+				lib = lib.substr(0, lastDot);
+			}
+			return lib;
+	});
+
+	///
 	/// Great. Next, get the list of classes root knows about and filter them by the list of libraries that
 	/// we have been asked about...
 	///
@@ -86,7 +116,7 @@ vector<string> ROOTHelpers::GetAllClassesInLibraries(const vector<string> &libra
 
 		string shared_library (GetClassLibraryName(class_name));
 
-		if (find(library_names.begin(), library_names.end(), shared_library) != library_names.end()) {
+		if (find(shortLibNames.begin(), shortLibNames.end(), shared_library) != shortLibNames.end()) {
 			results.push_back (class_name);
 		}
 	}

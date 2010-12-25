@@ -5,6 +5,67 @@
 /// a subproject for every library. That can be built from the command line or opened in the IDE and built there.
 ///
 
+#include "LibraryConverterDriver.h"
+#include "WrapperConfigurationInfo.hpp"
+
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using std::string;
+using std::vector;
+using std::for_each;
+
+int main(int argc, char* argv[])
+{
+	///
+	/// Parameters to be filled by the command line arguments
+	///
+
+	string ouput_base_directory;	// Where the solution and sub-projects will be written.
+	vector<string> libraries;		// List of libraries we will convert.
+
+	///
+	/// Command line parsing
+	///
+
+	ouput_base_directory = "..\\..\\Wrappers\\ROOTDotNetByLib";
+
+	for (int i = 1; i < argc; i++) {
+	  string arg = argv[i];
+	  if (arg == "-d") { // Destination directory
+	    i++;
+	    ouput_base_directory = argv[i];
+	  }
+	}
+
+	///
+	/// Tell the translation system what libraries to look at!
+	///
+
+	LibraryConverterDriver driver;
+
+	vector<string> base_root_libs (WrapperConfigurationInfo::GetAllRootDLLS());
+	for_each(base_root_libs.begin(), base_root_libs.end(), [&driver] (string &s) { driver.translate_classes_in_library(s); });
+
+	///
+	/// Set the output info
+	///
+
+	driver.set_output_solution_directory(ouput_base_directory);
+	driver.write_solution(true);
+
+	///
+	/// Do the work!
+	///
+
+	driver.translate();
+
+	return 0;
+}
+
+#ifdef notyet
+
 #include "WrapperConfigurationInfo.hpp"
 #include "ROOTHelpers.h"
 #include "ClassInterfaceRepositoryState.hpp"
@@ -168,6 +229,21 @@ int main(int argc, char* argv[])
 	cout << "Output project will be in '" << ouput_base_directory << "'." << endl;
 
 	///
+	/// Experimental
+	///
+
+	bool add_to_base_libraries = true;
+	vector<string> files_to_load;
+	files_to_load.push_back("MuonInBJet.cpp");
+	files_to_load.push_back("BTagJet.cpp");
+
+	vector<string> specific_classes_to_translate; // Contains classes we should translate
+	specific_classes_to_translate.push_back("BTagJet");
+	specific_classes_to_translate.push_back("MuonInBJet");
+
+	string output_library_name = "additional"; // Leave empty string for defualt behavior.
+
+	///
 	/// Start up ROOT
 	///
 
@@ -183,6 +259,18 @@ int main(int argc, char* argv[])
 
 	WrapperConfigurationInfo::InitTypeTranslators();
 	RootClassInfoCollection::SetBadMethods(WrapperConfigurationInfo::GetListOfBadMethods());
+
+	///
+	/// Load in any extra files we are supposed to load in
+	///
+
+	for (int i = 0; i < files_to_load.size(); i++) {
+		int result = gSystem->CompileMacro(files_to_load[i].c_str(), "k");
+		if (result != 1) {
+			cout << "Unable to compile the file " << files_to_load[i] << "! Quitting!" << endl;
+			return 0;
+		}
+	}
 
 	///
 	/// Get all the classes we are going to do now...
@@ -221,17 +309,30 @@ int main(int argc, char* argv[])
 	}
 
 	///
-	/// Convert. Inform framework of the list of classes & enums that should be translated.
+	/// Convert. Inform framework of the list of classes & enums that should be translated. If we are doing
+	/// just an "add-on" then make sure to just queue up the ones we want.
 	///
 
 	ClassInterfaceRepositoryState rep_state;
 
-	for (unsigned int i = 0; i < all_classes.size(); i++) {
-		rep_state.request_class_translation (all_classes[i]);
-	}
+	if (add_to_base_libraries) {
+		for (unsigned int i = 0; i < all_classes.size(); i++) {
+			rep_state.register_class_translation (all_classes[i]);
+		}
+		for (unsigned int i = 0; i < all_enums.size(); i++) {
+			rep_state.register_enum_translation (all_enums[i]);
+		}
 
-	for (unsigned int i = 0; i < all_enums.size(); i++) {
-		rep_state.request_enum_translation (all_enums[i]);
+		for (unsigned int i = 0; i < specific_classes_to_translate.size(); i++) {
+			rep_state.request_class_translation(specific_classes_to_translate[i]);
+		}
+	} else {
+		for (unsigned int i = 0; i < all_classes.size(); i++) {
+			rep_state.request_class_translation (all_classes[i]);
+		}
+		for (unsigned int i = 0; i < all_enums.size(); i++) {
+			rep_state.request_enum_translation (all_enums[i]);
+		}
 	}
 
 	///
@@ -245,8 +346,12 @@ int main(int argc, char* argv[])
 		string enum_name = rep_state.next_enum();
 		cout << "Translating enum " << enum_name << endl;
 		RootEnum info (enum_name);
-		string output_dir = ouput_base_directory + "\\" + info.LibraryName() + "\\Source";
-		files_by_library[info.LibraryName()].push_back(info.Name());
+		string libName = info.LibraryName();
+		if (output_library_name.size() > 0) {
+			libName = output_library_name;
+		}
+		string output_dir = ouput_base_directory + "\\" + libName + "\\Source";
+		files_by_library[libName].push_back(info.Name());
 		check_dir (output_dir);
 		translator.SetOutputDir (output_dir);
 		translator.translate (info);
@@ -260,8 +365,12 @@ int main(int argc, char* argv[])
 		string class_name = rep_state.next_class();
 		cout << "Translating " << class_name << endl;
 		RootClassInfo &info (RootClassInfoCollection::GetRootClassInfo(class_name));
-		string output_dir = ouput_base_directory + "\\" + info.LibraryName() + "\\Source";
-		files_by_library[info.LibraryName()].push_back("N" + class_name);
+		string libName = info.LibraryName();
+		if (output_library_name.size() > 0) {
+			libName = output_library_name;
+		}
+		string output_dir = ouput_base_directory + "\\" + libName + "\\Source";
+		files_by_library[libName].push_back("N" + class_name);
 		check_dir (output_dir);
 		translator.SetOutputDir (output_dir);
 		translator.translate (info);
@@ -558,11 +667,6 @@ void emit_link_dependency::operator () (const string &project_name)
 	_output << " " << project_name << ".lib;";
 }
 
-/// Write out the XML for a file
-void add_class_file_reference::operator() (const string &class_name)
-{
-	_output << "<" << _command << " Include=\".\\Source\\" << class_name << "." << _filetype << "\"/>" << endl;
-}
 void add_file_reference::operator() (const string &file_name)
 {
 	_output << "<File RelativePath=\"" << file_name << "\"></File>" << endl;
@@ -668,3 +772,5 @@ void find_bad_inheritance_classes::operator ()(const std::string &class_name)
 		}
 	}
 }
+
+#endif

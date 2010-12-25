@@ -78,6 +78,9 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="create_project_files.cpp" />
+    <ClCompile Include="LibraryClassTranslator.cpp" />
+    <ClCompile Include="LibraryConverterDriver.cpp" />
     <ClCompile Include="MethodInheritanceDriver.cpp" />
     <ClCompile Include="ClassInterfaceRepositoryState.cpp" />
     <ClCompile Include="CPPNetTypeMapper.cpp" />
@@ -102,6 +105,9 @@
     <ClCompile Include="WrapperConfigurationInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="create_project_files.hpp" />
+    <ClInclude Include="LibraryClassTranslator.hpp" />
+    <ClInclude Include="LibraryConverterDriver.h" />
     <ClInclude Include="MethodInheritanceDriver.hpp" />
     <ClInclude Include="ClassInterfaceRepositoryState.hpp" />
     <ClInclude Include="CPPNetTypeMapper.hpp" />

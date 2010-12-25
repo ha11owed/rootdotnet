@@ -31,6 +31,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "t_Utilities", "t_Utilities\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DoEverythingAtOnce", "DoEverythingAtOnce\DoEverythingAtOnce.vcxproj", "{5292C5CA-FE39-455E-9A06-2542B66CB698}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ROOT.NET Addon Library Converter", "ROOT.NET Addon Library Converter\ROOT.NET Addon Library Converter.vcxproj", "{9821B0F4-17E5-42C8-A0F0-4357DEBE16D7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{03433C15-E459-4C8C-A7A5-3D2D63C7E655} = {03433C15-E459-4C8C-A7A5-3D2D63C7E655}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Wrapper Generators.vsmdi
@@ -154,6 +159,16 @@ Global
 		{5292C5CA-FE39-455E-9A06-2542B66CB698}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{5292C5CA-FE39-455E-9A06-2542B66CB698}.Release|Win32.ActiveCfg = Release|Win32
 		{5292C5CA-FE39-455E-9A06-2542B66CB698}.Release|Win32.Build.0 = Release|Win32
+		{9821B0F4-17E5-42C8-A0F0-4357DEBE16D7}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{9821B0F4-17E5-42C8-A0F0-4357DEBE16D7}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{9821B0F4-17E5-42C8-A0F0-4357DEBE16D7}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{9821B0F4-17E5-42C8-A0F0-4357DEBE16D7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9821B0F4-17E5-42C8-A0F0-4357DEBE16D7}.Debug|Win32.Build.0 = Debug|Win32
+		{9821B0F4-17E5-42C8-A0F0-4357DEBE16D7}.Release|Any CPU.ActiveCfg = Release|Win32
+		{9821B0F4-17E5-42C8-A0F0-4357DEBE16D7}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{9821B0F4-17E5-42C8-A0F0-4357DEBE16D7}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{9821B0F4-17E5-42C8-A0F0-4357DEBE16D7}.Release|Win32.ActiveCfg = Release|Win32
+		{9821B0F4-17E5-42C8-A0F0-4357DEBE16D7}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

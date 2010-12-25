@@ -17,6 +17,11 @@ public:
 	void request_class_translation (const std::string &class_name);
 	void request_enum_translation (const std::string &enum_name);
 
+	/// Register a class - if we want to assume it has been already translated via some
+	/// other magic.
+	void register_class_translation (const std::string &class_name);
+	void register_enum_translation (const std::string &enum_name);
+
 	/// Return the name of the next class to translate
 	std::string next_class (void);
 	std::string next_enum (void);
