@@ -369,6 +369,23 @@ void LibraryConverterDriver::translate(void)
 		[&rep_state] (string &s) { rep_state.request_enum_translation(s); });
 
 	///
+	/// Write out everything that is translated into the base directory so
+	/// that if anyone wants to follow on with further translations they know
+	/// what already exists.
+	///
+
+	{
+		ofstream converted_info ((_output_dir + "\\converted_items.txt").c_str());
+
+		for_each(all_classes.begin(), all_classes.end(),
+			[&converted_info] (string &s) { converted_info << "class " << s << endl; });
+		for_each(all_enums.begin(), all_enums.end(),
+			[&converted_info] (string &s) { converted_info << "enum " << s << endl; });
+
+		converted_info.close();
+	}
+
+	///
 	/// Now translate the enums. Unfortunately, we can't tell what libraries they
 	/// are actually in. The good news is that they are dependency free, so we can
 	/// put them where we like. When translating everything we put them in the core
