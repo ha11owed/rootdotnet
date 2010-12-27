@@ -10,6 +10,7 @@ public:
 	static std::vector<std::string> GetAllClassesInLibraries (const std::vector<std::string> &library_names);
 
 	static std::string GetClassLibraryName (const std::string &class_name);
+	static void ForceClassLibraryname (const std::string &class_name, const std::string &library_name);
 
 	static bool IsClass (const std::string &class_name);
 	static bool IsEnum (const std::string &enum_name);

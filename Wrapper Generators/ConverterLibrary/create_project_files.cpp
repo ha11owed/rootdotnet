@@ -23,7 +23,7 @@ using std::ostream;
 using std::endl;
 using std::for_each;
 using std::back_inserter;
-
+using std::find;
 
 ///
 /// Helper to add an include into the project file.

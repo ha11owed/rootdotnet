@@ -157,12 +157,43 @@ namespace {
 		ostream &_output;
 	};
 
+	void write_out_assembly_reference (ostream &output, const std::string &library_name, const std::string &hint_dir)
+	{
+		output << "<Reference Include=\"" << library_name << "\">" << endl;
+		output << "  <HintPath>" << hint_dir << "\\" << library_name << ".dll</HintPath>" << endl;
+		output << "</Reference>" << endl;
+	}
+
+	class write_assembly_reference {
+	public:
+		inline write_assembly_reference (ostream &output, const map<string, string> &project_guids, const map<string, string> &lib_dir)
+			: _output (output), _project_guids(project_guids), _lib_dirs(lib_dir)
+		{}
+		void operator() (const string &library_name)
+		{
+			map<string, string>::const_iterator itr (_project_guids.find(library_name));
+			if (itr != _project_guids.end()) {
+				return;
+			}
+			itr = _lib_dirs.find(library_name + "Wrapper");
+			if (itr == _lib_dirs.end()) {
+				return;
+			}
+
+			write_out_assembly_reference (_output, library_name + "Wrapper", itr->second);
+		}
+	private:
+		const map<string, string> &_project_guids;
+		const map<string, string> &_lib_dirs;
+		ostream &_output;
+	};
+
 	/// Projects depend on one and the other -- we will "fill them in" -- this has to be done after we are all finished, unfortunately.
 	class fill_in_project_references
 	{
 	public:
-		fill_in_project_references (const string &proj_dir, const ClassTranslator &trans, vector<pair<string, string> > project_guids)
-			: _base_dir (proj_dir), _translator(trans)
+		fill_in_project_references (const string &proj_dir, const ClassTranslator &trans, vector<pair<string, string> > project_guids, const map<string, string> &lib_dirs)
+			: _base_dir (proj_dir), _translator(trans), _lib_dirs(lib_dirs)
 		{
 			for (unsigned int i = 0; i < project_guids.size(); i++) {
 				_project_guids[project_guids[i].first] = project_guids[i].second;
@@ -197,7 +228,13 @@ namespace {
 				if (line.find("<!-- ReferenceProjects -->") != line.npos) {
 					vector<string> dependent_libraries = _translator.get_dependent_libraries(library_name);
 					for_each (dependent_libraries.begin(), dependent_libraries.end(), write_project_reference(output, _project_guids));
-					//for_each (dependent_libraries.begin(), dependent_libraries.end(), write_using_statement(ass_loader));
+				} else if (line.find("<!-- ADDReferencedAssemblies -->") != line.npos) {
+					vector<string> dependent_libraries = _translator.get_dependent_libraries(library_name);
+					for_each (dependent_libraries.begin(), dependent_libraries.end(), write_assembly_reference(output, _project_guids, _lib_dirs));
+					auto itr = _lib_dirs.find("WrapperPlumbingLibrary");
+					if (itr != _lib_dirs.end()) {
+						write_out_assembly_reference(output, "WrapperPlumbingLibrary", itr->second);
+					}
 				} else {
 					output << line << endl;
 				}
@@ -213,6 +250,7 @@ namespace {
 		vector<pair<string, string> > _project_guid;
 		const ClassTranslator &_translator;
 		map<string, string> _project_guids;
+		const map<string, string> &_lib_dirs;
 	};
 
 	char mytoupper (char c)
@@ -474,10 +512,11 @@ void LibraryConverterDriver::translate(void)
 			_include_dirs.insert(_include_dirs.begin(), info.include_directory());
 		}
 
-		string libName = info.LibraryName();
 		if (_single_library_name.size() > 0) {
-			libName = _single_library_name;
+			info.ForceLibraryName(_single_library_name);
 		}
+
+		string libName = info.LibraryName();
 		files_by_library[libName].push_back("N" + class_name);
 
 		string output_dir = _output_dir + "\\" + libName + "\\Source";
@@ -546,7 +585,7 @@ void LibraryConverterDriver::translate(void)
 	create_project_files proj_maker(_output_dir, translator, _libs_to_translate, extra_files, extra_include_dirs);
 	create_project_files result(for_each (files_by_library.begin(), files_by_library.end(), proj_maker));
 	
-	for_each(files_by_library.begin(), files_by_library.end(), fill_in_project_references(_output_dir, translator, result.ProjectGuids()));
+	for_each(files_by_library.begin(), files_by_library.end(), fill_in_project_references(_output_dir, translator, result.ProjectGuids(), history.librarys_in_dirs()));
 
 	if (_write_solution) {
 		make_solution_file (_output_dir, result.ProjectGuids());

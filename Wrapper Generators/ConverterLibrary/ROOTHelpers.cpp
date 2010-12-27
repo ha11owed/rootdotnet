@@ -124,10 +124,23 @@ vector<string> ROOTHelpers::GetAllClassesInLibraries(const vector<string> &libra
 	return results;
 }
 
+map<string, string> gClassLibraryNameCache;
+
+void ROOTHelpers::ForceClassLibraryname (const std::string &class_name, const std::string &library_name)
+{
+	gClassLibraryNameCache[class_name] = library_name;
+}
+
+
 string ROOTHelpers::GetClassLibraryName (const std::string &class_name)
 {
+	if (gClassLibraryNameCache.find(class_name) != gClassLibraryNameCache.end()) {
+		return gClassLibraryNameCache[class_name];
+	}
+
 	TClass *cls = TClass::GetClass(class_name.c_str(), true);
 	if (!cls || !cls->GetSharedLibs()) {
+		gClassLibraryNameCache[class_name] = "";
 		return "";
 	}
 
@@ -143,6 +156,7 @@ string ROOTHelpers::GetClassLibraryName (const std::string &class_name)
 		shared_library = shared_library.substr(0, dot_index);
 	}
 
+	gClassLibraryNameCache[class_name] = shared_library;
 	return shared_library;
 }
 

@@ -5,13 +5,13 @@
 
 #include "translation_history.hpp"
 
-
-
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 #include <string>
 #include <stdexcept>
+
+#include <Windows.h>
 
 using std::ofstream;
 using std::ifstream;
@@ -53,6 +53,10 @@ void translation_history::save_history (const std::string &dir,
 ///
 void translation_history::load_history (const std::string &dir)
 {
+	///
+	/// Load up the previously translated classes
+	///
+
 	ifstream input ((dir + "\\converted_items.txt").c_str());
 	if (!input.good()) {
 		throw runtime_error("Error opening the converted_items.txt file in " + dir + "!");
@@ -70,4 +74,27 @@ void translation_history::load_history (const std::string &dir)
 			_enums.insert(e);
 		}
 	}
+
+	///
+	/// And load up the previously translated libraries
+	///
+
+	WIN32_FIND_DATAA ffind;
+	HANDLE hfind;
+
+	string libdirName = dir + "\\lib";
+	hfind = FindFirstFileA((libdirName + "\\*.dll").c_str(), &ffind);
+	if (hfind == INVALID_HANDLE_VALUE) {
+		throw runtime_error("Unable to search lib directory with error " + GetLastError());
+	}
+
+	do {
+		string libName = ffind.cFileName;
+		libName = libName.substr(0, libName.length() - 4);
+
+		_lib_to_dir[libName] = libdirName;
+	} while (FindNextFileA(hfind, &ffind));
+
+	FindClose(hfind);
+
 }

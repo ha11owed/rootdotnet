@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <set>
+#include <map>
 
 class translation_history
 {
@@ -26,8 +27,12 @@ public:
 	const std::set<std::string> &previous_enums(void) const
 	{ return _enums; }
 
+	const std::map<std::string, std::string> &librarys_in_dirs (void) const
+	{ return _lib_to_dir; }
+
 private:
 	std::set<std::string> _enums, _classes;
+	std::map<std::string, std::string> _lib_to_dir;
 
 };
 

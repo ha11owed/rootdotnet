@@ -667,6 +667,14 @@ string RootClassInfo::LibraryName() const
 }
 
 ///
+/// Force the class to be in a particular library
+///
+void RootClassInfo::ForceLibraryName(const std::string &libname)
+{
+	ROOTHelpers::ForceClassLibraryname(_name, libname);
+}
+
+///
 /// Check the accesability of the object -- can we get at the dtor?
 ///
 bool RootClassInfo::CanDelete() const

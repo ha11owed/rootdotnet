@@ -75,6 +75,10 @@ public:
 	/// Gets the library name for this class
 	std::string LibraryName (void) const;
 
+	/// Forces the library name to be the given one - this overrides and allows us
+	/// to deal with putting classes in different libraries
+	void ForceLibraryName (const std::string &libraryname);
+
 	/// Returns a list of enums that are defined within this class.
 	const std::vector<RootEnum> &GetClassEnums (void) const;
 
