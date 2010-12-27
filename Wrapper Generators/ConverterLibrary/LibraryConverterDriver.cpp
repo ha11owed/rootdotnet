@@ -12,6 +12,7 @@
 #include "ClassInterfaceRepositoryState.hpp"
 #include "LibraryClassTranslator.hpp"
 #include "create_project_files.hpp"
+#include "translation_history.hpp"
 
 #include <TApplication.h>
 #include <TSystem.h>
@@ -24,6 +25,7 @@
 #include <stdexcept>
 #include <fstream>
 #include <iterator>
+#include <set>
 
 #include "shlobj.h"
 
@@ -37,6 +39,7 @@ using std::runtime_error;
 using std::ofstream;
 using std::pair;
 using std::inserter;
+using std::set;
 
 LibraryConverterDriver::LibraryConverterDriver(void)
 	: _write_solution(true)
@@ -48,8 +51,12 @@ LibraryConverterDriver::~LibraryConverterDriver(void)
 {
 }
 
+///
+/// This directory contains already translated classes.
+///
 void LibraryConverterDriver::add_converted_info(const std::string &dir_path)
 {
+	_already_translated_dirs.push_back(dir_path);
 }
 
 ///
@@ -95,16 +102,19 @@ namespace {
 	/// Check to see that a directory exists. If not, create it.
 	void check_dir (const string &dir_name)
 	{
-		const int dir_size = 400;
-		char b_current_dir[dir_size];
-		int err = GetCurrentDirectoryA(dir_size, b_current_dir);
-		if (err == 0) {
-			throw runtime_error ("Failed to get current working directory!");
+		string full_dir = dir_name;
+		if (full_dir.find(":\\") == full_dir.npos) {
+			const int dir_size = 400;
+			char b_current_dir[dir_size];
+			int err = GetCurrentDirectoryA(dir_size, b_current_dir);
+			if (err == 0) {
+				throw runtime_error ("Failed to get current working directory!");
+			}
+
+			full_dir = string(b_current_dir) + "\\" + full_dir;
 		}
 
-		string full_dir = string(b_current_dir) + "\\" + dir_name;
-
-		err = SHCreateDirectoryExA (NULL, full_dir.c_str(), NULL);
+		int err = SHCreateDirectoryExA (NULL, full_dir.c_str(), NULL);
 		if (err != ERROR_SUCCESS && err != ERROR_ALREADY_EXISTS && err != ERROR_FILE_EXISTS) {
 			throw runtime_error ("Error trying to create directory " + dir_name);
 		}
@@ -269,7 +279,6 @@ namespace {
 		output.close();
 		input.close();
 	}
-
 }
 
 void LibraryConverterDriver::translate(void)
@@ -322,7 +331,29 @@ void LibraryConverterDriver::translate(void)
 	/// the case.
 	///
 
-	cout << "Must still remove the extra enum guys!" << endl;
+	translation_history history;
+	vector<string> already_translated_classes, alread_translated_enums;
+	for_each(_already_translated_dirs.begin(), _already_translated_dirs.end(),
+		[&history] (const string &dir) { history.load_history(dir); });
+
+	const set<string> &prev_classes (history.previous_classes());
+	const set<string> &prev_enums (history.previous_enums());
+
+	{
+		set<string> set_all_classes (all_classes.begin(), all_classes.end());
+		set<string> set_all_enums (all_enums.begin(), all_enums.end());
+
+		for_each(prev_classes.begin(), prev_classes.end(),
+			[&set_all_classes] (const string &class_name) { set_all_classes.erase(class_name); }); 
+		for_each(prev_enums.begin(), prev_enums.end(),
+			[&set_all_enums] (const string &enum_name) { set_all_enums.erase(enum_name); }); 
+
+		all_classes.clear();
+		all_enums.clear();
+
+		all_classes.insert(all_classes.end(), set_all_classes.begin(), set_all_classes.end());
+		all_enums.insert(all_enums.end(), set_all_enums.begin(), set_all_enums.end());
+	}
 
 	///
 	/// Remove classes that violate the library linkages. This is not an issue
@@ -364,9 +395,14 @@ void LibraryConverterDriver::translate(void)
 
 	ClassInterfaceRepositoryState rep_state;
 	for_each(all_classes.begin(), all_classes.end(),
-		[&rep_state] (string &s) { rep_state.request_class_translation(s); });
+		[&rep_state] (const string &s) { rep_state.request_class_translation(s); });
 	for_each(all_enums.begin(), all_enums.end(),
-		[&rep_state] (string &s) { rep_state.request_enum_translation(s); });
+		[&rep_state] (const string &s) { rep_state.request_enum_translation(s); });
+
+	for_each(prev_classes.begin(), prev_classes.end(),
+		[&rep_state] (const string &s) { rep_state.register_class_translation(s); });
+	for_each(prev_enums.begin(), prev_enums.end(),
+		[&rep_state] (const string &s) { rep_state.register_enum_translation(s); });
 
 	///
 	/// Write out everything that is translated into the base directory so
@@ -374,16 +410,7 @@ void LibraryConverterDriver::translate(void)
 	/// what already exists.
 	///
 
-	{
-		ofstream converted_info ((_output_dir + "\\converted_items.txt").c_str());
-
-		for_each(all_classes.begin(), all_classes.end(),
-			[&converted_info] (string &s) { converted_info << "class " << s << endl; });
-		for_each(all_enums.begin(), all_enums.end(),
-			[&converted_info] (string &s) { converted_info << "enum " << s << endl; });
-
-		converted_info.close();
-	}
+	history.save_history(_output_dir, all_classes, all_enums);
 
 	///
 	/// Now translate the enums. Unfortunately, we can't tell what libraries they
@@ -438,7 +465,6 @@ void LibraryConverterDriver::translate(void)
 	///
 
 	translator.finalize_make_publics();
-
 
 	///
 	/// Write out any .hpp files that are going to get required... Again, this

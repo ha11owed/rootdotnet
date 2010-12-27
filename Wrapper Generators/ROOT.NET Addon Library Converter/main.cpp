@@ -21,13 +21,13 @@ int main(int argc, char* argv[])
 	/// Command line arguments processing
 	///
 
-	string dir_of_project_folder = "C:\\Users\\gwatts\\Documents\\ATLAS\\Projects\\ROOT.NET";
+	string dir_of_project_folder = "C:\\Users\\gwatts\\Documents\\ATLAS\\Projects\\LINQToROOTTest";
 	vector<string> dlls;
 	dlls.push_back("C:\\Users\\gwatts\\Documents\\ATLAS\\Projects\\LINQToROOT\\NTupleSource\\BTagJet_cpp.dll");
 	dlls.push_back("C:\\Users\\gwatts\\Documents\\ATLAS\\Projects\\LINQToROOT\\NTupleSource\\MuonInBJet_cpp.dll");
 
 	vector<string> prev_trans_directory;
-	prev_trans_directory.push_back("c:\\root\\NETWrappers");
+	prev_trans_directory.push_back("c:\\root\\NETNewWrappers");
 
 	string libname ("additional");
 

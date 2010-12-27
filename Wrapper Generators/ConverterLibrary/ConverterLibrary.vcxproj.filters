@@ -110,6 +110,9 @@
     <ClCompile Include="create_project_files.cpp">
       <Filter>Source Files\Driver Code</Filter>
     </ClCompile>
+    <ClCompile Include="translation_history.cpp">
+      <Filter>Source Files\Driver Code</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassInterfaceRepositoryState.hpp">
@@ -185,6 +188,9 @@
       <Filter>Header Files\Driver Code</Filter>
     </ClInclude>
     <ClInclude Include="create_project_files.hpp">
+      <Filter>Header Files\Driver Code</Filter>
+    </ClInclude>
+    <ClInclude Include="translation_history.hpp">
       <Filter>Header Files\Driver Code</Filter>
     </ClInclude>
   </ItemGroup>

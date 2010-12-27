@@ -38,6 +38,7 @@ private:
 
 	bool _write_solution;
 	std::vector<std::string> _libs_to_translate;
+	std::vector<std::string> _already_translated_dirs;
 	std::string _output_dir;
 	std::string _single_library_name;
 };

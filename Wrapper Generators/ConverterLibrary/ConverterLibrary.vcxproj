@@ -86,6 +86,7 @@
     <ClCompile Include="CPPNetTypeMapper.cpp" />
     <ClCompile Include="TArrayOfChar.cpp" />
     <ClCompile Include="TPointerSimpleType.cpp" />
+    <ClCompile Include="translation_history.cpp" />
     <ClCompile Include="TTCPPString.cpp" />
     <ClCompile Include="TTROOTClass.cpp" />
     <ClCompile Include="TTROOTenum.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="CPPNetTypeMapper.hpp" />
     <ClInclude Include="TArrayOfChar.hpp" />
     <ClInclude Include="TPointerSimpleType.hpp" />
+    <ClInclude Include="translation_history.hpp" />
     <ClInclude Include="TTCPPString.hpp" />
     <ClInclude Include="TTROOTClass.hpp" />
     <ClInclude Include="TTROOTenum.hpp" />
