@@ -371,6 +371,14 @@ void LibraryConverterDriver::translate(void)
 	}
 
 	///
+	/// Finally, for each of those previously translated guys, load an include directory in there
+	///
+
+	for (int i = 0; i < _already_translated_dirs.size(); i++) {
+		_include_dirs.insert(_include_dirs.begin(), _already_translated_dirs[i] + "\\include");
+	}
+
+	///
 	/// Remove classes that violate the library linkages. This is not an issue
 	/// if we are pushing everything out to a single library. Log them as classes
 	/// we can't translate in the end.
