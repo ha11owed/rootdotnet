@@ -583,6 +583,7 @@ void LibraryConverterDriver::translate(void)
 
 	vector<string> extra_include_dirs (_include_dirs.begin(), _include_dirs.end());
 	vector<string> link_library_dirs (_library_dirs.begin(), _library_dirs.end());
+
 	create_project_files proj_maker(_output_dir, translator, _libs_to_translate, extra_files, extra_include_dirs, link_library_dirs);
 	create_project_files result(for_each (files_by_library.begin(), files_by_library.end(), proj_maker));
 	
