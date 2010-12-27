@@ -33,6 +33,9 @@
     <Filter Include="Header Files\Utilities">
       <UniqueIdentifier>{59ccd8ba-88a3-4124-85cf-fe55be2db372}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Templates">
+      <UniqueIdentifier>{3ca64614-c2ac-4032-be6c-0fda675fc4e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClassInterfaceRepositoryState.cpp">
@@ -193,5 +196,13 @@
     <ClInclude Include="translation_history.hpp">
       <Filter>Header Files\Driver Code</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="cpp_template_project.vcxproj">
+      <Filter>Templates</Filter>
+    </CustomBuild>
+    <CustomBuild Include="solution_template.sln">
+      <Filter>Templates</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

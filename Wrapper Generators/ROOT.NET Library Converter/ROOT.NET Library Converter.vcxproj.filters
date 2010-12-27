@@ -5,21 +5,10 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Templates">
-      <UniqueIdentifier>{d5a48572-d965-45ef-81da-75246028f7c6}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ROOT.NET Library Converter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="solution_template.sln">
-      <Filter>Templates</Filter>
-    </CustomBuild>
-    <CustomBuild Include="cpp_template_project.vcxproj">
-      <Filter>Templates</Filter>
-    </CustomBuild>
   </ItemGroup>
 </Project>
