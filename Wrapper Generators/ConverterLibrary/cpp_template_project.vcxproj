@@ -46,6 +46,9 @@
       <AdditionalDependencies>
 <!-- ADDLinkLibraries -->
       </AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+<!-- ADDLinkLibraryDirectories -->
+;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

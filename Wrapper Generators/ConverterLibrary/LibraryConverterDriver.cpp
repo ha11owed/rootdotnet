@@ -74,6 +74,7 @@ void LibraryConverterDriver::translate_classes_in_library (const std::string &di
 	if (last_seperator != dir_path.npos) {
 		string dir = dir_path.substr(0, last_seperator);
 		gSystem->AddDynamicPath(dir.c_str());
+		_library_dirs.insert(_library_dirs.begin(), dir);
 		libname = dir_path.substr(last_seperator+1);
 	}
 
@@ -581,8 +582,8 @@ void LibraryConverterDriver::translate(void)
 	vector<string> extra_files;
 
 	vector<string> extra_include_dirs (_include_dirs.begin(), _include_dirs.end());
-
-	create_project_files proj_maker(_output_dir, translator, _libs_to_translate, extra_files, extra_include_dirs);
+	vector<string> link_library_dirs (_library_dirs.begin(), _library_dirs.end());
+	create_project_files proj_maker(_output_dir, translator, _libs_to_translate, extra_files, extra_include_dirs, link_library_dirs);
 	create_project_files result(for_each (files_by_library.begin(), files_by_library.end(), proj_maker));
 	
 	for_each(files_by_library.begin(), files_by_library.end(), fill_in_project_references(_output_dir, translator, result.ProjectGuids(), history.librarys_in_dirs()));

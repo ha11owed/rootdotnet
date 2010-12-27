@@ -49,6 +49,7 @@ private:
 	std::vector<std::string> _libs_to_translate;
 	std::vector<std::string> _already_translated_dirs;
 	std::set<std::string> _include_dirs;
+	std::set<std::string> _library_dirs;
 	std::string _output_dir;
 	std::string _single_library_name;
 };

@@ -105,6 +105,9 @@ void create_project_files::operator ()(const pair<string,vector<string> > &libra
 			for_each (dependent_libraries.begin(), dependent_libraries.end(),
 				[&output] (const string &proj_name) {	output << " " << proj_name << ".lib;"; });
 
+		} else if (line.find("<!-- ADDLinkLibraryDirectories -->") != line.npos) {
+			for_each(_link_libs.begin(), _link_libs.end(),
+				[&output] (const string &dir) { output << dir << ";"; });
 		} else {
 			output << line << endl;
 		}
