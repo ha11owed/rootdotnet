@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 
 class LibraryConverterDriver
 {
@@ -27,8 +28,15 @@ public:
 	/// Write all objects into a single library rather than mutlple ones.
 	void write_all_in_single_library (const std::string &library_name);
 
+	/// Add this directory to the include path of all libraries we make. Multiple
+	/// ones are allowed.
+	void include_directory (const std::string &dir);
+
 	/// Write a solution file (by default)
 	void write_solution (bool dowrite);
+
+	/// Use the header directories we find from the classes as default library headers
+	void use_class_header_locations (bool use_header_locations);
 
 	//// Run
 
@@ -37,8 +45,10 @@ public:
 private:
 
 	bool _write_solution;
+	bool _use_class_header_locations;
 	std::vector<std::string> _libs_to_translate;
 	std::vector<std::string> _already_translated_dirs;
+	std::set<std::string> _include_dirs;
 	std::string _output_dir;
 	std::string _single_library_name;
 };

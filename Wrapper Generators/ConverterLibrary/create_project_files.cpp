@@ -96,6 +96,8 @@ void create_project_files::operator ()(const pair<string,vector<string> > &libra
 
 		} else if (line.find("<!-- ADDIncludes -->") != line.npos) {
 			vector<string> dependent_libraries = _translator.get_dependent_libraries(library_name);
+			for_each(_extra_include_dirs.begin(), _extra_include_dirs.end(),
+				[&output] (const string &dir) { output << ";" << dir; });
 
 		} else if (line.find("<!-- ADDLinkLibraries -->") != line.npos) {
 			vector<string> dependent_libraries = _translator.get_dependent_libraries(library_name);

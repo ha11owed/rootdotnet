@@ -51,6 +51,7 @@ int main(int argc, char* argv[])
 
 	driver.set_output_solution_directory(dir_of_project_folder);
 	driver.write_solution(false);
+	driver.use_class_header_locations(true);
 	driver.write_all_in_single_library(libname);
 
 	///

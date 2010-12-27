@@ -42,7 +42,7 @@ using std::inserter;
 using std::set;
 
 LibraryConverterDriver::LibraryConverterDriver(void)
-	: _write_solution(true)
+	: _write_solution(true), _use_class_header_locations(false)
 {
 }
 
@@ -96,6 +96,21 @@ void LibraryConverterDriver::write_all_in_single_library (const std::string &lib
 void LibraryConverterDriver::write_solution (bool dowrite)
 {
 	_write_solution = dowrite;
+}
+
+///
+/// Each class in ROOT knows where its headers came from. If this is true then
+/// we add these path's to the list of include directories for each library. By default
+/// this is false.
+///
+void LibraryConverterDriver::use_class_header_locations(bool use_headers)
+{
+	_use_class_header_locations = use_headers;
+}
+
+void LibraryConverterDriver::include_directory(const std::string &dir)
+{
+	_include_dirs.insert(_include_dirs.begin(), dir);
 }
 
 namespace {
@@ -446,12 +461,18 @@ void LibraryConverterDriver::translate(void)
 		string class_name = rep_state.next_class();
 		cout << "Translating " << class_name << endl;
 		RootClassInfo &info (RootClassInfoCollection::GetRootClassInfo(class_name));
+
+		if (_use_class_header_locations) {
+			_include_dirs.insert(_include_dirs.begin(), info.include_directory());
+		}
+
 		string libName = info.LibraryName();
 		if (_single_library_name.size() > 0) {
 			libName = _single_library_name;
 		}
-		string output_dir = _output_dir + "\\" + libName + "\\Source";
 		files_by_library[libName].push_back("N" + class_name);
+
+		string output_dir = _output_dir + "\\" + libName + "\\Source";
 		check_dir (output_dir);
 		translator.SetOutputDir (output_dir);
 		translator.translate (info);
@@ -512,7 +533,9 @@ void LibraryConverterDriver::translate(void)
 	//_libs_to_translate.push_back("libMatrix");
 	vector<string> extra_files;
 
-	create_project_files proj_maker(_output_dir, translator, _libs_to_translate, extra_files);
+	vector<string> extra_include_dirs (_include_dirs.begin(), _include_dirs.end());
+
+	create_project_files proj_maker(_output_dir, translator, _libs_to_translate, extra_files, extra_include_dirs);
 	create_project_files result(for_each (files_by_library.begin(), files_by_library.end(), proj_maker));
 	
 	for_each(files_by_library.begin(), files_by_library.end(), fill_in_project_references(_output_dir, translator, result.ProjectGuids()));

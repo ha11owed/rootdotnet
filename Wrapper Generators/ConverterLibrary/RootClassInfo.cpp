@@ -567,6 +567,20 @@ string RootClassInfo::include_filename() const
 }
 
 ///
+/// Returns the directory where the include file can be found.
+///
+string RootClassInfo::include_directory() const
+{
+	TClass *c = gROOT->GetClass(_name.c_str());
+	string full_name (c->GetDeclFileName());
+	int index = full_name.find_last_of("/");
+	if (index == string::npos) {
+		return ".";
+	}
+	return full_name.substr(0, index);
+}
+
+///
 /// Return the stub of the fliename -- with out the .h or .hpp (or whatever) extension.
 ///
 string RootClassInfo::include_filename_stub() const

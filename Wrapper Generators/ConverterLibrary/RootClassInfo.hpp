@@ -29,6 +29,9 @@ public:
 	/// The include file that this class resides in
 	std::string include_filename (void) const;
 
+	/// Returns the directory where the include directoy exists.
+	std::string include_directory (void) const;
+
 	/// The name of the include file, w/o the .h
 	std::string include_filename_stub (void) const;
 
