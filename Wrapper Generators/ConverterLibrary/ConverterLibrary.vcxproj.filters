@@ -202,11 +202,11 @@
     <ClInclude Include="translation_history.hpp">
       <Filter>Header Files\Driver Code</Filter>
     </ClInclude>
-    <ClInclude Include="RootClassField.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FieldHandlingUtils.hpp">
       <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="RootClassField.hpp">
+      <Filter>Header Files\ROOTClassWrappers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

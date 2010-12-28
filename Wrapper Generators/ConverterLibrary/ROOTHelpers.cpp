@@ -107,7 +107,7 @@ vector<string> ROOTHelpers::GetAllClassesInLibraries(const vector<string> &libra
 			continue; // Don't do private namespace for now.
 		}
 		if (class_name.find("<") != class_name.npos) {
-			ConverterErrorLog::log_type_error (class_name, "Tempalte classes not supported yet.");
+			ConverterErrorLog::log_type_error (class_name, "Template classes not supported yet.");
 			continue; // Don't do templates for now.
 		}
 		if (!IsClass(class_name)) {
