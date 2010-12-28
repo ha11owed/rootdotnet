@@ -4,6 +4,7 @@
 #include <vector>
 
 class TMethod;
+class TDataMember;
 
 class ClassTraversal
 {
@@ -32,5 +33,7 @@ public:
 
 	static std::vector<TMethod*> FindClassMethods (const std::string &name);
 	static std::vector<TMethod*> FindProtectedClassMethods (const std::string &name);
+
+	static std::vector<TDataMember*> FindClassFields (const std::string &name);
 
 };

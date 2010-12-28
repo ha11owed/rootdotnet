@@ -4,6 +4,7 @@
 #include "WrapperConfigurationInfo.hpp"
 #include "ConverterErrorLog.hpp"
 #include "RootClassInfoCollection.hpp"
+#include "FieldHandlingUtils.hpp"
 
 #include "TMethod.h"
 #include "TROOT.h"
@@ -43,7 +44,7 @@ RootClassInfo::RootClassInfo(const std::string &name)
 : _inherited_good (false), _name(name), _methods_good (false), _methods_clean_good(false),
 _referenced_classes_good(false), _inherited_deep_good(false), _netname("N" + name),
 _enum_info_valid (false), _class_properties_good(false), _methods_implemented_good(false),
-_methods_implemented_good_clean(false)
+_methods_implemented_good_clean(false), _fields_good(false), _fields_clean_good(false), _fields_for_class_good(false)
 {
 }
 
@@ -52,7 +53,7 @@ RootClassInfo::RootClassInfo()
 : _inherited_good (false), _methods_good (false),
 _referenced_classes_good(false), _inherited_deep_good(false),
 _enum_info_valid (false), _class_properties_good(false), _methods_implemented_good(false),
-_methods_implemented_good_clean(false)
+_methods_implemented_good_clean(false), _fields_good(false), _fields_clean_good(false), _fields_for_class_good (false)
 {
 }
 
@@ -141,6 +142,21 @@ namespace {
   }
 
   ///
+  /// This helper method will fetch the fields for the named class.
+  /// One trick we need to watch out for - some of these data fields are enum
+  /// definition. We want to avoid those - and drop them here right at the start!
+  ///
+  vector<RootClassField> GetFieldsForClass (const string &class_name, const RootClassInfo *parent)
+  {
+	  auto &fields = ClassTraversal::FindClassFields (class_name);
+	  vector<RootClassField> result;
+	  for (unsigned int i = 0; i < fields.size(); i++) {
+		  result.push_back(RootClassField(fields[i]));
+	  }
+	  return result;
+  }
+
+  ///
   /// This helper method will fetch the protected methods for the named class.
   ///
   vector<RootClassMethod> GetProtectedPrototypesForClass (const string &class_name, const RootClassInfo *parent)
@@ -183,6 +199,7 @@ namespace {
 	  }
 	  return result;
 	}
+
 
 ///
 /// Look at the methods we know about - public ones only - and return only the methods that are
@@ -373,6 +390,30 @@ namespace {
 }
 
 ///
+/// Retursn the list of prototypes that are visible for this class. Everything!
+///
+
+const vector<RootClassField> &RootClassInfo::GetAllDataFields(bool clean) const
+{
+	if (!_fields_good) {
+		_fields = GetAllDataFieldsForThisClassImpl();
+		_fields_good = true;
+	}
+
+	if (!clean) {
+		return _fields;
+	}
+
+	if (!_fields_clean_good) {
+		_fields_clean = make_field_list_clean (*this, _fields);
+		_fields_clean_good = true;
+	}
+
+	return _fields_clean;
+
+}
+
+///
 /// Returns the list of prototypes that are visible for this class. Returns
 /// everything, including those that are down-level!!
 ///
@@ -402,6 +443,74 @@ const vector<RootClassMethod> &RootClassInfo::GetAllPrototypesForThisClass (bool
   }
 
   return _methods_clean;
+}
+
+///
+/// Get the list of fields for this class.
+///
+vector<RootClassField> RootClassInfo::GetAllDataFieldsForThisClassImpl() const
+{
+	///
+	/// Get all the fields for this class and the inherrited classes. Things
+	/// are a bit tricky b/c we have to deal with multiple inherritance and also
+	/// make sure that anything in sub-classes might be hidden. Basically, we
+	/// have to implement the same resolution logic as for methods.
+	///
+	const vector<RootClassField> &theClassFields (GetFieldsImplementedByThisClass());
+	field_set thisClass (theClassFields.begin(), theClassFields.end());
+
+	vector<field_set> inherrited_fields;
+	transform (GetDirectInheritedClasses().begin(), GetDirectInheritedClasses().end(),
+		back_inserter(inherrited_fields), convert_fields_to_set());
+
+	///
+	/// Reset the owners of these fields to be this class
+	///
+
+	vector<field_set> changed_parents_all;
+	transform(inherrited_fields.begin(), inherrited_fields.end(),
+		back_inserter(changed_parents_all),
+		change_field_parent(this));
+
+	///
+	/// Fields are a lot like methods - they hide things below. Again, we use the
+	/// set to implement this - we will copy in the current set items and then
+	/// go one deeper and one deeper adding them. That will only add new fields.
+	/// Ouch. :-)
+	///
+
+	field_set fields_as_set;
+	copy (thisClass.begin(), thisClass.end(), inserter(fields_as_set, fields_as_set.begin()));
+
+	///
+	/// We don't worry about covariant returns or anything like that - we just
+	/// compress everything. Also, for now, we are ignoring public instance variables
+	/// that are protected (when we run into this we will deal with it).
+	///
+
+	flatten_field_set_list(changed_parents_all, fields_as_set);
+
+	return vector<RootClassField>(fields_as_set.begin(), fields_as_set.end());
+}
+
+///
+/// Get the fields that are implemented explicitly by this class
+///
+const vector<RootClassField> RootClassInfo::GetFieldsImplementedByThisClass() const
+{
+	if (!_fields_for_class_good) {
+		_fields_for_class_good = true;
+		vector<RootClassField> allfields(GetFieldsForClass (_name, this));
+
+		for (int i = 0; i < allfields.size(); i++) {
+			const RootClassField &f (allfields[i]);
+			if (f.ClassOfFieldDefinition() == _name) {
+				_fields_for_class.push_back(f);
+			}
+		}
+	}
+
+	return _fields_for_class;
 }
 
 ///
@@ -947,6 +1056,12 @@ const std::vector<RootClassProperty> &RootClassInfo::GetProperties(void) const
 	  }
 	}
   }
+
+  ///
+  /// Next, look for public fields in the C++ classes - these are guys we get direct access to.
+  ///
+
+  auto fields = GetAllDataFields(true);
 
   ///
   /// Place them in the final vector, and we are done!

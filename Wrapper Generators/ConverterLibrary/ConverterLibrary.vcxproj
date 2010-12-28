@@ -79,11 +79,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="create_project_files.cpp" />
+    <ClCompile Include="FieldHandlingUtils.cpp" />
     <ClCompile Include="LibraryClassTranslator.cpp" />
     <ClCompile Include="LibraryConverterDriver.cpp" />
     <ClCompile Include="MethodInheritanceDriver.cpp" />
     <ClCompile Include="ClassInterfaceRepositoryState.cpp" />
     <ClCompile Include="CPPNetTypeMapper.cpp" />
+    <ClCompile Include="RootClassField.cpp" />
     <ClCompile Include="TArrayOfChar.cpp" />
     <ClCompile Include="TPointerSimpleType.cpp" />
     <ClCompile Include="translation_history.cpp" />
@@ -107,11 +109,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="create_project_files.hpp" />
+    <ClInclude Include="FieldHandlingUtils.hpp" />
     <ClInclude Include="LibraryClassTranslator.hpp" />
     <ClInclude Include="LibraryConverterDriver.h" />
     <ClInclude Include="MethodInheritanceDriver.hpp" />
     <ClInclude Include="ClassInterfaceRepositoryState.hpp" />
     <ClInclude Include="CPPNetTypeMapper.hpp" />
+    <ClInclude Include="RootClassField.hpp" />
     <ClInclude Include="TArrayOfChar.hpp" />
     <ClInclude Include="TPointerSimpleType.hpp" />
     <ClInclude Include="translation_history.hpp" />

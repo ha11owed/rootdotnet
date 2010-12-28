@@ -8,6 +8,7 @@
 #include "TBaseClass.h"
 #include "TMethod.h"
 #include "TROOT.h"
+#include <TDataMember.h>
 
 #include <set>
 #include <deque>
@@ -104,6 +105,26 @@ vector<TMethod*> ClassTraversal::FindClassMethods (const std::string &class_name
 	TMethod *method;
 	while ((method = static_cast<TMethod*>(next.Next()))) {
 		results.push_back(method);
+	}
+	return results;
+}
+
+///
+/// Grab all the fields for the class. Filter out the bogus ones - enum's, for example,
+/// are also stored here.
+///
+vector<TDataMember*> ClassTraversal::FindClassFields(const string &class_name)
+{
+	TClass *root_class = FindRootClass(class_name);
+	TList *all_public_fields = root_class->GetListOfAllPublicDataMembers();
+	TIter next (all_public_fields);
+	vector<TDataMember*> results;
+	TDataMember *field;
+	while ((field = static_cast<TDataMember*>(next.Next()))) {
+		bool isenum = (field->Property() & (kIsEnum | kIsStatic)) == (kIsEnum | kIsStatic);
+		if (!isenum) {
+			results.push_back(field);
+		}
 	}
 	return results;
 }

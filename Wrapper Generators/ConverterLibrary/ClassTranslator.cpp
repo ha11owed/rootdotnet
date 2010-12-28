@@ -547,6 +547,19 @@ void ClassTranslator::generate_interface (RootClassInfo &class_info, SourceEmitt
 	}
 
 	///
+	/// Do the fields for this object
+	///
+
+	auto fields (class_info.GetAllDataFields(true));
+	for (int i = 0; i < fields.size(); i++) {
+		const RootClassField &f(fields[i]);
+	    emitter.start_line() << "property " << f.NETType() << " " << f.NETName() << " {" << endl;
+	    emitter.start_line() << "  " << f.NETType() << " get ();" << endl;
+	    emitter.start_line() << "  void set (" << f.NETType() << " value);" << endl;
+	    emitter.start_line() << "}" << endl;
+	}
+
+	///
 	/// Put in a reference to the indexers so others can do the array lookups. :-)
 	///
 
@@ -785,6 +798,19 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	    if (itr->isSetter()) {
 	      emitter.start_line() << "  virtual void set (" << itr->property_type() << " value);" << endl;
 	    }
+	    emitter.start_line() << "}" << endl;
+	}
+
+	///
+	/// Do the fields for this object
+	///
+
+	auto fields (info.GetAllDataFields(true));
+	for (int i = 0; i < fields.size(); i++) {
+		const RootClassField &f(fields[i]);
+	    emitter.start_line() << "property " << f.NETType() << " " << f.NETName() << " {" << endl;
+	    emitter.start_line() << "  virtual " << f.NETType() << " get ();" << endl;
+	    emitter.start_line() << "  virtual void set (" << f.NETType() << " value);" << endl;
 	    emitter.start_line() << "}" << endl;
 	}
 
@@ -1101,6 +1127,30 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 	  emit_function_body(*(itr->setter_method()), info, emitter);
 	  emitter.brace_close();
 	}
+  }
+  
+  ///
+  /// Emit fields for this object
+  ///
+
+  auto &fields (info.GetAllDataFields(true));
+  for (int i = 0; i < fields.size(); i++) {
+	  const RootClassField &f(fields[i]);
+
+	  auto trans = CPPNetTypeMapper::instance()->get_translator_from_cpp(f.CPPType());
+
+	  emitter.start_line() << f.NETType() << " " << info.NETName() << "::" << f.NETName() << "::get ()" << endl;
+	  emitter.brace_open();
+	  emit_return(trans, f.CPPName(), emitter);
+	  emitter.brace_close();
+
+	  emitter.start_line() << "void " << info.NETName() << "::" << f.NETName()
+		  << "::set (" << f.NETType() << " f_xyz_val)" << endl;
+	  emitter.brace_open();
+	  auto tempname (emit_translation_net_cpp("f_xyz_val", trans, emitter));
+	  emitter.start_line() << "    " << f.CPPName() << " = " << tempname << ";" << endl;
+	  emit_translation_net_cpp_cleanup("f_xyz_val", tempname, trans, emitter);
+	  emitter.brace_close();
   }
 
   ///

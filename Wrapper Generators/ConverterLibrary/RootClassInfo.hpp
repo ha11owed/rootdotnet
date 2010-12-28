@@ -4,6 +4,7 @@
 #include "RootClassInfo.hpp"
 #include "RootEnum.hpp"
 #include "RootClassProperty.hpp"
+#include "RootClassField.hpp"
 
 #include <string>
 #include <set>
@@ -61,6 +62,11 @@ public:
     /// those methods that can be implemented are returned. Results are cached.
     const std::vector<RootClassMethod> &GetAllPrototypesForThisClass (bool clean) const;
 
+	/// Returns a list of all ROOT fields associated with this class and any
+	/// class that is above it on the class chain. if clean is set to true, only
+	/// those methods that can be translated are returned. Results are cached.
+	const std::vector<RootClassField> &GetAllDataFields (bool clean) const;
+
 	/// True if this object comes from TObject
 	bool InheritsFromTObject (void) const;
 
@@ -102,6 +108,16 @@ private:
 	mutable std::vector<RootClassMethod> _methods_implemented;
 	mutable bool _methods_implemented_good_clean;
 	mutable std::vector<RootClassMethod> _methods_implemented_clean;
+
+	std::vector<RootClassField> GetAllDataFieldsForThisClassImpl () const;
+	mutable bool _fields_for_class_good;
+	mutable std::vector<RootClassField> _fields_for_class;
+
+	const std::vector<RootClassField> GetFieldsImplementedByThisClass () const;
+	mutable bool _fields_good;
+	mutable std::vector<RootClassField> _fields;
+	mutable bool _fields_clean_good;
+	mutable std::vector<RootClassField> _fields_clean;
 
 	mutable std::vector<std::string> _referenced_classes;
 	mutable std::vector<std::string> _referenced_enums;
