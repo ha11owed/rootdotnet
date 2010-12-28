@@ -921,13 +921,27 @@ namespace {
 		}
 	}
 
+	string clean_up_net_name(const string &name)
+	{
+		string result = name;
+		for (int i = 0; i < result.size(); i++) {
+			if (result[i] == '-')
+				result[i] = '_';
+			if (result[i] == '>')
+				result[i] = '_';
+		}
+		return result;
+		
+	}
+
 	/// Emit code to issue a "return" statement of some sort
 	void emit_return (const CPPNetTypeMapper::TypeTranslator *return_translator, const std::string &return_var, SourceEmitter &emitter)
 	{
 		string return_var_name (return_var);
 		if (return_translator->requires_translation_to_net()) {
-			return_translator->translate_to_net ("dotnet_" + return_var, return_var, emitter);
-			return_var_name = "dotnet_" + return_var;
+			auto dotnet_return_var = clean_up_net_name ("dotnet_" + return_var);
+			return_translator->translate_to_net (dotnet_return_var, return_var, emitter);
+			return_var_name = dotnet_return_var;
 		}
 		emitter.start_line() << "return " << return_var_name << ";" << endl;
 	}
@@ -1142,14 +1156,14 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 
 	  emitter.start_line() << f.NETType() << " " << info.NETName() << "::" << f.NETName() << "::get ()" << endl;
 	  emitter.brace_open();
-	  emit_return(trans, f.CPPName(), emitter);
+	  emit_return(trans, "_instance->" + f.CPPName(), emitter);
 	  emitter.brace_close();
 
 	  emitter.start_line() << "void " << info.NETName() << "::" << f.NETName()
 		  << "::set (" << f.NETType() << " f_xyz_val)" << endl;
 	  emitter.brace_open();
 	  auto tempname (emit_translation_net_cpp("f_xyz_val", trans, emitter));
-	  emitter.start_line() << "    " << f.CPPName() << " = " << tempname << ";" << endl;
+	  emitter.start_line() << "    _instance->" << f.CPPName() << " = " << tempname << ";" << endl;
 	  emit_translation_net_cpp_cleanup("f_xyz_val", tempname, trans, emitter);
 	  emitter.brace_close();
   }
