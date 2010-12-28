@@ -118,6 +118,14 @@ string CPPNetTypeMapper::normalize_template_referece(const string &in_name)
 	if (in_name.find("vector") == 0) {
 
 		///
+		/// No ponters!
+		///
+
+		if (in_name.find("*") != in_name.npos || in_name.find("&") != in_name.npos) {
+			return in_name;
+		}
+
+		///
 		/// Get the basic argument out. We can't deal with nested templates!
 		///
 
