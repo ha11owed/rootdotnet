@@ -751,6 +751,17 @@ void RootClassInfo::init_referenced_items() const
 	}
 
 	///
+	/// And get everything from the data fields
+	///
+
+	auto fields (GetAllDataFields(true));
+	for (unsigned int i = 0; i < fields.size(); i++) {
+		auto f (fields[i]);
+		auto used_classes (f.get_all_referenced_root_types());
+		all_types.insert(used_classes.begin(), used_classes.end());
+	}
+
+	///
 	/// Copy the set over to the master list, and return it!
 	///
 

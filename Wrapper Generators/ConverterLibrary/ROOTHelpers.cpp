@@ -255,3 +255,30 @@ const vector<pair<string, unsigned int> > &ROOTHelpers::GetEnumValues(const std:
 	LoadAllEnums();
 	return _all_enums[enum_type];
 }
+
+///
+/// Extract the arguments from a template. Go down only a single level! If this isn't a template, just return
+/// the argument as the list!
+///
+vector<string> ROOTHelpers::GetTemplateArguments (const string &template_name)
+{
+	vector<string> result;
+	int arg_start = template_name.find("<");
+	if (arg_start == template_name.npos) {
+		result.push_back(template_name);
+		return result;
+	}
+
+	string arg = template_name.substr(arg_start+1, template_name.size()-2-arg_start);
+	if (arg.find("<") != arg.npos) {
+		result.push_back(template_name);
+		return result;
+	}
+
+	while (arg.find(",") != arg.npos) {
+		result.push_back(arg.substr(0, arg.find(",")));
+		arg = arg.substr(arg.find(",")+1);
+	}
+	result.push_back(arg);
+	return result;
+}

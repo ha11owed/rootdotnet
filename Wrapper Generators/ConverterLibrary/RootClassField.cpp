@@ -5,6 +5,7 @@
 #include "RootClassField.hpp"
 #include "CPPNetTypeMapper.hpp"
 #include "ConverterErrorLog.hpp"
+#include "ROOTHelpers.h"
 
 #include <TDataMember.h>
 #include <TClass.h>
@@ -93,6 +94,21 @@ vector<string> RootClassField::get_all_referenced_raw_types(void) const
 {
 	vector<string> result;
 	result.push_back (_root_field->GetTypeName());
+	return result;
+}
+
+vector<string> RootClassField::get_all_referenced_root_types(void) const
+{
+	auto all (get_all_referenced_raw_types());
+	vector<string> result;
+	for (unsigned int i = 0; i < all.size(); i++) {
+		auto allTypes = ROOTHelpers::GetTemplateArguments(all[i]);
+		for (int j = 0; j < allTypes.size(); j++) {
+			if (ROOTHelpers::IsClass(allTypes[j])) {
+				result.push_back(allTypes[j]);
+			}
+		}
+	}
 	return result;
 }
 

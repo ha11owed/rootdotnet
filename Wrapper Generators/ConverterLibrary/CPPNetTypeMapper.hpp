@@ -19,10 +19,10 @@ public:
 	static void Reset (void);
 
 	/// If you have a cpp type name, this guy will return the typename in the NET world
-	std::string GetNetTypename (const std::string cpp_typename) const;
+	std::string GetNetTypename (const std::string cpp_typename);
 
 	/// If you have a cpp type name, this will return the net interface name
-	std::string GetNetInterfaceTypename (const std::string cpp_typename) const;
+	std::string GetNetInterfaceTypename (const std::string cpp_typename);
 
 	class TypeTranslator {
 	public:
@@ -125,7 +125,7 @@ public:
 	};
 
 	/// Returns the translator for a particular type for quick access to various functions.
-	const TypeTranslator *get_translator_from_cpp (const std::string &cpp_typename) const;
+	const TypeTranslator *get_translator_from_cpp (const std::string &cpp_typename);
 
 	/// Add a new mapper to the library.
 	void AddTypeMapper (TypeTranslator *trans);
@@ -134,13 +134,13 @@ public:
 	void AddTypedefMapping (const std::string &typedef_name, const std::string &type_name);
 
 	/// Return true if we know about the mapping already
-	bool has_mapping (const std::string &class_name) const;
+	bool has_mapping (const std::string &class_name);
 
 	/// Write out any extra files that are CLR files (so only need to be written once).
 	void write_out_clr_type_support_files (SourceEmitter &output) const;
 
 	/// Simple thing to tell if two types are the same
-	bool AreSameType (const std::string &t1, const std::string &t2) const;
+	bool AreSameType (const std::string &t1, const std::string &t2);
 
 private:
 	static CPPNetTypeMapper *_mapper;
@@ -156,4 +156,10 @@ private:
 
 	/// Resolve the typename
 	std::string resolve_typedefs (const std::string &type_name) const;
+
+	/// Resolve a type reference and normalize it (i.e. clean it up!!)
+	std::string normalize_type_reference (const std::string &type_name);
+
+	/// Normalize a template reference
+	std::string normalize_template_referece (const std::string &type_name);
 };

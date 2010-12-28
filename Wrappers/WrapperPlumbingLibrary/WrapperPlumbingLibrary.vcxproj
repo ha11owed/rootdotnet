@@ -135,6 +135,7 @@
     <ClInclude Include="ROOTDOTNETBaseTObject.hpp" />
     <ClInclude Include="ROOTObjectInfo.h" />
     <ClInclude Include="ROOTObjectManager.h" />
+    <ClInclude Include="VectorObject.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.ico" />

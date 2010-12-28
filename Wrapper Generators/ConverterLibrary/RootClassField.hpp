@@ -43,6 +43,9 @@ public:
 	/// to reference in its translation.
 	std::vector<std::string> get_all_referenced_raw_types (void) const;
 
+	/// Returns the root classes that we reference (if any!).
+	std::vector<std::string> get_all_referenced_root_types (void) const;
+
 	~RootClassField(void);
 
 private:

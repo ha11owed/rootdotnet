@@ -21,6 +21,9 @@ public:
 	static std::vector<std::string> GetAllEnums (void);
 	static const std::vector<std::pair<std::string, unsigned int> > &GetEnumValues (const std::string &enum_type);
 
+	/// Returns template arguments
+	static std::vector<std::string> GetTemplateArguments (const std::string &template_type);
+
 private:
 	static std::map<std::string, std::vector<std::pair<std::string, unsigned int> > > _all_enums;
 	static void LoadAllEnums();

@@ -42,6 +42,7 @@ ClassTranslator::ClassTranslator(const std::string &base_dir)
 	load_globals();
 
 	_default_header_includes.push_back ("NetArrayTranslator.hpp");
+	_default_header_includes.push_back ("VectorObject.hpp");
 }
 
 ClassTranslator::~ClassTranslator(void)
