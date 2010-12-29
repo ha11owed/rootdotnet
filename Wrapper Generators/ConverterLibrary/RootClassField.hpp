@@ -3,6 +3,8 @@
 ///
 #pragma once
 
+#include "CPPNetTypeMapper.hpp"
+
 #include <string>
 #include <vector>
 
@@ -27,6 +29,10 @@ public:
 	/// The CPP Type
 	std::string CPPType(void) const;
 
+	/// True if we can to a getter or a setter
+	bool SetterOK (void) const;
+	bool GetterOK (void) const;
+
 	/// Return the class where this is actually defined
 	std::string ClassOfFieldDefinition(void) const;
 
@@ -46,9 +52,13 @@ public:
 	/// Returns the root classes that we reference (if any!).
 	std::vector<std::string> get_all_referenced_root_types (void) const;
 
+	/// Get the translator - this just makes things simpler
+	const CPPNetTypeMapper::TypeTranslator *Translator(void) const { return _trans; }
+
 	~RootClassField(void);
 
 private:
 	TDataMember *_root_field;
+	const CPPNetTypeMapper::TypeTranslator *_trans;
 };
 

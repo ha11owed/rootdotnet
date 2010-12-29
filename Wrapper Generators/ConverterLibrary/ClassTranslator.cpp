@@ -555,8 +555,12 @@ void ClassTranslator::generate_interface (RootClassInfo &class_info, SourceEmitt
 	for (int i = 0; i < fields.size(); i++) {
 		const RootClassField &f(fields[i]);
 	    emitter.start_line() << "property " << f.NETType() << " " << f.NETName() << " {" << endl;
-	    emitter.start_line() << "  " << f.NETType() << " get ();" << endl;
-	    emitter.start_line() << "  void set (" << f.NETType() << " value);" << endl;
+		if (f.GetterOK()) {
+		    emitter.start_line() << "  " << f.NETType() << " get ();" << endl;
+		}
+		if (f.SetterOK()) {
+		    emitter.start_line() << "  void set (" << f.NETType() << " value);" << endl;
+		}
 	    emitter.start_line() << "}" << endl;
 	}
 
@@ -810,8 +814,12 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	for (int i = 0; i < fields.size(); i++) {
 		const RootClassField &f(fields[i]);
 	    emitter.start_line() << "property " << f.NETType() << " " << f.NETName() << " {" << endl;
-	    emitter.start_line() << "  virtual " << f.NETType() << " get ();" << endl;
-	    emitter.start_line() << "  virtual void set (" << f.NETType() << " value);" << endl;
+		if (f.GetterOK()) {
+		    emitter.start_line() << "  virtual " << f.NETType() << " get ();" << endl;
+		}
+		if (f.SetterOK()) {
+		    emitter.start_line() << "  virtual void set (" << f.NETType() << " value);" << endl;
+		}
 	    emitter.start_line() << "}" << endl;
 	}
 
@@ -1145,27 +1153,33 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
   }
   
   ///
-  /// Emit fields for this object
+  /// Emit fields for this object. Symantics are a little tricky here in the following sense - a field can
+  /// have only a single type for get/set. If we the two types aren't the same then we are a little bit stuck. So
+  /// we prefer the 'get' over the setup. That usually works out in the ROOT world.
   ///
 
   auto &fields (info.GetAllDataFields(true));
   for (int i = 0; i < fields.size(); i++) {
 	  const RootClassField &f(fields[i]);
 
-	  auto trans = CPPNetTypeMapper::instance()->get_translator_from_cpp(f.CPPType());
+	  if (f.GetterOK()) {
+		  emitter.start_line() << f.NETType() << " " << info.NETName() << "::" << f.NETName() << "::get ()" << endl;
+		  emitter.brace_open();
+		  emit_return(f.Translator(), "_instance->" + f.CPPName(), emitter);
+		  emitter.brace_close();
+	  }
 
-	  emitter.start_line() << f.NETType() << " " << info.NETName() << "::" << f.NETName() << "::get ()" << endl;
-	  emitter.brace_open();
-	  emit_return(trans, "_instance->" + f.CPPName(), emitter);
-	  emitter.brace_close();
+	  if (f.SetterOK()) {
+		  emitter.start_line() << "void " << info.NETName() << "::" << f.NETName()
+			  << "::set (" << f.NETType() << " f_xyz_val)" << endl;
+		  emitter.brace_open();
+		  auto tempname (emit_translation_net_cpp("f_xyz_val", f.Translator(), emitter));
+		  emitter.start_line() << "    _instance->" << f.CPPName() << " = " << tempname << ";" << endl;
+		  emit_translation_net_cpp_cleanup("f_xyz_val", tempname, f.Translator(), emitter);
+		  emitter.brace_close();
+	  }
 
-	  emitter.start_line() << "void " << info.NETName() << "::" << f.NETName()
-		  << "::set (" << f.NETType() << " f_xyz_val)" << endl;
-	  emitter.brace_open();
-	  auto tempname (emit_translation_net_cpp("f_xyz_val", trans, emitter));
-	  emitter.start_line() << "    _instance->" << f.CPPName() << " = " << tempname << ";" << endl;
-	  emit_translation_net_cpp_cleanup("f_xyz_val", tempname, trans, emitter);
-	  emitter.brace_close();
+
   }
 
   ///

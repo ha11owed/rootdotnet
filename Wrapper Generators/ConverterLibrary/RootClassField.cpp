@@ -20,7 +20,7 @@ using std::vector;
 /// Null initalizer. Normally this shouldn't happen. :-)
 ///
 RootClassField::RootClassField(void)
-	: _root_field (0)
+	: _root_field (0), _trans(0)
 {
 }
 
@@ -30,6 +30,7 @@ RootClassField::RootClassField(void)
 RootClassField::RootClassField(TDataMember *f)
 	: _root_field(f)
 {
+	_trans = CPPNetTypeMapper::instance()->get_translator_from_cpp(_root_field->GetTrueTypeName());
 }
 
 RootClassField::~RootClassField(void)
@@ -41,9 +42,31 @@ string RootClassField::NETName() const
 	return _root_field->GetName();
 }
 
+///
+/// The .NET name of this field is actually a little funny - the normal ROOT.NET infrastructure
+/// allows for different types when going into .NET and coming out. Since these are property setters, however,
+/// we can't do it that way - we have to have the same type going in and out.
+///
 string RootClassField::NETType() const
 {
-	return CPPNetTypeMapper::instance()->GetNetInterfaceTypename(_root_field->GetTrueTypeName());
+	return _trans->net_return_type_name();
+}
+
+///
+/// Can we do a "getter" for this guy? Standard is yes - we can always
+///
+bool RootClassField::GetterOK() const
+{
+	return true;
+}
+
+///
+/// Can we do a setter? That is fine as long as the .NET type we pass in and return are the same. Otherwise we have to bail
+/// on the setter.
+///
+bool RootClassField::SetterOK() const
+{
+	return _trans->net_return_type_name() == _trans->net_typename();
 }
 
 string RootClassField::CPPType() const
