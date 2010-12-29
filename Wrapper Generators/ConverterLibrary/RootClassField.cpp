@@ -12,9 +12,11 @@
 
 #include <string>
 #include <vector>
+#include <stdexcept>
 
 using std::string;
 using std::vector;
+using std::exception;
 
 ///
 /// Null initalizer. Normally this shouldn't happen. :-)
@@ -30,7 +32,11 @@ RootClassField::RootClassField(void)
 RootClassField::RootClassField(TDataMember *f)
 	: _root_field(f)
 {
-	_trans = CPPNetTypeMapper::instance()->get_translator_from_cpp(_root_field->GetTrueTypeName());
+	try {
+		_trans = CPPNetTypeMapper::instance()->get_translator_from_cpp(_root_field->GetTrueTypeName());
+	} catch (exception &e) {
+		_trans = 0;
+	}
 }
 
 RootClassField::~RootClassField(void)
@@ -57,7 +63,7 @@ string RootClassField::NETType() const
 ///
 bool RootClassField::GetterOK() const
 {
-	return true;
+	return _trans != 0;
 }
 
 ///
@@ -66,7 +72,7 @@ bool RootClassField::GetterOK() const
 ///
 bool RootClassField::SetterOK() const
 {
-	return _trans->net_return_type_name() == _trans->net_typename();
+	return (_trans != 0) && _trans->net_return_type_name() == _trans->net_typename();
 }
 
 string RootClassField::CPPType() const
