@@ -8,6 +8,9 @@
 #undef nullptr
 #endif
 
+#include <vector>
+#include <TObject.h>
+
 using namespace System::Collections::Generic;
 
 		class VOHolderBase {
