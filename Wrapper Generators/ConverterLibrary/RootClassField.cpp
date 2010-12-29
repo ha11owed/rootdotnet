@@ -30,12 +30,14 @@ RootClassField::RootClassField(void)
 /// Track a field that we can (we hope) access.
 ///
 RootClassField::RootClassField(TDataMember *f)
-	: _root_field(f)
+	: _root_field(f), _trans(0)
 {
-	try {
-		_trans = CPPNetTypeMapper::instance()->get_translator_from_cpp(_root_field->GetTrueTypeName());
-	} catch (exception &e) {
-		_trans = 0;
+	if (!(_root_field->Property() & kIsArray)) {
+		try {
+			_trans = CPPNetTypeMapper::instance()->get_translator_from_cpp(_root_field->GetTrueTypeName());
+		} catch (exception &) {
+			_trans = 0;
+		}
 	}
 }
 
@@ -151,12 +153,17 @@ vector<string> RootClassField::get_all_referenced_root_types(void) const
 ///
 bool RootClassField::can_be_translated() const
 {
-  vector<string> all_types (get_all_referenced_raw_types());
+	if (_trans == 0) {
+		return false;
+	}
+	vector<string> all_types (get_all_referenced_raw_types());
 
-  for (int i = 0; i < all_types.size(); i++) {
-    if (!CPPNetTypeMapper::instance()->has_mapping(all_types[i])) {
-	  ConverterErrorLog::log_type_error(all_types[i], "No type converter");
-      return false;
-    }
-  }
+	for (int i = 0; i < all_types.size(); i++) {
+		if (!CPPNetTypeMapper::instance()->has_mapping(all_types[i])) {
+			ConverterErrorLog::log_type_error(all_types[i], "No type converter");
+			return false;
+		}
+	}
+
+	return true;
 }

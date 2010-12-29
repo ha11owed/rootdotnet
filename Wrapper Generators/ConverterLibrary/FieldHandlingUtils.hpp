@@ -86,7 +86,7 @@ void flatten_field_set_list (const std::vector<field_set> &set_of_fields, C &fie
 /// Given a list of fields, move through them and suck up everything that shouldn't be there
 /// b/c we don't know how to translate it!
 ///
-std::vector<RootClassField> make_field_list_clean (const RootClassInfo &thisclass, const std::vector<RootClassField> &fields)
+inline std::vector<RootClassField> make_field_list_clean (const RootClassInfo &thisclass, const std::vector<RootClassField> &fields)
 {
 	std::vector<RootClassField> result;
 	for (int i = 0; i < fields.size(); i++) {

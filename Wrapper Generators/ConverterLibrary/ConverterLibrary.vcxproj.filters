@@ -212,7 +212,7 @@
       <Filter>Header Files\ROOTClassWrappers</Filter>
     </ClInclude>
     <ClInclude Include="TTROOTClassVector.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\TypeSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
