@@ -130,11 +130,12 @@ string CPPNetTypeMapper::normalize_template_referece(const string &in_name)
 		///
 
 		string arg = in_name.substr(7, in_name.size()-1-7);
-		if (arg.find("<") != arg.npos) {
-			return in_name;
-		}
 		if (arg.find(",") != arg.npos) {
 			arg = arg.substr(0, arg.find(","));
+		}
+
+		if (arg.find("<") != arg.npos) {
+			return in_name;
 		}
 
 		///

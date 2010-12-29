@@ -270,10 +270,6 @@ vector<string> ROOTHelpers::GetTemplateArguments (const string &template_name)
 	}
 
 	string arg = template_name.substr(arg_start+1, template_name.size()-2-arg_start);
-	if (arg.find("<") != arg.npos) {
-		result.push_back(template_name);
-		return result;
-	}
 
 	while (arg.find(",") != arg.npos) {
 		result.push_back(arg.substr(0, arg.find(",")));

@@ -120,13 +120,18 @@ vector<string> RootClassField::get_all_referenced_raw_types(void) const
 	return result;
 }
 
+///
+/// Return the referenced root types - if this is a template argument we
+/// assume only the first one is interesting... and prey! :-) This will
+/// have to be re-visited later on in case we use more than one argument.
+///
 vector<string> RootClassField::get_all_referenced_root_types(void) const
 {
 	auto all (get_all_referenced_raw_types());
 	vector<string> result;
 	for (unsigned int i = 0; i < all.size(); i++) {
 		auto allTypes = ROOTHelpers::GetTemplateArguments(all[i]);
-		for (int j = 0; j < allTypes.size(); j++) {
+		for (int j = 0; j < 1; j++) {
 			if (ROOTHelpers::IsClass(allTypes[j])) {
 				result.push_back(allTypes[j]);
 			}
