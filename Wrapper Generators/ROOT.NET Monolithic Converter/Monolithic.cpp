@@ -70,16 +70,11 @@ int main()
 
 #ifndef notyet
 	/// The below lines are used during debugging in order to build a single (problem) class.
-	asked_for_class_list.push_back ("TH1F");
-	asked_for_class_list.push_back ("TRef");
-	asked_for_class_list.push_back ("TVirtualX");
-	asked_for_class_list.push_back ("TLeaf");
-	asked_for_class_list.push_back ("TLeafL");
+	asked_for_class_list.push_back ("TArrayC");
+	asked_for_class_list.push_back ("TArrayD");
 
 	/// Make sure the libraries that are going to be needed are loaded!
 	libraries_to_load.push_back ("libCore");
-	libraries_to_load.push_back ("libHist");
-	libraries_to_load.push_back ("libTree");
 
 #ifdef later
 	libraries_to_load.push_back ("libHist");

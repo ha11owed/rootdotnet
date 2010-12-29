@@ -119,11 +119,11 @@
     <ClCompile Include="FieldHandlingUtils.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="RootClassField.cpp">
+    <ClCompile Include="TTROOTClassVector.cpp">
       <Filter>Source Files\TypeSystem</Filter>
     </ClCompile>
-    <ClCompile Include="TTROOTClassVector.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="RootClassField.cpp">
+      <Filter>Source Files\ROOTClassWrappers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

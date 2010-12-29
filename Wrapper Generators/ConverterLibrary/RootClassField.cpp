@@ -43,12 +43,12 @@ string RootClassField::NETName() const
 
 string RootClassField::NETType() const
 {
-	return CPPNetTypeMapper::instance()->GetNetInterfaceTypename(_root_field->GetTypeName());
+	return CPPNetTypeMapper::instance()->GetNetInterfaceTypename(_root_field->GetTrueTypeName());
 }
 
 string RootClassField::CPPType() const
 {
-	return _root_field->GetTypeName();
+	return _root_field->GetTrueTypeName();
 }
 
 ///
@@ -93,7 +93,7 @@ string RootClassField::CPPName() const
 vector<string> RootClassField::get_all_referenced_raw_types(void) const
 {
 	vector<string> result;
-	result.push_back (_root_field->GetTypeName());
+	result.push_back (_root_field->GetTrueTypeName());
 	return result;
 }
 

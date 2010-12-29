@@ -122,7 +122,8 @@ vector<TDataMember*> ClassTraversal::FindClassFields(const string &class_name)
 	TDataMember *field;
 	while ((field = static_cast<TDataMember*>(next.Next()))) {
 		bool isenum = (field->Property() & (kIsEnum | kIsStatic)) == (kIsEnum | kIsStatic);
-		if (!isenum) {
+		bool isstatic = (field->Property() & kIsStatic) == kIsStatic;
+		if (!(isenum || isstatic)) {
 			results.push_back(field);
 		}
 	}
