@@ -106,6 +106,7 @@
     <ClCompile Include="ClassTraversal.cpp" />
     <ClCompile Include="ConverterErrorLog.cpp" />
     <ClCompile Include="SourceEmitter.cpp" />
+    <ClCompile Include="TVoidPointer.cpp" />
     <ClCompile Include="WrapperConfigurationInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -137,6 +138,7 @@
     <ClInclude Include="ClassTraversal.h" />
     <ClInclude Include="ConverterErrorLog.hpp" />
     <ClInclude Include="SourceEmitter.hpp" />
+    <ClInclude Include="TVoidPointer.hpp" />
     <ClInclude Include="WrapperConfigurationInfo.hpp" />
   </ItemGroup>
   <ItemGroup>

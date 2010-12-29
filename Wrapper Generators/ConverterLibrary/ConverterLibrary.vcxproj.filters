@@ -125,6 +125,9 @@
     <ClCompile Include="RootClassField.cpp">
       <Filter>Source Files\ROOTClassWrappers</Filter>
     </ClCompile>
+    <ClCompile Include="TVoidPointer.cpp">
+      <Filter>Source Files\TypeSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassInterfaceRepositoryState.hpp">
@@ -212,6 +215,9 @@
       <Filter>Header Files\ROOTClassWrappers</Filter>
     </ClInclude>
     <ClInclude Include="TTROOTClassVector.hpp">
+      <Filter>Header Files\TypeSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="TVoidPointer.hpp">
       <Filter>Header Files\TypeSystem</Filter>
     </ClInclude>
   </ItemGroup>

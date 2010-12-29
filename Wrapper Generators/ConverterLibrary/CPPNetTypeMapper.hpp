@@ -13,7 +13,7 @@ class SourceEmitter;
 class CPPNetTypeMapper
 {
 public:
-        /// Get the instance for teh "global" singleton.
+		/// Get the instance for teh "global" singleton.
 	static CPPNetTypeMapper *instance(void);
 	/// Reset to null the instance -- delete it!
 	static void Reset (void);

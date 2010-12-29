@@ -14,9 +14,11 @@
 #include "TTCPPString.hpp"
 #include "TTSimpleReference.hpp"
 #include "TArrayOfChar.hpp"
+#include "TVoidPointer.hpp"
 
 #include "TROOT.h"
 #include "TDataType.h"
+#include "Api.h"
 
 #include <algorithm>
 #include <fstream>
@@ -213,6 +215,12 @@ void WrapperConfigurationInfo::InitTypeTranslators()
 	}
 
 	///
+	/// void* - which we deal with as just a TObject of sorts...
+	///
+
+	CPPNetTypeMapper::instance()->AddTypeMapper(new TVoidPointer());
+
+	///
 	/// Char we have to handle specially since it can become a string -- and we don't want to be passing
 	/// arrays back and forth. ;-) [Good way to piss people off!]
 	///
@@ -252,6 +260,24 @@ void InitTypeDefs (void)
 	{
 		string typedef_name = typedef_spec->GetName();
 		string base_name = typedef_spec->GetFullTypeName();
+
+		///
+		/// typedefs for function definitions we don't allow. This is a bit of
+		/// a kludge work-around, but not sure exactly how to check...
+		///
+
+		G__TypedefInfo g (typedef_name.c_str());
+		string t1 = g.Name();
+		string t2 = g.TrueName();
+		auto t5 = g.Value();
+		if (string(typedef_spec->GetTitle()).find("(*") != string::npos) {
+			continue;
+		}
+
+		/// Special cases. :(
+		if (typedef_name.find("Func_t") != string::npos) {
+			continue;
+		}
 
 		///
 		/// Check to see if it is a pointer or is a const and modify accordingly.

@@ -134,10 +134,10 @@ bool RootClassMethod::can_be_translated (void) const
   vector<string> all_types (get_all_referenced_types());
 
   for (int i = 0; i < all_types.size(); i++) {
-    if (!CPPNetTypeMapper::instance()->has_mapping(all_types[i])) {
+	if (!CPPNetTypeMapper::instance()->has_mapping(all_types[i])) {
 	  ConverterErrorLog::log_type_error(all_types[i], "No type converter");
-      return false;
-    }
+	  return false;
+	}
   }
 
   ///
@@ -150,6 +150,9 @@ bool RootClassMethod::can_be_translated (void) const
 	}
 	if (CPPName().find("operator new") == 0) {
 	  return false;
+	}
+	if (CPPName().find("operator delete") == 0) {
+		return false;
 	}
 
 	if (CPPName() == "operator=" && return_type() == "void") {
@@ -328,9 +331,9 @@ const vector<RootClassMethodArg> &RootClassMethod::arguments() const
 bool RootClassMethod::has_return_value (void) const
 {
   if (IsCtor()
-    || IsDtor()
-    || return_type() == "void") {
-    return false;
+	|| IsDtor()
+	|| return_type() == "void") {
+	return false;
   }
   return true;
 }
@@ -515,19 +518,19 @@ bool RootClassMethod::is_equal(const RootClassMethod &other, bool consider_retur
 {
   /// Are the names the same?
   if (other.CPPName() != CPPName()) {
-    return false;
+	return false;
   }
 
   /// Are the number of arguments the same?
   if (other.arguments().size() != arguments().size()) {
-    return false;
+	return false;
   }
 
   /// Make sure the argument types are the same!
   for (int i = 0; i < arguments().size(); i++) {
-    if (arguments()[i].CPPTypeName() != other.arguments()[i].CPPTypeName()) {
-      return false;
-    }
+	if (arguments()[i].CPPTypeName() != other.arguments()[i].CPPTypeName()) {
+	  return false;
+	}
   }
 
   if (consider_return_type && other.return_type() != return_type()) {
@@ -543,18 +546,18 @@ bool RootClassMethod::is_less_than(const RootClassMethod &other, bool consider_r
 {
   /// By name?
   if (NETName() < other.NETName()) {
-    return true;
+	return true;
   }
   if (NETName() > other.NETName()) {
-    return false;
+	return false;
   }
 
   /// By number of args?
   if (arguments().size() < other.arguments().size()) {
-    return true;
+	return true;
   }
   if (arguments().size() > other.arguments().size()) {
-    return false;
+	return false;
   }
 
   try {
