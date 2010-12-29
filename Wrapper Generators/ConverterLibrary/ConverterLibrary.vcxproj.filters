@@ -128,6 +128,9 @@
     <ClCompile Include="TVoidPointer.cpp">
       <Filter>Source Files\TypeSystem</Filter>
     </ClCompile>
+    <ClCompile Include="TVectorArray.cpp">
+      <Filter>Source Files\TypeSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassInterfaceRepositoryState.hpp">
@@ -218,6 +221,9 @@
       <Filter>Header Files\TypeSystem</Filter>
     </ClInclude>
     <ClInclude Include="TVoidPointer.hpp">
+      <Filter>Header Files\TypeSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="TVectorArray.hpp">
       <Filter>Header Files\TypeSystem</Filter>
     </ClInclude>
   </ItemGroup>

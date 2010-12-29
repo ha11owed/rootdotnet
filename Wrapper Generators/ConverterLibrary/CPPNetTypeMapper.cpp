@@ -147,8 +147,14 @@ string CPPNetTypeMapper::normalize_template_referece(const string &in_name)
 		if (trans == 0) {
 			return in_name;
 		}
+
+		///
+		/// If it isn't a root class, we won't dynamically create
+		/// a new guy - but there may be something already up and going for it
+		///
+
 		if (dynamic_cast<const TTROOTClass*>(trans) == 0) {
-			return in_name;
+			return "vector<" + arg + ">";
 		}
 
 		///

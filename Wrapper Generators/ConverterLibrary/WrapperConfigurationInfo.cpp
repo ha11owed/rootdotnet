@@ -15,6 +15,7 @@
 #include "TTSimpleReference.hpp"
 #include "TArrayOfChar.hpp"
 #include "TVoidPointer.hpp"
+#include "TVectorArray.hpp"
 
 #include "TROOT.h"
 #include "TDataType.h"
@@ -204,7 +205,10 @@ void WrapperConfigurationInfo::InitTypeTranslators()
 	  CPPNetTypeMapper::instance()->AddTypeMapper (new TTSimpleReference (simple_type));
 	  CPPNetTypeMapper::instance()->AddTypeMapper (new TTSimpleReference ("const " + simple_type, true));
 
+	  CPPNetTypeMapper::instance()->AddTypeMapper (new TVectorArray(simple_type));
+
 	  if (canbe_unsigned[i]) {
+		CPPNetTypeMapper::instance()->AddTypeMapper (new TVectorArray("unsigned " + simple_type));
 	    CPPNetTypeMapper::instance()->AddTypeMapper (new TTSimpleType ("unsigned " + simple_type, "unsigned " + simple_type));
 	    CPPNetTypeMapper::instance()->AddTypeMapper (new TTSimpleType ("const unsigned " + simple_type, "const unsigned " + simple_type));
 	    CPPNetTypeMapper::instance()->AddTypeMapper (new TPointerSimpleType ("unsigned " + simple_type));
@@ -266,10 +270,10 @@ void InitTypeDefs (void)
 		/// a kludge work-around, but not sure exactly how to check...
 		///
 
-		G__TypedefInfo g (typedef_name.c_str());
-		string t1 = g.Name();
-		string t2 = g.TrueName();
-		auto t5 = g.Value();
+		//G__TypedefInfo g (typedef_name.c_str());
+		//string t1 = g.Name();
+		//string t2 = g.TrueName();
+		//auto t5 = g.Value();
 		if (string(typedef_spec->GetTitle()).find("(*") != string::npos) {
 			continue;
 		}
