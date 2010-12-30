@@ -30,6 +30,9 @@ public:
 	void translate_to_cpp (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter) const;
 	void translate_to_net (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter) const;
 
+	/// Return the ROOT type that we contain...
+	std::vector<std::string> referenced_root_types (void) const;
+
 private:
 	const std::string _class_name;
 

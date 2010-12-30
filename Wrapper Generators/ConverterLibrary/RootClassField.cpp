@@ -135,17 +135,8 @@ vector<string> RootClassField::get_all_referenced_raw_types(void) const
 ///
 vector<string> RootClassField::get_all_referenced_root_types(void) const
 {
-	auto all (get_all_referenced_raw_types());
-	vector<string> result;
-	for (unsigned int i = 0; i < all.size(); i++) {
-		auto allTypes = ROOTHelpers::GetTemplateArguments(all[i]);
-		for (int j = 0; j < 1; j++) {
-			if (ROOTHelpers::IsClass(allTypes[j])) {
-				result.push_back(allTypes[j]);
-			}
-		}
-	}
-	return result;
+	auto allRootTypes = _trans->referenced_root_types();
+	return allRootTypes;
 }
 
 ///

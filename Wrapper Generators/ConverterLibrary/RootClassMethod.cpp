@@ -19,6 +19,7 @@ using std::isalpha;
 using std::string;
 using std::ostringstream;
 using std::vector;
+using std::set;
 
 RootClassMethod::RootClassMethod(void)
 : _root_method_info (0), _args_good (false), _is_ambiguous(false), _is_hidden(false), _skip_method (false), _covar_method(false),
@@ -427,20 +428,21 @@ vector<string> RootClassMethod::get_all_referenced_types() const
   return result;
 }
 
-
 ///
 /// Same, but make sure they are "ROOT" types
 ///
 vector<string> RootClassMethod::get_all_referenced_raw_root_types() const
 {
-	vector<string> classes (get_all_referenced_raw_types());
-	vector<string> result;
+	vector<string> classes (get_all_referenced_types());
+	set<string> result;
 	for (unsigned int i = 0; i < classes.size(); i++) {
-		if (is_root_class(classes[i])) {
-			result.push_back(classes[i]);
+		if (CPPNetTypeMapper::instance()->has_mapping(classes[i])) {
+			auto t = CPPNetTypeMapper::instance()->get_translator_from_cpp(classes[i]);
+			auto cls = t->referenced_root_types();
+			result.insert(cls.begin(), cls.end());
 		}
 	}
-	return result;
+	return vector<string> (result.begin(), result.end());
 }
 
 ///

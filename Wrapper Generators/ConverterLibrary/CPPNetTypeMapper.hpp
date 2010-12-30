@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <ostream>
+#include <vector>
 
 class SourceEmitter;
 
@@ -117,6 +118,11 @@ public:
 		/// If any supporing CLR types have to be written out, here is the spot.
 		virtual void write_out_clr_types (SourceEmitter &output)
 		{
+		}
+
+		virtual std::vector<std::string> referenced_root_types (void) const
+		{
+			return std::vector<std::string>();
 		}
 
 	private:

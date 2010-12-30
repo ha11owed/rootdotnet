@@ -10,6 +10,7 @@
 
 using std::string;
 using std::endl;
+using std::vector;
 
 namespace {
 	string build_cpp_name (const string &arg)
@@ -50,4 +51,15 @@ void TTROOTClassVector::translate_to_net (const std::string &net_name, const std
 	emitter.start_line() << "auto " << net_name << " = gcnew ROOTNET::Utility::VectorObject<"
 		<< CPPNetTypeMapper::instance()->GetNetInterfaceTypename(_object_name) << ">("
 		<< "new VOHolderObject<" << _object_name << ">(" << cpp_name << "));" << endl;
+}
+
+///
+/// Return the ROOT Types that we are going to be referencing. This makes sure that all forward declares
+/// are set up ok!
+///
+vector<string> TTROOTClassVector::referenced_root_types(void) const
+{
+	vector<string> result;
+	result.push_back(_object_name);
+	return result;
 }

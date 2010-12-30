@@ -4,8 +4,11 @@
 #include "TVoidPointer.hpp"
 #include "SourceEmitter.hpp"
 
+#include <vector>
+
 using std::string;
 using std::endl;
+using std::vector;
 
 ///
 /// Setup is very simple - just declare the type
@@ -36,4 +39,14 @@ void TVoidPointer::translate_to_cpp (const string &name_net, const string &name_
 void TVoidPointer::translate_to_net (const std::string &name_net, const std::string &name_cpp, SourceEmitter &emitter) const
 {
 	emitter.start_line() << "auto " << name_net << " = ROOTNET::Utility::ROOTObjectServices::GetBestObject<ROOTNET::Interface::NTObject^>(static_cast<::TObject*>(" << name_cpp << "));" << endl;
+}
+
+///
+/// void* - but we still need TObject around. So make sure that makes it onto the list of referenced types!
+///
+vector<string> TVoidPointer::referenced_root_types(void) const
+{
+	vector<string> result;
+	result.push_back("TObject");
+	return result;
 }

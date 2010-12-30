@@ -6,11 +6,13 @@
 #include <string>
 #include <sstream>
 #include <stdexcept>
+#include <vector>
 
 using std::string;
 using std::ostringstream;
 using std::endl;
 using std::runtime_error;
+using std::vector;
 
 string build_lookup_typename (const string &class_name, const string modifiers, bool is_const)
 {
@@ -144,3 +146,14 @@ void TTROOTClass::translate_to_net (const std::string &net_name, const std::stri
 		}		
 	}
 }
+
+///
+/// Make sure that forward referencing knows about this object!
+///
+vector<string> TTROOTClass::referenced_root_types(void) const
+{
+	vector<string> result;
+	result.push_back(_class_name);
+	return result;
+}
+
