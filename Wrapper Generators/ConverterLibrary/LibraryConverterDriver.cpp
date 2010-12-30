@@ -36,6 +36,7 @@ using std::cout;
 using std::endl;
 using std::for_each;
 using std::runtime_error;
+using std::exception;
 using std::ofstream;
 using std::pair;
 using std::inserter;
@@ -504,28 +505,33 @@ void LibraryConverterDriver::translate(void)
 	/// single class!
 	///
 
-	while (rep_state.classes_to_translate()) {
-		string class_name = rep_state.next_class();
-		cout << "Translating " << class_name << endl;
-		RootClassInfo &info (RootClassInfoCollection::GetRootClassInfo(class_name));
+	string class_name;
+	try{
+		while (rep_state.classes_to_translate()) {
+			class_name = rep_state.next_class();
+			cout << "Translating " << class_name << endl;
+			RootClassInfo &info (RootClassInfoCollection::GetRootClassInfo(class_name));
 
-		if (_use_class_header_locations) {
-			_include_dirs.insert(_include_dirs.begin(), info.include_directory());
+			if (_use_class_header_locations) {
+				_include_dirs.insert(_include_dirs.begin(), info.include_directory());
+			}
+
+			if (_single_library_name.size() > 0) {
+				info.ForceLibraryName(_single_library_name);
+			}
+
+			string libName = info.LibraryName();
+			files_by_library[libName].push_back("N" + class_name);
+
+			string output_dir = _output_dir + "\\" + libName + "\\Source";
+			check_dir (output_dir);
+			translator.SetOutputDir (output_dir);
+			translator.translate (info);
 		}
-
-		if (_single_library_name.size() > 0) {
-			info.ForceLibraryName(_single_library_name);
-		}
-
-		string libName = info.LibraryName();
-		files_by_library[libName].push_back("N" + class_name);
-
-		string output_dir = _output_dir + "\\" + libName + "\\Source";
-		check_dir (output_dir);
-		translator.SetOutputDir (output_dir);
-		translator.translate (info);
+	} catch (exception &e) {
+		cout << "Error processing class '" << class_name << "' - message: '" << e.what() << "'." << endl;
+		throw;
 	}
-
 	///
 	/// One trick is that we have to make sure that everyone is sharing the same
 	/// C++ types - this is b/c we may need to access the C++ pointer types in one

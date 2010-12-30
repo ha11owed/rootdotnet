@@ -257,10 +257,10 @@ namespace {
   /// will look identical.
   struct RCMOrdering : public std::less<RootClassMethod>
   {
-    bool operator() (const RootClassMethod &left, const RootClassMethod &right) const
-    {
-      return left.is_less_than(right);
-    }
+	bool operator() (const RootClassMethod &left, const RootClassMethod &right) const
+	{
+	  return left.is_less_than(right);
+	}
   };
   typedef set<const RootClassMethod, RCMOrdering> method_set_covar;
 
@@ -269,27 +269,27 @@ namespace {
   /// will look different.
   struct RCMROrdering : public std::less<RootClassMethod>
   {
-    bool operator() (const RootClassMethod &left, const RootClassMethod &right) const
-    {
-      return left.is_less_than(right, true);
-    }
+	bool operator() (const RootClassMethod &left, const RootClassMethod &right) const
+	{
+	  return left.is_less_than(right, true);
+	}
   };
   typedef set<const RootClassMethod, RCMROrdering> method_set;
 
   class convert_methods_to_set {
   public:
-    inline convert_methods_to_set(bool clean) : _clean (clean) {}
+	inline convert_methods_to_set(bool clean) : _clean (clean) {}
 
-    method_set operator() (const RootClassInfo *info) const {
-      const vector<RootClassMethod> &protos(info->GetAllPrototypesForThisClass(_clean));
-      return method_set(protos.begin(), protos.end());
-    }
-    method_set operator() (const string &class_name) const {
-      RootClassInfo &cinfo (RootClassInfoCollection::GetRootClassInfo(class_name));
-      return this->operator ()(&cinfo);
-    }
+	method_set operator() (const RootClassInfo *info) const {
+	  const vector<RootClassMethod> &protos(info->GetAllPrototypesForThisClass(_clean));
+	  return method_set(protos.begin(), protos.end());
+	}
+	method_set operator() (const string &class_name) const {
+	  RootClassInfo &cinfo (RootClassInfoCollection::GetRootClassInfo(class_name));
+	  return this->operator ()(&cinfo);
+	}
   private:
-    bool _clean;
+	bool _clean;
   };
 
   class remove_tors
@@ -527,7 +527,7 @@ std::vector<RootClassMethod> RootClassInfo::GetAllPrototypesForThisClassImpl (bo
 
   method_set_list inherrited_methods;
   transform (GetDirectInheritedClasses().begin(), GetDirectInheritedClasses().end(),
-    std::back_inserter (inherrited_methods), convert_methods_to_set(clean));
+	std::back_inserter (inherrited_methods), convert_methods_to_set(clean));
 
   ///
   /// First, clean up the parents of all the subclass methods
@@ -964,9 +964,16 @@ const std::vector<RootClassProperty> &RootClassInfo::GetProperties(void) const
 	  continue;
 	}
 
-	/// Now, record it.
+	/// See if there is a conflicting method around for its name, or it is marked as "bad" from
+	/// the pov of the configuration
 
 	string prop_name = method.NETName().substr(3);
+	if (has_method(prop_name) || WrapperConfigurationInfo::CheckPropertyNameBad(this, prop_name)) {
+		prop_name = prop_name + "_GetSetProperty";
+	}
+
+	/// Now, record it.
+
 	if (found_properties.find(prop_name) == found_properties.end()) {
 	  found_properties[prop_name] = RootClassProperty(prop_name, return_type);
 	}
@@ -1056,6 +1063,18 @@ const std::vector<RootClassProperty> &RootClassInfo::GetProperties(void) const
 		  myprop.SetAsSetter(set_as_hidden_if_not_in_list(*prop.setter_method(), set_of_class_methods));
 		}
 		property_map[prop.name()] = myprop;
+
+		///
+		/// One very bad thing can happen here, it turns out. It is possible that in an inherrited class we've
+		/// created a property (i.e. TVirtualPad::GetSelection creates Selection property) and in this class we now
+		/// have the Selection method (TCanvas). That conflict can't be resolved - and needs to be blocked earlire. If
+		/// that happens here then we need to flag it - so we will crash.
+		///
+
+		if (method_names.find(prop.name()) != method_names.end()) {
+			throw runtime_error("An inherrited class has defined the property '" + prop.name() + "'. But in this class '" + CPPName() + "' a method by the same name is defined. This collision will lead to bad C++/CLI code - please mark this property bad in WrapperConfigInfo::CheckPropertyNameBad.");
+		}
+
 	  } else {
 		RootClassProperty thisprop(property_map[prop.name()]);
 		if (!thisprop.isGetter() && prop.isGetter()) {
@@ -1067,12 +1086,6 @@ const std::vector<RootClassProperty> &RootClassInfo::GetProperties(void) const
 	  }
 	}
   }
-
-  ///
-  /// Next, look for public fields in the C++ classes - these are guys we get direct access to.
-  ///
-
-  auto fields = GetAllDataFields(true);
 
   ///
   /// Place them in the final vector, and we are done!
@@ -1088,3 +1101,19 @@ const std::vector<RootClassProperty> &RootClassInfo::GetProperties(void) const
 
   return _class_properties;
 }
+
+///
+/// See if there exists a method with this property name
+///
+
+bool RootClassInfo::has_method (const std::string &method_name) const
+{
+	auto m = this->GetAllPrototypesForThisClass(true);
+	if (m.end() != std::find_if (m.begin(), m.end(),
+		[&method_name] (const RootClassMethod &meth) { return meth.NETName() == method_name; }))
+	{
+		return true;
+	}
+	return false;
+}
+

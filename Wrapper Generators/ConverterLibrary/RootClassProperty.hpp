@@ -69,7 +69,7 @@ public:
   }
   void ChangePropertyName (const std::string &newpropname)
   {
-	_property_name = "PR" + newpropname;
+	_property_name = newpropname;
   }
 
   std::string getter_name (void) const;

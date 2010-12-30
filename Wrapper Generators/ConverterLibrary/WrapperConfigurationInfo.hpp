@@ -48,6 +48,10 @@ public:
 
 	/// Fix up method arguments for "special cases"
 	static void FixUpMethodArguments (const RootClassInfo *class_info, const std::string &method_name, std::vector<RootClassMethodArg> &methods);
+
+	/// Some properties are "bad"
+	static bool CheckPropertyNameBad (const RootClassInfo *class_info, const std::string &property_name);
+
 private:
 	static std::map<std::string, std::vector<std::string> > _allowed_library_links;
 	static std::map<std::string, std::vector<std::string> > _disallowed_library_links;

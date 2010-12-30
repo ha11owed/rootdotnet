@@ -38,6 +38,7 @@
 #include <fstream>
 #include <algorithm>
 #include <iterator>
+#include <stdexcept>
 
 using std::vector;
 using std::string;
@@ -48,6 +49,7 @@ using std::copy;
 using std::back_inserter;
 using std::set;
 using std::ofstream;
+using std::exception;
 
 void InitTypeDefs(void);
 
@@ -70,9 +72,7 @@ int main()
 
 #ifndef notyet
 	/// The below lines are used during debugging in order to build a single (problem) class.
-	asked_for_class_list.push_back ("TTree");
-	asked_for_class_list.push_back ("TChain");
-	asked_for_class_list.push_back ("TSelector");
+	asked_for_class_list.push_back ("TCanvas");
 
 	/// Make sure the libraries that are going to be needed are loaded!
 	libraries_to_load.push_back ("libCore");
@@ -170,12 +170,18 @@ int main()
 		translator.translate(RootEnum(enum_name));
 	}
 
-	while (rep_state.classes_to_translate()) {
-		string class_name = rep_state.next_class();
-		cout << "Translating " << class_name << endl;
-		translator.translate (RootClassInfoCollection::GetRootClassInfo(class_name));
+	string class_name;
+	try {
+		while (rep_state.classes_to_translate()) {
+			class_name = rep_state.next_class();
+			cout << "Translating " << class_name << endl;
+			translator.translate (RootClassInfoCollection::GetRootClassInfo(class_name));
+		}
+		translator.finalize_make_publics();
+	} catch (exception &e) {
+		cout << "Error processing class '" << class_name << "' - message: '" << e.what() << "'." << endl;
+		throw;
 	}
-	translator.finalize_make_publics();
 
 	///
 	/// Write out any .hpp files that are going to get required...

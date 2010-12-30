@@ -62,6 +62,9 @@ public:
     /// those methods that can be implemented are returned. Results are cached.
     const std::vector<RootClassMethod> &GetAllPrototypesForThisClass (bool clean) const;
 
+	/// Check to see if there is a method we know about by this name
+	bool has_method (const std::string &method_name) const;
+
 	/// Returns a list of all ROOT fields associated with this class and any
 	/// class that is above it on the class chain. if clean is set to true, only
 	/// those methods that can be translated are returned. Results are cached.

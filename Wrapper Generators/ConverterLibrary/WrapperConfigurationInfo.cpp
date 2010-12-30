@@ -531,3 +531,41 @@ void WrapperConfigurationInfo::FixUpMethodArguments (const RootClassInfo *class_
 			}
 	}
 }
+
+///
+/// Sometimes there are property names that are bad in the sense that if we use them
+/// in one class, the infect the interface, and then they will force us to use them down-stream.
+/// this is killer b/c that also means that if a method has the prop name later on that will cause
+/// a compiler explosion! We check for and crash during translation... but still...
+///
+/// This is an artifiact, btw, of the way that we do the translation: the base class defines everything it
+/// does in an interface. After that you always have to implement that interface. So, something that works find in
+/// A can cause a compiler error in B if B : public B!!
+///
+bool WrapperConfigurationInfo::CheckPropertyNameBad (const RootClassInfo *class_info, const std::string &property_name)
+{
+	if (property_name == "Selected") {
+		vector<string> allcls = class_info->GetInheritedClassesDeep();
+		allcls.push_back(class_info->CPPName());
+		if (find(allcls.begin(), allcls.end(), "TVirtualPad") != allcls.end()) {
+			return true;
+		}
+	}
+
+	if (property_name == "Cleanup") {
+		vector<string> allcls = class_info->GetInheritedClassesDeep();
+		allcls.push_back(class_info->CPPName());
+		if (find(allcls.begin(), allcls.end(), "TGFrame") != allcls.end()) {
+			return true;
+		}
+	}
+
+	if (property_name == "Select") {
+		vector<string> allcls = class_info->GetInheritedClassesDeep();
+		allcls.push_back(class_info->CPPName());
+		if (find(allcls.begin(), allcls.end(), "TSelectorDraw") != allcls.end()) {
+			return true;
+		}
+	}
+	return false;
+}
