@@ -279,7 +279,8 @@ void InitTypeDefs (void)
 		}
 
 		/// Special cases. :(
-		if (typedef_name.find("Func_t") != string::npos) {
+		if (typedef_name.find("Func_t") != string::npos
+			|| typedef_name.find("Fun_t") != string::npos) {
 			continue;
 		}
 
