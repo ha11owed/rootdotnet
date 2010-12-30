@@ -30,9 +30,16 @@ public:
 
 	/// Return true if we can translate this guy
 	bool can_be_translated (void) const;
+
+	/// If we need to fake out a different type
+	void ResetType (const std::string &full_type_name, const std::string &raw_type_name);
+
 private:
-	TMethodArg *_root_arg;
 	int _index;
+
+	std::string _arg_name;
+	std::string _arg_type;
+	std::string _arg_raw_type;
 
 	static int _counter;
 };

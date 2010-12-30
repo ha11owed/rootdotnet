@@ -4,6 +4,7 @@
 #include "CPPNetTypeMapper.hpp"
 #include "ROOTHelpers.h"
 #include "ConverterErrorLog.hpp"
+#include "WrapperConfigurationInfo.hpp"
 
 #include "TMethod.h"
 #include "TMethodArg.h"
@@ -323,6 +324,13 @@ const vector<RootClassMethodArg> &RootClassMethod::arguments() const
 		TMethodArg *marg = static_cast<TMethodArg*> (l->At(i_arg));
 		_args.push_back (RootClassMethodArg (marg));
 	}
+
+	/// Finally, we have to deal with some special cases - places where CINT lies to us,
+	/// and the type it reports is not what the compiler sees back! Very UGH!
+	///
+
+	WrapperConfigurationInfo::FixUpMethodArguments(_parent, _root_method_info->GetName(), _args);
+
 	return _args;
 }
 

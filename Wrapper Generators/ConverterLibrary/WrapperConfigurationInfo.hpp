@@ -9,6 +9,9 @@
 #include <set>
 #include <map>
 
+class RootClassInfo;
+class RootClassMethodArg;
+
 class WrapperConfigurationInfo
 {
 public:
@@ -42,6 +45,9 @@ public:
 
 	/// Return a list of all root dll's we can find by scanning the root library
 	static std::vector<std::string> GetAllRootDLLS (void);
+
+	/// Fix up method arguments for "special cases"
+	static void FixUpMethodArguments (const RootClassInfo *class_info, const std::string &method_name, std::vector<RootClassMethodArg> &methods);
 private:
 	static std::map<std::string, std::vector<std::string> > _allowed_library_links;
 	static std::map<std::string, std::vector<std::string> > _disallowed_library_links;

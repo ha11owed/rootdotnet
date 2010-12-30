@@ -6,6 +6,7 @@
 #include "CPPNetTypeMapper.hpp"
 #include "RootClassInfo.hpp"
 #include "RootClassInfoCollection.hpp"
+#include "RootClassMethodArg.hpp"
 #include "ConverterErrorLog.hpp"
 #include "ROOTHelpers.h"
 
@@ -509,4 +510,24 @@ vector<string> WrapperConfigurationInfo::GetAllRootDLLS()
 	FindClose(hFind);
 
 	return result;
+}
+
+///
+/// Some methods have different definitions in CINT and ROOT. We have to kludge our way around this
+/// as there is no way for us to really know what is going on here.
+///
+void WrapperConfigurationInfo::FixUpMethodArguments (const RootClassInfo *class_info, const string &method_name, vector<RootClassMethodArg> &args)
+{
+	///
+	/// TTree::Process and anything below it use Process(void *selector...) when they really mean "Process(TSelector *...).
+	///
+
+	auto inher = class_info->GetInheritedClassesDeep();
+	if (method_name == "Process"
+		&& (class_info->CPPName() == "TTree"
+		|| find(inher.begin(), inher.end(), "TTree") != inher.end())) {
+			if (args[0].CPPTypeName() == "void*") {
+				args[0].ResetType("TSelector*", "TSelector");
+			}
+	}
 }

@@ -17,15 +17,18 @@ void RootClassMethodArg::reset_arg_counter()
 }
 
 RootClassMethodArg::RootClassMethodArg(void)
-: _root_arg(0), _index (_counter)
+: _index (_counter)
 {
 	_counter++;
 }
 
 RootClassMethodArg::RootClassMethodArg(TMethodArg *arg)
-: _root_arg(arg), _index(_counter)
+: _index(_counter)
 {
 	_counter++;
+	_arg_name = arg->GetName();
+	_arg_raw_type = arg->GetTypeName();
+	_arg_type = arg->GetFullTypeName();
 }
 
 ///
@@ -33,7 +36,7 @@ RootClassMethodArg::RootClassMethodArg(TMethodArg *arg)
 ///
 string RootClassMethodArg::CPPTypeName (void) const
 {
-	return _root_arg->GetFullTypeName();
+	return _arg_type;
 }
 
 ///
@@ -41,7 +44,7 @@ string RootClassMethodArg::CPPTypeName (void) const
 ///
 string RootClassMethodArg::RawCPPTypeName() const
 {
-	return _root_arg->GetTypeName();
+	return _arg_raw_type;
 }
 
 ///
@@ -71,7 +74,7 @@ string RootClassMethodArg::NETInterfaceTypeName (void) const
 ///
 string RootClassMethodArg::get_argname() const
 {
-	string name (_root_arg->GetName());
+	string name (_arg_name);
 	if (name.size() == 0) {
 		ostringstream aname;
 		aname << "arg" << _index;
@@ -82,3 +85,13 @@ string RootClassMethodArg::get_argname() const
 	}
 	return name;
 }
+
+///
+/// Reset the type name so we can pretend to be something else.
+///
+void RootClassMethodArg::ResetType (const std::string &full_type_name, const std::string &raw_type_name)
+{
+	_arg_type = full_type_name;
+	_arg_raw_type = raw_type_name;
+}
+
