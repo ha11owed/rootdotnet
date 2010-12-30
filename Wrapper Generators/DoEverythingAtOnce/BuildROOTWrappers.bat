@@ -46,7 +46,7 @@ if "%3"=="" goto :EOF
 if not exist "%3" mkdir "%3"
 if not exist "%3\lib" mkdir "%3\lib"
 if not exist "%3\include" mkdir "%3\include"
-copy ..\Wrappers\%2\Release\* "%3\lib"
+copy ..\Wrappers\%2\Release\*.dll "%3\lib"
 copy ..\Wrappers\WrapperPlumbingLibrary\NetArrayTranslator.hpp "%3\include"
 copy ..\Wrappers\WrapperPlumbingLibrary\VectorObject.hpp "%3\include"
 copy ..\Wrappers\%2\converted_items.txt "%3"
