@@ -46,8 +46,25 @@ TTROOTClass::~TTROOTClass(void)
 /// The key to understanding this code is that all the .NET objects hold is a pointer.
 /// So "TObject" means pass a copy of the object!
 ///
+/// There is one special case: if the pointer is null in the .NET world we need to make an
+/// explicit translation to the C++ world as a 0 if this is a pointer...
+///
 void TTROOTClass::translate_to_cpp (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter) const
 {
+	///
+	/// Do some quick checks for null objects. There are some circumstances where that is not legal to pass such
+	/// a beast.
+	///
+
+	if (_modifiers == "") {
+		emitter.start_line() << "if (" << net_name << " == nullptr) "
+			<< "throw gcnew System::ArgumentNullExceptoin(\"Argument " << net_name << " cannot be null.\");" << endl;
+	}
+
+	///
+	/// Now, emit the code to declare what we are translating to
+	///
+
 	emitter.start_line() << "::" << _class_name;
 	if (_modifiers == "*&") { // Not clear what this means to me!!
 		emitter() << "*";
@@ -55,6 +72,11 @@ void TTROOTClass::translate_to_cpp (const std::string &net_name, const std::stri
 		emitter() << _modifiers;
 	}
 	emitter() << " " << cpp_name << " = ";
+
+	///
+	/// Special case if we are dealing with a pointer, check for null.
+	///
+
 	if (_modifiers == "") {
 		emitter() << "*"; // Deref the pointer to make it a full blown object.
 	} else if (_modifiers == "&") {
@@ -63,7 +85,7 @@ void TTROOTClass::translate_to_cpp (const std::string &net_name, const std::stri
 	} else {
 		throw runtime_error ("Unknown set of modifiers - " + _modifiers);
 	}
-	emitter() << net_name << "->CPP_Instance_" << _class_name << "();" << endl;
+	emitter() << "(" << net_name << " == nullptr ? 0 : " << net_name << "->CPP_Instance_" << _class_name << "());" << endl;
 }
 
 ///
