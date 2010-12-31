@@ -58,7 +58,7 @@ void TTROOTClass::translate_to_cpp (const std::string &net_name, const std::stri
 
 	if (_modifiers == "") {
 		emitter.start_line() << "if (" << net_name << " == nullptr) "
-			<< "throw gcnew System::ArgumentNullExceptoin(\"Argument " << net_name << " cannot be null.\");" << endl;
+			<< "throw gcnew System::ArgumentNullException(\"Argument " << net_name << " cannot be null.\");" << endl;
 	}
 
 	///
