@@ -1082,6 +1082,14 @@ void ClassTranslator::emit_function_body(const RootClassMethod &method, const Ro
 ///
 void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter &emitter)
 {
+	///
+	/// Make sure that we are dealing with nullptr's that we can understand!
+	///
+
+	emitter() << "#ifdef nullptr" << endl;
+	emitter() << "#undef nullptr" << endl;
+	emitter() << "#endif" << endl;
+
   ///
   /// First, do our particular c-tors...
   ///
