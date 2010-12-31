@@ -88,6 +88,20 @@ void FeatureManager::FeatureCollection::emit_class_methods (const RootClassInfo 
 }
 
 ///
+/// Get all the various extra referenced classes...
+///
+std::vector<std::string> FeatureManager::FeatureCollection::get_additional_root_class_references (const RootClassInfo &info)
+{
+	vector<string> result;
+	for_each(_features.begin(), _features.end(),
+		[&result, &info] (FeatureBase *b) {
+			auto t = b->get_additional_root_class_references(info);
+			copy (t.begin(), t.end(), back_inserter(result));
+	});
+	return result;
+}
+
+///
 /// Return all the features that this class might have to deal with
 ///
 FeatureManager::FeatureCollection FeatureManager::GetFeaturesFor(const RootClassInfo &info)

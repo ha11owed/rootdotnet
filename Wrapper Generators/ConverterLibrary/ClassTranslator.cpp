@@ -128,8 +128,15 @@ void ClassTranslator::translate(RootClassInfo &class_info)
 		}
 	}
 
-	for (unsigned int i = 0; i < class_info.GetReferencedClasses().size(); i++) {
-		RootClassInfo &dep_class(RootClassInfoCollection::GetRootClassInfo(class_info.GetReferencedClasses()[i]));
+	set<string> referenced_classes;
+	copy (class_info.GetReferencedClasses().begin(), class_info.GetReferencedClasses().end(),
+		inserter(referenced_classes, referenced_classes.begin()));
+	auto featureClasses = FeatureManager::GetFeaturesFor(class_info).get_additional_root_class_references(class_info);
+	copy (featureClasses.begin(), featureClasses.end(), inserter(referenced_classes, referenced_classes.begin()));
+	vector<string> v_referenced_classes (referenced_classes.begin(), referenced_classes.end());
+
+	for (unsigned int i = 0; i < v_referenced_classes.size(); i++) {
+		RootClassInfo &dep_class(RootClassInfoCollection::GetRootClassInfo(v_referenced_classes[i]));
 		if (CPPNetTypeMapper::instance()->has_mapping(dep_class.CPPName())) {
 			if (emit_this_header(class_info, dep_class)) {
 				cpp_emitter.include_file(dep_class.NETName() + ".hpp");

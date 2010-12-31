@@ -27,6 +27,9 @@ public:
 		void emit_header_method_definitions (const RootClassInfo &info, SourceEmitter &emitter);
 		/// Write out the Enumerable methods as well as the class definition to run the eumerable!
 		void emit_class_methods (const RootClassInfo &info, SourceEmitter &emitter);
+		/// Get a list of classes that are referenced
+		std::vector<std::string> get_additional_root_class_references (const RootClassInfo &info);
+
 	private:
 		std::vector<FeatureBase*> _features;
 	};

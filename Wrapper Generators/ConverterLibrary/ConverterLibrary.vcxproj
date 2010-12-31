@@ -81,6 +81,7 @@
     <ClCompile Include="create_project_files.cpp" />
     <ClCompile Include="FeatureBase.cpp" />
     <ClCompile Include="FeatureManager.cpp" />
+    <ClCompile Include="FeatureTCollectionEnumerable.cpp" />
     <ClCompile Include="FeatureTIterEnumerable.cpp" />
     <ClCompile Include="FieldHandlingUtils.cpp" />
     <ClCompile Include="LibraryClassTranslator.cpp" />
@@ -117,6 +118,7 @@
     <ClInclude Include="create_project_files.hpp" />
     <ClInclude Include="FeatureBase.hpp" />
     <ClInclude Include="FeatureManager.hpp" />
+    <ClInclude Include="FeatureTCollectionEnumerable.hpp" />
     <ClInclude Include="FeatureTIterEnumerable.hpp" />
     <ClInclude Include="FieldHandlingUtils.hpp" />
     <ClInclude Include="LibraryClassTranslator.hpp" />

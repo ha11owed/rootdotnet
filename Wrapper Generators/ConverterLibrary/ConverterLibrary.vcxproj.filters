@@ -146,6 +146,9 @@
     <ClCompile Include="FeatureManager.cpp">
       <Filter>Source Files\Features</Filter>
     </ClCompile>
+    <ClCompile Include="FeatureTCollectionEnumerable.cpp">
+      <Filter>Source Files\Features</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassInterfaceRepositoryState.hpp">
@@ -248,6 +251,9 @@
       <Filter>Header Files\Features</Filter>
     </ClInclude>
     <ClInclude Include="FeatureManager.hpp">
+      <Filter>Header Files\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureTCollectionEnumerable.hpp">
       <Filter>Header Files\Features</Filter>
     </ClInclude>
   </ItemGroup>

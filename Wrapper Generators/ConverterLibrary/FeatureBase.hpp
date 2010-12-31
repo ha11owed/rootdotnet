@@ -27,5 +27,9 @@ public:
 
 	/// Add methods to the C++ source file
 	virtual void emit_class_methods (const RootClassInfo &info, SourceEmitter &emitter) {}
+
+	/// List of additonal ROOT classes that will be referenced and should have #include done
+	virtual std::vector<std::string> get_additional_root_class_references (const RootClassInfo &info) { return std::vector<std::string> (); }
+
 };
 
