@@ -15,6 +15,7 @@ REM Build everything so we can actually run programs! :-)
 echo Building code to do the translation...
 devenv /nologo "Wrapper Generators.sln" /project "FindBadRootHeaders" /build "Release|Win32"
 devenv /nologo "Wrapper Generators.sln" /project "ROOT.NET Library Converter" /build "Release|Win32"
+devenv /nologo "Wrapper Generators.sln" /project "ROOT.NET Addon Library Converter" /build "Release|Win32"
 
 REM Find all bad headers in this distro of ROOT.
 
@@ -45,8 +46,10 @@ REM Now, see if we are going to copy the thing to a nice resting place.
 if "%3"=="" goto :EOF
 if not exist "%3" mkdir "%3"
 if not exist "%3\lib" mkdir "%3\lib"
+if not exist "%3\bin" mkdir "%3\bin"
 if not exist "%3\include" mkdir "%3\include"
 copy ..\Wrappers\%2\Release\*.dll "%3\lib"
 copy ..\Wrappers\WrapperPlumbingLibrary\NetArrayTranslator.hpp "%3\include"
 copy ..\Wrappers\WrapperPlumbingLibrary\VectorObject.hpp "%3\include"
 copy ..\Wrappers\%2\converted_items.txt "%3"
+copy "..\Wrapper Generators\Release\*" "%3\bin\"
