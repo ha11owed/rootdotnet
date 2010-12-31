@@ -72,10 +72,7 @@ int main()
 
 #ifndef notyet
 	/// The below lines are used during debugging in order to build a single (problem) class.
-	asked_for_class_list.push_back ("TH1F");
-	asked_for_class_list.push_back ("TDirectory");
-	asked_for_class_list.push_back ("TList");
-	asked_for_class_list.push_back ("TIter");
+	asked_for_class_list.push_back ("TRootIOCtor");
 
 	/// Make sure the libraries that are going to be needed are loaded!
 	libraries_to_load.push_back ("libCore");
