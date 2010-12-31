@@ -36,6 +36,12 @@
     <Filter Include="Templates">
       <UniqueIdentifier>{3ca64614-c2ac-4032-be6c-0fda675fc4e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Features">
+      <UniqueIdentifier>{53c2b1f7-5cba-4965-8aa8-0ec6f3093b5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Features">
+      <UniqueIdentifier>{4c57142f-fd62-4d24-8341-1a134f849d1e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClassInterfaceRepositoryState.cpp">
@@ -131,6 +137,15 @@
     <ClCompile Include="TVectorArray.cpp">
       <Filter>Source Files\TypeSystem</Filter>
     </ClCompile>
+    <ClCompile Include="FeatureBase.cpp">
+      <Filter>Source Files\Features</Filter>
+    </ClCompile>
+    <ClCompile Include="FeatureTIterEnumerable.cpp">
+      <Filter>Source Files\Features</Filter>
+    </ClCompile>
+    <ClCompile Include="FeatureManager.cpp">
+      <Filter>Source Files\Features</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassInterfaceRepositoryState.hpp">
@@ -225,6 +240,15 @@
     </ClInclude>
     <ClInclude Include="TVectorArray.hpp">
       <Filter>Header Files\TypeSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureBase.hpp">
+      <Filter>Header Files\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureTIterEnumerable.hpp">
+      <Filter>Header Files\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureManager.hpp">
+      <Filter>Header Files\Features</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

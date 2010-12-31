@@ -9,6 +9,8 @@
 #include "RootClassMethodArg.hpp"
 #include "ConverterErrorLog.hpp"
 #include "ROOTHelpers.h"
+#include "FeatureManager.hpp"
+#include "FeatureTIterEnumerable.hpp"
 
 #include "TTSimpleType.hpp"
 #include "TPointerSimpleType.hpp"
@@ -241,6 +243,12 @@ void WrapperConfigurationInfo::InitTypeTranslators()
 	CPPNetTypeMapper::instance()->AddTypeMapper (new TPointerSimpleType ("const unsigned char", true));
 	CPPNetTypeMapper::instance()->AddTypeMapper (new TTSimpleReference ("char"));
 	CPPNetTypeMapper::instance()->AddTypeMapper (new TTSimpleReference ("unsigned char", false));
+
+	///
+	/// Finally, setup all the features for the classes we are translating
+	///
+
+	FeatureManager::AddFeature(new FeatureTIterEnumerable());
 }
 
 void DefineTypeDef (const string &typedef_name, const string &base_name)

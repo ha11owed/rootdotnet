@@ -79,6 +79,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="create_project_files.cpp" />
+    <ClCompile Include="FeatureBase.cpp" />
+    <ClCompile Include="FeatureManager.cpp" />
+    <ClCompile Include="FeatureTIterEnumerable.cpp" />
     <ClCompile Include="FieldHandlingUtils.cpp" />
     <ClCompile Include="LibraryClassTranslator.cpp" />
     <ClCompile Include="LibraryConverterDriver.cpp" />
@@ -112,6 +115,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="create_project_files.hpp" />
+    <ClInclude Include="FeatureBase.hpp" />
+    <ClInclude Include="FeatureManager.hpp" />
+    <ClInclude Include="FeatureTIterEnumerable.hpp" />
     <ClInclude Include="FieldHandlingUtils.hpp" />
     <ClInclude Include="LibraryClassTranslator.hpp" />
     <ClInclude Include="LibraryConverterDriver.h" />

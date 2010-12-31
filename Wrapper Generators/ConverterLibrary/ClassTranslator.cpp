@@ -8,6 +8,7 @@
 #include "WrapperConfigurationInfo.hpp"
 #include "ROOTHelpers.h"
 #include "ConverterErrorLog.hpp"
+#include "FeatureManager.hpp"
 
 #include "TROOT.h"
 #include "TClass.h"
@@ -35,6 +36,8 @@ using std::map;
 using std::pair;
 using std::string;
 using std::getline;
+using std::transform;
+using std::inserter;
 
 ClassTranslator::ClassTranslator(const std::string &base_dir)
 : _base_directory (base_dir)
@@ -456,19 +459,36 @@ void ClassTranslator::generate_interface (RootClassInfo &class_info, SourceEmitt
 	}
 
 	///
-	/// And now the interface itself
+	/// And now the interface itself.
 	///
 
+	auto class_features = FeatureManager::GetFeaturesFor(class_info);
+
 	emitter.start_line() << "public interface class " << class_info.NETName() << endl;
-	const std::vector<string> &inherited_classes (class_info.GetDirectInheritedClasses());
-	if (inherited_classes.size() > 0) {
-		emitter.start_line() << "  :";
-		for (unsigned int i = 0; i < inherited_classes.size(); i++) {
-			if (i > 0) {
-				emitter() << ",";
-			}
-			emitter() << " ROOTNET::Interface::" << RootClassInfoCollection::GetRootClassInfo(inherited_classes[i]).NETName();
-		}
+
+	///
+	/// The interface can inherrit from a number of places...
+	///
+
+	const vector<string> &inherited_classes (class_info.GetDirectInheritedClasses());
+	set<string> inherited_interfaces;
+	transform (inherited_classes.begin(), inherited_classes.end(),
+		inserter(inherited_interfaces, inherited_interfaces.begin()),
+		[] (const string &s) { return "ROOTNET::Interface::" + RootClassInfoCollection::GetRootClassInfo(s).NETName(); });
+	auto others = class_features.get_additional_interfaces(class_info);
+	copy (others.begin(), others.end(), inserter(inherited_interfaces, inherited_interfaces.begin()));
+
+	if (inherited_interfaces.size() > 0) {
+		emitter.start_line() << "  : ";
+		bool one = false;
+		for_each (inherited_interfaces.begin(), inherited_interfaces.end(),
+			[&emitter, &one] (const string &s) {
+				if (one)
+					emitter() << ", ";
+				one = true;
+				emitter() << s;
+		});
+
 		emitter() << endl;
 	}
 
@@ -492,13 +512,13 @@ void ClassTranslator::generate_interface (RootClassInfo &class_info, SourceEmitt
 
 	///
 	/// List all the prototypes for the class.
-    /// TODO: This comes back clean, and needs to be fixed so that the fact we couldn't do a bunch of
-    ///       prototypes was because they weren't translatable needs to get recoreded! :-)
+	/// TODO: This comes back clean, and needs to be fixed so that the fact we couldn't do a bunch of
+	///       prototypes was because they weren't translatable needs to get recoreded! :-)
 	///
 
 	set<string> already_done_headers;
 	vector<RootClassMethod> indexerOperators;
-    const vector<RootClassMethod> class_protos (class_info.GetAllPrototypesForThisClass(true));
+	const vector<RootClassMethod> class_protos (class_info.GetAllPrototypesForThisClass(true));
 	for (unsigned int i = 0; i < class_protos.size(); i++) {
 		const RootClassMethod &method = class_protos[i];
 
@@ -537,14 +557,14 @@ void ClassTranslator::generate_interface (RootClassInfo &class_info, SourceEmitt
 
 	const vector<RootClassProperty> &properties (class_info.GetProperties());
 	for (vector<RootClassProperty>::const_iterator itr = properties.begin(); itr != properties.end(); itr++) {
-	    emitter.start_line() << "property " << itr->property_type() << " " << itr->name() << " {" << endl;
-	    if (itr->isGetter()) {
-	      emitter.start_line() << "  " << itr->property_type() << " get ();" << endl;
-	    }
-	    if (itr->isSetter()) {
-	      emitter.start_line() << "  void set (" << itr->property_type() << " value);" << endl;
-	    }
-	    emitter.start_line() << "}" << endl;
+		emitter.start_line() << "property " << itr->property_type() << " " << itr->name() << " {" << endl;
+		if (itr->isGetter()) {
+		  emitter.start_line() << "  " << itr->property_type() << " get ();" << endl;
+		}
+		if (itr->isSetter()) {
+		  emitter.start_line() << "  void set (" << itr->property_type() << " value);" << endl;
+		}
+		emitter.start_line() << "}" << endl;
 	}
 
 	///
@@ -554,14 +574,14 @@ void ClassTranslator::generate_interface (RootClassInfo &class_info, SourceEmitt
 	auto fields (class_info.GetAllDataFields(true));
 	for (int i = 0; i < fields.size(); i++) {
 		const RootClassField &f(fields[i]);
-	    emitter.start_line() << "property " << f.NETType() << " " << f.NETName() << " {" << endl;
+		emitter.start_line() << "property " << f.NETType() << " " << f.NETName() << " {" << endl;
 		if (f.GetterOK()) {
-		    emitter.start_line() << "  " << f.NETType() << " get ();" << endl;
+			emitter.start_line() << "  " << f.NETType() << " get ();" << endl;
 		}
 		if (f.SetterOK()) {
-		    emitter.start_line() << "  void set (" << f.NETType() << " value);" << endl;
+			emitter.start_line() << "  void set (" << f.NETType() << " value);" << endl;
 		}
-	    emitter.start_line() << "}" << endl;
+		emitter.start_line() << "}" << endl;
 	}
 
 	///
@@ -664,12 +684,12 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 {
 	emitter.start_line() << "public ref class " << info.NETName() << endl;
 
-    ///
-    /// TODO: optimize so that single inherritance objects (which is most of root)
-    /// can use their parent objects to implement most of the code.
-    ///
+	///
+	/// TODO: optimize so that single inherritance objects (which is most of root)
+	/// can use their parent objects to implement most of the code.
+	///
 
-    emitter.start_line() << "  : ROOTNET::Utility::ROOTDOTNETBaseTObject," << endl;
+	emitter.start_line() << "  : ROOTNET::Utility::ROOTDOTNETBaseTObject," << endl;
 	emitter.start_line() << "    ROOTNET::Interface::" << info.NETName() << endl;
 	emitter.brace_open();
 
@@ -738,7 +758,7 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 
 	set<string> written_methods;
 	vector<RootClassMethod> arrayOperators;
-    const vector<RootClassMethod> &class_protos(info.GetAllPrototypesForThisClass(true));
+	const vector<RootClassMethod> &class_protos(info.GetAllPrototypesForThisClass(true));
 	for (unsigned int i = 0; i < class_protos.size(); i++) {
 		const RootClassMethod &method = class_protos[i];
 
@@ -796,14 +816,14 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 
 	const vector<RootClassProperty> &properties (info.GetProperties());
 	for (vector<RootClassProperty>::const_iterator itr = properties.begin(); itr != properties.end(); itr++) {
-	    emitter.start_line() << "property " << itr->property_type() << " " << itr->name() << " {" << endl;
-	    if (itr->isGetter()) {
-	      emitter.start_line() << "  virtual " << itr->property_type() << " get ();" << endl;
-	    }
-	    if (itr->isSetter()) {
-	      emitter.start_line() << "  virtual void set (" << itr->property_type() << " value);" << endl;
-	    }
-	    emitter.start_line() << "}" << endl;
+		emitter.start_line() << "property " << itr->property_type() << " " << itr->name() << " {" << endl;
+		if (itr->isGetter()) {
+		  emitter.start_line() << "  virtual " << itr->property_type() << " get ();" << endl;
+		}
+		if (itr->isSetter()) {
+		  emitter.start_line() << "  virtual void set (" << itr->property_type() << " value);" << endl;
+		}
+		emitter.start_line() << "}" << endl;
 	}
 
 	///
@@ -813,14 +833,14 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	auto fields (info.GetAllDataFields(true));
 	for (int i = 0; i < fields.size(); i++) {
 		const RootClassField &f(fields[i]);
-	    emitter.start_line() << "property " << f.NETType() << " " << f.NETName() << " {" << endl;
+		emitter.start_line() << "property " << f.NETType() << " " << f.NETName() << " {" << endl;
 		if (f.GetterOK()) {
-		    emitter.start_line() << "  virtual " << f.NETType() << " get ();" << endl;
+			emitter.start_line() << "  virtual " << f.NETType() << " get ();" << endl;
 		}
 		if (f.SetterOK()) {
-		    emitter.start_line() << "  virtual void set (" << f.NETType() << " value);" << endl;
+			emitter.start_line() << "  virtual void set (" << f.NETType() << " value);" << endl;
 		}
-	    emitter.start_line() << "}" << endl;
+		emitter.start_line() << "}" << endl;
 	}
 
 	///
@@ -849,6 +869,12 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 			emitter.start_line() << "static " << info.NETName() << " ^" << globals[i] << " = gcnew " << info.NETName() << "(::" << globals[i] << ");" << endl;
 		}
 	}
+
+	///
+	/// If there are any feature methods, now is the time!
+	///
+
+	FeatureManager::GetFeaturesFor(info).emit_header_method_definitions(info, emitter);
 
 	///
 	/// And if there are any enums, do that as well
@@ -1130,6 +1156,12 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 	emitter.brace_close();
 	emitter() << endl;
   }
+
+  ///
+  /// Emit any extra features
+  ///
+
+  FeatureManager::GetFeaturesFor(info).emit_class_methods(info, emitter);
 
   ///
   /// Do the properties for this object.
