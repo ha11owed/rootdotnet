@@ -289,7 +289,11 @@ void InitTypeDefs (void)
 			continue;
 		}
 
-		/// Special cases. :(
+		///
+		/// Special cases. These are required because in many places ROOT lies to TCint and defines the type as void* when in C++
+		/// it is #ifdef'd to be a real function definition.
+		///
+
 		if (typedef_name.find("Func_t") != string::npos
 			|| typedef_name.find("Fun_t") != string::npos) {
 			continue;
