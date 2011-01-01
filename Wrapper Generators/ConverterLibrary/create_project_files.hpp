@@ -8,6 +8,8 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <algorithm>
+#include <iterator>
 
 class ClassTranslator;
 
@@ -24,7 +26,13 @@ public:
 	{}
 	void operator() (const std::pair<std::string, std::vector<std::string> > &library_classes);
 	std::vector<std::pair<std::string, std::string> > ProjectGuids (void) const {return _project_guid;}
+	inline void add_guids (const std::vector<std::pair<std::string, std::string> > &guids)
+	{
+		std::copy (guids.begin(), guids.end(), std::back_inserter(_project_guid));
+	}
 private:
+	std::string get_guid (const std::string &libname);
+
 	const std::string _base_dir;
 	const std::vector<std::string> &_extra_files;
 	std::vector<std::pair<std::string, std::string> > _project_guid;

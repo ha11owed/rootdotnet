@@ -41,6 +41,8 @@ using std::ofstream;
 using std::pair;
 using std::inserter;
 using std::set;
+using std::make_pair;
+using std::getline;
 
 LibraryConverterDriver::LibraryConverterDriver(void)
 	: _write_solution(true), _use_class_header_locations(false), _print_error_report(true)
@@ -161,6 +163,31 @@ void LibraryConverterDriver::include_directory(const std::string &dir)
 }
 
 namespace {
+	/// Write out the guid's for a project
+	void save_project_guid (const string &fname, const string &guid)
+	{
+		ofstream output (fname);
+		if (!output.good()) {
+			throw runtime_error ("Unable to open '" + fname + "' for output of project guids!");
+		}
+
+		output << guid << endl;
+
+		output.close();
+	}
+
+	/// Load up the guid's from a file.
+	string load_project_guids (const string &fname)
+	{
+		ifstream input (fname);
+		if (!input.good()) {
+			return "";
+		}
+		string line;
+		getline(input, line);
+		return line;
+	}
+
 	/// Check to see that a directory exists. If not, create it.
 	void check_dir (const string &dir_name)
 	{
@@ -259,7 +286,7 @@ namespace {
 			ifstream input (temp_project_path.c_str());
 
 			string project_path = _base_dir + "\\" + library_name + "\\" + library_name + _lib_suffix + ".vcxproj";
-			ofstream output (project_path.c_str());
+			SourceEmitter output (project_path);
 
 			string assembly_loader_header = _base_dir + "\\" + library_name + "\\assembly_loader.hpp";
 			ofstream ass_loader (assembly_loader_header.c_str());
@@ -274,16 +301,16 @@ namespace {
 
 				if (line.find("<!-- ReferenceProjects -->") != line.npos) {
 					vector<string> dependent_libraries = _translator.get_dependent_libraries(library_name);
-					for_each (dependent_libraries.begin(), dependent_libraries.end(), write_project_reference(output, _project_guids));
+					for_each (dependent_libraries.begin(), dependent_libraries.end(), write_project_reference(output(), _project_guids));
 				} else if (line.find("<!-- ADDReferencedAssemblies -->") != line.npos) {
 					vector<string> dependent_libraries = _translator.get_dependent_libraries(library_name);
-					for_each (dependent_libraries.begin(), dependent_libraries.end(), write_assembly_reference(output, _project_guids, _lib_dirs));
+					for_each (dependent_libraries.begin(), dependent_libraries.end(), write_assembly_reference(output(), _project_guids, _lib_dirs));
 					auto itr = _lib_dirs.find("WrapperPlumbingLibrary");
 					if (itr != _lib_dirs.end()) {
-						write_out_assembly_reference(output, "WrapperPlumbingLibrary", itr->second);
+						write_out_assembly_reference(output(), "WrapperPlumbingLibrary", itr->second);
 					}
 				} else {
-					output << line << endl;
+					output() << line << endl;
 				}
 			}
 
@@ -628,6 +655,19 @@ void LibraryConverterDriver::translate(void)
 	}
 
 	///
+	/// If we are re-building this, then GUID's for all these projects already exist, and we should re-use them. So, see if we can load them up.
+	///
+
+	vector<pair<string, string> > initial_guids;
+	for_each(files_by_library.begin(), files_by_library.end(),
+		[this, &initial_guids] (const pair<string, vector<string> > &info) {
+			string g = load_project_guids (_output_dir + "\\" + info.first + "\\guid.txt");
+			if (g.size() > 0) {
+				initial_guids.push_back(make_pair(info.first, g));
+			}
+	});
+
+	///
 	/// Next, build a solution for VS for each project we are looking at.
 	/// Root has some funny dependencies in it. For example, Hist seems to depend on Matrix. So, we'll just force
 	/// the issue to remain safe.
@@ -639,9 +679,17 @@ void LibraryConverterDriver::translate(void)
 	vector<string> link_library_dirs (_library_dirs.begin(), _library_dirs.end());
 
 	create_project_files proj_maker(_output_dir, translator, _libs_to_translate, extra_files, extra_include_dirs, link_library_dirs);
+	proj_maker.add_guids(initial_guids);
 	create_project_files result(for_each (files_by_library.begin(), files_by_library.end(), proj_maker));
 	
-	for_each(files_by_library.begin(), files_by_library.end(), fill_in_project_references(_output_dir, translator, result.ProjectGuids(), history.librarys_in_dirs(), _single_library_name.size() > 0 ? "" : "Wrapper"));
+	auto guids = result.ProjectGuids();
+	for_each(files_by_library.begin(), files_by_library.end(), fill_in_project_references(_output_dir, translator, guids, history.librarys_in_dirs(), _single_library_name.size() > 0 ? "" : "Wrapper"));
+
+	for_each (guids.begin(), guids.end(),
+		[this] (const pair<string, string> &info)
+	{
+		save_project_guid (_output_dir + "\\" + info.first + "\\guid.txt", info.second);
+	});
 
 	if (_write_solution) {
 		make_solution_file (_output_dir, result.ProjectGuids());

@@ -26,6 +26,7 @@ using std::endl;
 using std::for_each;
 using std::back_inserter;
 using std::find;
+using std::find_if;
 using std::runtime_error;
 
 ///
@@ -46,6 +47,27 @@ private:
 	const string _filetype, _command;
 	ostream &_output;
 };
+
+///
+/// Get the guid for a project. If we know about it - use it. Otherwise make up a new one.
+///
+string create_project_files::get_guid (const string &libname)
+{
+	auto l = find_if (_project_guid.begin(), _project_guid.end(), [&libname] (const pair<string, string> &info) { return info.first == libname; });
+	if (l == _project_guid.end()) {
+		GUID guid;
+		CoCreateGuid (&guid);
+		RPC_CSTR g_string;
+		UuidToStringA (&guid, &g_string);
+		string guidstr = string((const char*)g_string);
+		RpcStringFreeA(&g_string);
+		_project_guid.push_back(make_pair(libname, guidstr));
+
+		return guidstr;
+	} else {
+		return l->second;
+	}
+}
 
 ///
 /// Create the project file
@@ -86,13 +108,7 @@ void create_project_files::operator ()(const pair<string,vector<string> > &libra
 				add_class_file_reference ("hpp", "ClInclude", output));
 
 		} else if (line.find("<!-- ProjectGUID -->") != line.npos) {
-			GUID guid;
-			CoCreateGuid (&guid);
-			RPC_CSTR g_string;
-			UuidToStringA (&guid, &g_string);
-			output << "    <ProjectGuid>{" << g_string << "}</ProjectGuid>" << endl;
-			_project_guid.push_back(make_pair(library_name, string((const char*)g_string)));
-			RpcStringFreeA(&g_string);
+			output << "    <ProjectGuid>{" << get_guid(library_name) << "}</ProjectGuid>" << endl;
 
 		} else if (line.find("<!-- Name -->") != line.npos) {
 			output << "Name=\"" << library_name << "Wrapper\"" << endl;
