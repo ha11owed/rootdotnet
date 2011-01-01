@@ -38,6 +38,9 @@ public:
 	/// Use the header directories we find from the classes as default library headers
 	void use_class_header_locations (bool use_header_locations);
 
+	/// Set where we can find the template files for use in generating.
+	void set_template_files_location (const std::string &dir_loc);
+
 	/// Print out the error report?
 	void print_error_report (bool printit);
 

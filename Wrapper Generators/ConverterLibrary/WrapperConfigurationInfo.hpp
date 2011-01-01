@@ -52,9 +52,17 @@ public:
 	/// Some properties are "bad"
 	static bool CheckPropertyNameBad (const RootClassInfo *class_info, const std::string &property_name);
 
+	/// Sets the directory where we can find templates for translation
+	static void SetTemplateLocation (const std::string &dir);
+
+	/// Given the name of a template, return the path to it that can be opened.
+	static std::string TemplatePath (const std::string &template_name);
+
 private:
 	static std::map<std::string, std::vector<std::string> > _allowed_library_links;
 	static std::map<std::string, std::vector<std::string> > _disallowed_library_links;
 	static bool _allowed_library_links_ok;
 	static void init_allowed_library_links(void);
+
+	static std::string _template_directory;
 };

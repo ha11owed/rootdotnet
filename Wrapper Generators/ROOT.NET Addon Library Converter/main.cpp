@@ -51,17 +51,13 @@ int main(int argc, char* argv[])
 	prev_trans_directory.push_back(argv[1]);
 
 	string dir_of_project_folder = argv[2];
-	//string dir_of_project_folder = "C:\\Users\\gwatts\\Documents\\ATLAS\\Projects\\LINQToROOTTest";
 
 	string libname = argv[3];
-	//string libname ("additional");
 
 	vector<string> dlls;
 	for (int i = 4; i < argc; i++) {
 		dlls.push_back(argv[i]);
 	}
-	//dlls.push_back("C:\\Users\\gwatts\\Documents\\ATLAS\\Projects\\LINQToROOT\\NTupleSource\\BTagJet_cpp");
-	//dlls.push_back("C:\\Users\\gwatts\\Documents\\ATLAS\\Projects\\LINQToROOT\\NTupleSource\\MuonInBJet_cpp");
 
 	///
 	/// If there are any other directories that contain libraries we've previously translated,
@@ -86,6 +82,7 @@ int main(int argc, char* argv[])
 	driver.use_class_header_locations(true);
 	driver.write_all_in_single_library(libname);
 	driver.print_error_report(false);
+	driver.set_template_files_location (prev_trans_directory[0] + "\\bin");
 
 	///
 	/// Now, do the translation and write out the final project solutoin

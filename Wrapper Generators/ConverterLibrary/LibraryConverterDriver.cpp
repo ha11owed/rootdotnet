@@ -65,6 +65,11 @@ void LibraryConverterDriver::print_error_report(bool printit)
 	_print_error_report = printit;
 }
 
+void LibraryConverterDriver::set_template_files_location (const string &loc)
+{
+	WrapperConfigurationInfo::SetTemplateLocation (loc);
+}
+
 ///
 /// we will scan all classes in this library and translate them!
 ///
@@ -77,12 +82,47 @@ void LibraryConverterDriver::translate_classes_in_library (const std::string &di
 
 	string libname (dir_path);
 	auto last_seperator = dir_path.find_last_of("\\");
+	string dir = "";
 	if (last_seperator != dir_path.npos) {
-		string dir = dir_path.substr(0, last_seperator);
-		gSystem->AddDynamicPath(dir.c_str());
-		_library_dirs.insert(_library_dirs.begin(), dir);
+		dir = dir_path.substr(0, last_seperator);
 		libname = dir_path.substr(last_seperator+1);
 	}
+
+	///
+	/// If it is a relative path, fix it up!
+	///
+
+	if (dir.find(":") == dir.npos) {
+		if (dir.size() == 0) {
+			dir = string(gSystem->WorkingDirectory());
+		} else {
+			dir = string(gSystem->WorkingDirectory()) + "\\" + dir;
+		}
+	}
+
+	///
+	/// Keep track of the libraries we need to track!
+	///
+
+	gSystem->AddDynamicPath(dir.c_str());
+	_library_dirs.insert(_library_dirs.begin(), dir);
+
+	///
+	/// If the libname has a ".dll" on it or a ".lib" or a ".so" on it, then remove that
+	///
+
+	vector<string> bad_endings;
+	bad_endings.push_back(".lib");
+	bad_endings.push_back(".dll");
+	bad_endings.push_back(".so");
+
+	for_each (bad_endings.begin(), bad_endings.end(),
+		[&libname] (const string &ending) {
+			auto l = libname.rfind(ending);
+			if (l == libname.size() - ending.size()) {
+				libname = libname.substr(0, libname.size() - ending.size());
+			}
+	});
 
 	_libs_to_translate.push_back(libname);
 }
@@ -320,7 +360,7 @@ namespace {
 	{
 		string project_path = output_dir + "\\ROOT.NET Lib.sln";
 		SourceEmitter output (project_path);
-		ifstream input ("solution_template.sln");
+		ifstream input (WrapperConfigurationInfo::TemplatePath("solution_template.sln"));
 		if (!input.good()) {
 			throw runtime_error ("Unable to find the template file solution_template.sln");
 		}

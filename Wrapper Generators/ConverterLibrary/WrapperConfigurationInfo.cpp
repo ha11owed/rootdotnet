@@ -44,6 +44,7 @@ using std::getline;
 std::map<std::string, std::vector<std::string> > WrapperConfigurationInfo::_allowed_library_links;
 std::map<std::string, std::vector<std::string> > WrapperConfigurationInfo::_disallowed_library_links;
 bool WrapperConfigurationInfo::_allowed_library_links_ok = false;
+string WrapperConfigurationInfo::_template_directory;
 
 void InitTypeDefs (void);
 
@@ -582,4 +583,23 @@ bool WrapperConfigurationInfo::CheckPropertyNameBad (const RootClassInfo *class_
 		}
 	}
 	return false;
+}
+
+///
+/// Change where we locate the wrapper templates
+///
+void WrapperConfigurationInfo::SetTemplateLocation (const string &dir)
+{
+	_template_directory = dir;
+}
+
+///
+/// Do a template lookup - return the complete path.
+///
+string WrapperConfigurationInfo::TemplatePath (const string &name)
+{
+	if (_template_directory.size() > 0) {
+		return _template_directory + "\\" + name;
+	}
+	return name;
 }

@@ -4,6 +4,7 @@
 
 #include "create_project_files.hpp"
 #include "ClassTranslator.hpp"
+#include "WrapperConfigurationInfo.hpp"
 
 #include "shlobj.h"
 
@@ -60,7 +61,7 @@ void create_project_files::operator ()(const pair<string,vector<string> > &libra
 
 	string project_path = _base_dir + "\\" + library_name + "\\" + library_name + ".vcxproj-temp";
 	ofstream output (project_path.c_str());
-	ifstream input ("cpp_template_project.vcxproj");
+	ifstream input (WrapperConfigurationInfo::TemplatePath("cpp_template_project.vcxproj"));
 	if (!input.good()) {
 		throw runtime_error ("Unable to find the cpp_template_project.vcxproj file!");
 	}
