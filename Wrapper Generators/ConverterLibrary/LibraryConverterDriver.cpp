@@ -199,8 +199,8 @@ namespace {
 	class fill_in_project_references
 	{
 	public:
-		fill_in_project_references (const string &proj_dir, const ClassTranslator &trans, vector<pair<string, string> > project_guids, const map<string, string> &lib_dirs)
-			: _base_dir (proj_dir), _translator(trans), _lib_dirs(lib_dirs)
+		fill_in_project_references (const string &proj_dir, const ClassTranslator &trans, vector<pair<string, string> > project_guids, const map<string, string> &lib_dirs, const string &lib_suffix = "Wrapper")
+			: _base_dir (proj_dir), _translator(trans), _lib_dirs(lib_dirs), _lib_suffix(lib_suffix)
 		{
 			for (unsigned int i = 0; i < project_guids.size(); i++) {
 				_project_guids[project_guids[i].first] = project_guids[i].second;
@@ -218,7 +218,7 @@ namespace {
 			string temp_project_path = _base_dir + "\\" + library_name + "\\" + library_name + ".vcxproj-temp";
 			ifstream input (temp_project_path.c_str());
 
-			string project_path = _base_dir + "\\" + library_name + "\\" + library_name + "Wrapper.vcxproj";
+			string project_path = _base_dir + "\\" + library_name + "\\" + library_name + _lib_suffix + ".vcxproj";
 			ofstream output (project_path.c_str());
 
 			string assembly_loader_header = _base_dir + "\\" + library_name + "\\assembly_loader.hpp";
@@ -258,6 +258,7 @@ namespace {
 		const ClassTranslator &_translator;
 		map<string, string> _project_guids;
 		const map<string, string> &_lib_dirs;
+		const string _lib_suffix;
 	};
 
 	char mytoupper (char c)
@@ -320,6 +321,9 @@ namespace {
 		string project_path = output_dir + "\\ROOT.NET Lib.sln";
 		SourceEmitter output (project_path);
 		ifstream input ("solution_template.sln");
+		if (!input.good()) {
+			throw runtime_error ("Unable to find the template file solution_template.sln");
+		}
 
 		while (!input.fail()) {
 			string line;
@@ -589,7 +593,6 @@ void LibraryConverterDriver::translate(void)
 	/// the issue to remain safe.
 	///
 
-	//_libs_to_translate.push_back("libMatrix");
 	vector<string> extra_files;
 
 	vector<string> extra_include_dirs (_include_dirs.begin(), _include_dirs.end());
@@ -598,7 +601,7 @@ void LibraryConverterDriver::translate(void)
 	create_project_files proj_maker(_output_dir, translator, _libs_to_translate, extra_files, extra_include_dirs, link_library_dirs);
 	create_project_files result(for_each (files_by_library.begin(), files_by_library.end(), proj_maker));
 	
-	for_each(files_by_library.begin(), files_by_library.end(), fill_in_project_references(_output_dir, translator, result.ProjectGuids(), history.librarys_in_dirs()));
+	for_each(files_by_library.begin(), files_by_library.end(), fill_in_project_references(_output_dir, translator, result.ProjectGuids(), history.librarys_in_dirs(), _single_library_name.size() > 0 ? "" : "Wrapper"));
 
 	if (_write_solution) {
 		make_solution_file (_output_dir, result.ProjectGuids());

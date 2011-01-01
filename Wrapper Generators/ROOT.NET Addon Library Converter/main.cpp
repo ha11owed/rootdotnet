@@ -11,12 +11,14 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include <stdexcept>
 
 using std::string;
 using std::vector;
 using std::for_each;
 using std::cout;
 using std::endl;
+using std::exception;
 
 void usage (void)
 {
@@ -89,5 +91,11 @@ int main(int argc, char* argv[])
 	/// Now, do the translation and write out the final project solutoin
 	///
 
-	driver.translate();
+	try {
+		driver.translate();
+	} catch (exception &e)
+	{
+		cout << "ERROR translating: " << e.what() << endl;
+		return 100;
+	}
 }

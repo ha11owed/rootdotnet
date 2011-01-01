@@ -13,6 +13,7 @@
 #include <fstream>
 #include <algorithm>
 #include <iterator>
+#include <stdexcept>
 
 using std::pair;
 using std::string;
@@ -24,6 +25,7 @@ using std::endl;
 using std::for_each;
 using std::back_inserter;
 using std::find;
+using std::runtime_error;
 
 ///
 /// Helper to add an include into the project file.
@@ -59,6 +61,9 @@ void create_project_files::operator ()(const pair<string,vector<string> > &libra
 	string project_path = _base_dir + "\\" + library_name + "\\" + library_name + ".vcxproj-temp";
 	ofstream output (project_path.c_str());
 	ifstream input ("cpp_template_project.vcxproj");
+	if (!input.good()) {
+		throw runtime_error ("Unable to find the cpp_template_project.vcxproj file!");
+	}
 
 	///
 	/// Now, read one to the other!
