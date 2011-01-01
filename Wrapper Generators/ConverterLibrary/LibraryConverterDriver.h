@@ -38,6 +38,9 @@ public:
 	/// Use the header directories we find from the classes as default library headers
 	void use_class_header_locations (bool use_header_locations);
 
+	/// Print out the error report?
+	void print_error_report (bool printit);
+
 	//// Run
 
 	void translate();
@@ -46,6 +49,7 @@ private:
 
 	bool _write_solution;
 	bool _use_class_header_locations;
+	bool _print_error_report;
 	std::vector<std::string> _libs_to_translate;
 	std::vector<std::string> _already_translated_dirs;
 	std::set<std::string> _include_dirs;

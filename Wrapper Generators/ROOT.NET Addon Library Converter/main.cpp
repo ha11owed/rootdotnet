@@ -10,10 +10,29 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 using std::string;
 using std::vector;
 using std::for_each;
+using std::cout;
+using std::endl;
+
+void usage (void)
+{
+	cout << "Usage: the add on tool is simple, if unfriendly..." << endl;
+	cout << "Addon <dir-of-wrappers> <output-solution-folder> <output-library-name> <dll1> <dll2>..." << endl;
+	cout << "  dir-of-wrapers - location of the wrappers on your system. For example" << endl;
+	cout << "                   c:\\root\\NetWrappers" << endl;
+	cout << "  output-solution-folder - the directory where the output solution is located." << endl;
+	cout << "                           This tool will create a sub-dir with" << endl;
+	cout << "                           output-library-name that will contain the wrapper" << endl;
+	cout << "                           library files. It will not modify any .sln files." << endl;
+	cout << "                           You have to do that!" << endl;
+	cout << "  output-library-name - Legal VC project name - like 'additional'. " << endl;
+	cout << "  dllN - Path that can be used by root to load a ROOT dll. For example: " << endl;
+	cout << "            C:\\Users\\gordon\\\\Projects\\LINQToROOT\\NTupleSource\\BTagJet_cpp" << endl;
+}
 
 int main(int argc, char* argv[])
 {
@@ -21,15 +40,26 @@ int main(int argc, char* argv[])
 	/// Command line arguments processing
 	///
 
-	string dir_of_project_folder = "C:\\Users\\gwatts\\Documents\\ATLAS\\Projects\\LINQToROOTTest";
-	vector<string> dlls;
-	dlls.push_back("C:\\Users\\gwatts\\Documents\\ATLAS\\Projects\\LINQToROOT\\NTupleSource\\BTagJet_cpp");
-	dlls.push_back("C:\\Users\\gwatts\\Documents\\ATLAS\\Projects\\LINQToROOT\\NTupleSource\\MuonInBJet_cpp");
+	if (argc < 5) {
+		usage();
+		return 0;
+	}
 
 	vector<string> prev_trans_directory;
-	prev_trans_directory.push_back("c:\\root\\NETNewWrappers");
+	prev_trans_directory.push_back(argv[1]);
 
-	string libname ("additional");
+	string dir_of_project_folder = argv[2];
+	//string dir_of_project_folder = "C:\\Users\\gwatts\\Documents\\ATLAS\\Projects\\LINQToROOTTest";
+
+	string libname = argv[3];
+	//string libname ("additional");
+
+	vector<string> dlls;
+	for (int i = 4; i < argc; i++) {
+		dlls.push_back(argv[i]);
+	}
+	//dlls.push_back("C:\\Users\\gwatts\\Documents\\ATLAS\\Projects\\LINQToROOT\\NTupleSource\\BTagJet_cpp");
+	//dlls.push_back("C:\\Users\\gwatts\\Documents\\ATLAS\\Projects\\LINQToROOT\\NTupleSource\\MuonInBJet_cpp");
 
 	///
 	/// If there are any other directories that contain libraries we've previously translated,
@@ -53,6 +83,7 @@ int main(int argc, char* argv[])
 	driver.write_solution(false);
 	driver.use_class_header_locations(true);
 	driver.write_all_in_single_library(libname);
+	driver.print_error_report(false);
 
 	///
 	/// Now, do the translation and write out the final project solutoin

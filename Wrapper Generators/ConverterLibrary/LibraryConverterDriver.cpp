@@ -43,7 +43,7 @@ using std::inserter;
 using std::set;
 
 LibraryConverterDriver::LibraryConverterDriver(void)
-	: _write_solution(true), _use_class_header_locations(false)
+	: _write_solution(true), _use_class_header_locations(false), _print_error_report(true)
 {
 }
 
@@ -58,6 +58,11 @@ LibraryConverterDriver::~LibraryConverterDriver(void)
 void LibraryConverterDriver::add_converted_info(const std::string &dir_path)
 {
 	_already_translated_dirs.push_back(dir_path);
+}
+
+void LibraryConverterDriver::print_error_report(bool printit)
+{
+	_print_error_report = printit;
 }
 
 ///
@@ -600,16 +605,18 @@ void LibraryConverterDriver::translate(void)
 	}
 
 	///
-	/// Finally, dump the error summary.
+	/// Finally, dump the error summary. They are always dumped to a local file for looking...
 	///
 
+	if (_print_error_report) {
+		ConverterErrorLog::dump(cout);
+		cout << endl << endl << "In order of least frequent to most frequent: " << endl;
+		ConverterErrorLog::dump_by_error_order(cout);
+	}
 	ofstream errors_out ("conversion_errors.txt");
 	ConverterErrorLog::dump(errors_out);
 	errors_out << endl << endl << "In order of least frequent to most frequent: " << endl;
 	ConverterErrorLog::dump_by_error_order(errors_out);
 	errors_out.close();
-	ConverterErrorLog::dump(cout);
-	cout << endl << endl << "In order of least frequent to most frequent: " << endl;
-	ConverterErrorLog::dump_by_error_order(cout);
 
 }
