@@ -115,7 +115,7 @@ namespace ROOTNET
 				~enumerator() {delete _holder;}
 
 				VOHolderBase *_holder;
-				int _currentIndex;
+				unsigned int _currentIndex;
 			};
 		template<class T>
 		public ref class VectorObject : IEnumerable<T>
