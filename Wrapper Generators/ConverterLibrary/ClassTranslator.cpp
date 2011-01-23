@@ -870,17 +870,23 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	/// There is something funny (and illegal) about calling the GetBsetObject from the static decl. Instead, we have to build a dummy
 	/// routine first (or we get compiler errors).
 	///
+	/// Since we don't deal with non-TObject's right now, for those we have to do something a little different.
+	///
 
 	if (type_has_globals(info.CPPName())) {
 		const vector<string> &globals (list_of_globals_of_type(info.CPPName()));
 		for (unsigned int i = 0; i < globals.size(); i++) {
-			emitter.start_line() << "private:" << endl;
-			emitter.start_line() << "static Interface::" << info.NETName() << " ^Loader" << globals[i] << "()" << endl;
-			emitter.brace_open();
-			emitter.start_line() << "return ROOTNET::Utility::ROOTObjectServices::GetBestObject<Interface::" << info.NETName() << "^>(::" << globals[i] << ");" << endl;
-			emitter.brace_close();
-			emitter.start_line() << "public:" << endl;
-			emitter.start_line() << "static Interface::" << info.NETName() << " ^" << globals[i] << " = Loader" << globals[i] << "();" << endl;
+			if (info.InheritsFromTObject()) {
+				emitter.start_line() << "private:" << endl;
+				emitter.start_line() << "static Interface::" << info.NETName() << " ^Loader" << globals[i] << "()" << endl;
+				emitter.brace_open();
+				emitter.start_line() << "return ROOTNET::Utility::ROOTObjectServices::GetBestObject<Interface::" << info.NETName() << "^>(::" << globals[i] << ");" << endl;
+				emitter.brace_close();
+				emitter.start_line() << "public:" << endl;
+				emitter.start_line() << "static Interface::" << info.NETName() << " ^" << globals[i] << " = Loader" << globals[i] << "();" << endl;
+			} else {
+				emitter.start_line() << "static Interface::" << info.NETName() << " ^" << globals[i] << " = gcnew " << info.NETName() << "(::" << globals[i] << ");" << endl;
+			}
 		}
 	}
 
