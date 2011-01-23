@@ -93,8 +93,9 @@ namespace ROOTNET {
 		/// this might be useful for a dynamic .NET language (but not so much for something
 		/// like C#).
 		///
-		/// If there are multiple classes that inherrit from this guy, only look at the first one.
-		/// We just have to hope the authors got this right.
+		/// If there are multiple classes that inherrit from this guy we do a branch-search, going
+		/// down the first inherritance branch and then the second (recursively). I doubt this
+		/// is the best algorithm, but until there is a problem it seems to work!
 		///
 		Type ^root_type_holder::GetBestMatchType(::TClass *class_info)
 		{
@@ -102,20 +103,43 @@ namespace ROOTNET {
 			/// Unloaded classes are death - the class simulation is almost non-existant.
 
 			String ^cpp_class_name = gcnew String(class_info->GetName());
-			String ^net_class_name = nullptr;
-			while ((net_class_name = NetTranslatedClass(cpp_class_name)) == nullptr) {
-				if (!class_info->IsLoaded())
-					return nullptr;
+			String ^net_class_name = NetTranslatedClass(cpp_class_name);
 
-				::TList *base_classes = class_info->GetListOfBases();
-				if (base_classes == 0 || base_classes->GetEntries() == 0) {
-					/// Wow. Not even TObject! :-)
-					return nullptr;
-				}
-				class_info = static_cast<::TClass*>(base_classes->At(0));
-				cpp_class_name = gcnew String(class_info->GetName());
+			if (net_class_name != nullptr) {
+				return _class_map[net_class_name];
 			}
-			return _class_map[net_class_name];
+
+			///
+			/// Have to check base classes to see if we have a match. Make sure this class is "good"
+			/// first.
+
+			if (!class_info->IsLoaded())
+				return nullptr;
+
+			///
+			/// Get the list of bases and then recurse through it.
+			///
+
+			::TList *base_classes = class_info->GetListOfBases();
+			if (base_classes == 0 || base_classes->GetEntries() == 0) {
+				/// Wow. Not even TObject! :-)
+				return nullptr;
+			}
+
+			for (int i = 0; i < base_classes->GetEntries(); i++)
+			{
+				TClass *c = static_cast<::TClass*>(base_classes->At(0));
+				Type ^t = GetBestMatchType(c);
+				if (t != nullptr) {
+					return t;
+				}
+			}
+
+			///
+			/// No luck - we really know nothing abou this class! Wow!
+			///
+
+			return nullptr;
 		}
 
 		///
