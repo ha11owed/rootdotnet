@@ -98,13 +98,15 @@ namespace ROOTNET {
 		///
 		Type ^root_type_holder::GetBestMatchType(::TClass *class_info)
 		{
-			/// Make sure this is up to date.
-			//fill_type_table();
-
 			/// Walk the inherritance tree to see if we can find something...
+			/// Unloaded classes are death - the class simulation is almost non-existant.
+
 			String ^cpp_class_name = gcnew String(class_info->GetName());
 			String ^net_class_name = nullptr;
 			while ((net_class_name = NetTranslatedClass(cpp_class_name)) == nullptr) {
+				if (!class_info->IsLoaded())
+					return nullptr;
+
 				::TList *base_classes = class_info->GetListOfBases();
 				if (base_classes == 0 || base_classes->GetEntries() == 0) {
 					/// Wow. Not even TObject! :-)
