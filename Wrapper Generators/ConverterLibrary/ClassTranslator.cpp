@@ -867,13 +867,20 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 
 	///
 	/// If there are any global variables, we need to emit those as well!
-	// TODO: It would be nice to put these into some sort of global object using partial declares.
+	/// There is something funny (and illegal) about calling the GetBsetObject from the static decl. Instead, we have to build a dummy
+	/// routine first (or we get compiler errors).
 	///
 
 	if (type_has_globals(info.CPPName())) {
 		const vector<string> &globals (list_of_globals_of_type(info.CPPName()));
 		for (unsigned int i = 0; i < globals.size(); i++) {
-			emitter.start_line() << "static " << info.NETName() << " ^" << globals[i] << " = gcnew " << info.NETName() << "(::" << globals[i] << ");" << endl;
+			emitter.start_line() << "private:" << endl;
+			emitter.start_line() << "static Interface::" << info.NETName() << " ^Loader" << globals[i] << "()" << endl;
+			emitter.brace_open();
+			emitter.start_line() << "return ROOTNET::Utility::ROOTObjectServices::GetBestObject<Interface::" << info.NETName() << "^>(::" << globals[i] << ");" << endl;
+			emitter.brace_close();
+			emitter.start_line() << "public:" << endl;
+			emitter.start_line() << "static Interface::" << info.NETName() << " ^" << globals[i] << " = Loader" << globals[i] << "();" << endl;
 		}
 	}
 
