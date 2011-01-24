@@ -138,6 +138,7 @@
     <ClInclude Include="VectorObject.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\rootbuild\libCore\libCoreWrapper.vcxproj" />
     <None Include="app.ico" />
   </ItemGroup>
   <ItemGroup>

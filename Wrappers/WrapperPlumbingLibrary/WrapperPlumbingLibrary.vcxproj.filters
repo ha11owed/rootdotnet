@@ -85,6 +85,7 @@
     <None Include="app.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\rootbuild\libCore\libCoreWrapper.vcxproj" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">

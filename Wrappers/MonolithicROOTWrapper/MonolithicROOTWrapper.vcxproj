@@ -68,7 +68,7 @@
       <ForcedIncludeFiles>w32pragma.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libPhysics.lib;libGui.lib;libMinuit2.lib;libUnuran.lib;libTable.lib;libWin32gdk.lib;libCore.lib;libHist.lib;libTree.lib;libMathCore.lib;libGraf.lib;libGraf3d.lib;libMatrix.lib;libMinuit.lib;libRooFitCore.lib</AdditionalDependencies>
+      <AdditionalDependencies>libCore.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -113,30 +113,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="ROOTSource\NTArray.cpp" />
-    <ClCompile Include="ROOTSource\NTArrayF.cpp" />
-    <ClCompile Include="ROOTSource\NTAttFill.cpp" />
-    <ClCompile Include="ROOTSource\NTAttLine.cpp" />
-    <ClCompile Include="ROOTSource\NTAttMarker.cpp" />
-    <ClCompile Include="ROOTSource\NTH1.cpp" />
-    <ClCompile Include="ROOTSource\NTH1F.cpp" />
     <ClCompile Include="ROOTSource\NTNamed.cpp" />
     <ClCompile Include="ROOTSource\NTObject.cpp" />
+    <ClCompile Include="ROOTSource\NTSystem.cpp" />
+    <ClCompile Include="ROOTSource\NTWinNTSystem.cpp" />
     <ClCompile Include="ROOTSource\root_type_helpers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="ROOTSource\libCore-make_public.hpp" />
-    <ClInclude Include="ROOTSource\libHist-make_public.hpp" />
-    <ClInclude Include="ROOTSource\NTArray.hpp" />
-    <ClInclude Include="ROOTSource\NTArrayF.hpp" />
-    <ClInclude Include="ROOTSource\NTAttFill.hpp" />
-    <ClInclude Include="ROOTSource\NTAttLine.hpp" />
-    <ClInclude Include="ROOTSource\NTAttMarker.hpp" />
-    <ClInclude Include="ROOTSource\NTH1.hpp" />
-    <ClInclude Include="ROOTSource\NTH1F.hpp" />
     <ClInclude Include="ROOTSource\NTNamed.hpp" />
     <ClInclude Include="ROOTSource\NTObject.hpp" />
+    <ClInclude Include="ROOTSource\NTSystem.hpp" />
+    <ClInclude Include="ROOTSource\NTWinNTSystem.hpp" />
     <ClInclude Include="ROOTSource\root_type_helpers.hpp" />
   </ItemGroup>
   <ItemGroup>
