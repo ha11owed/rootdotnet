@@ -6,6 +6,7 @@
 #include "root_type_holder.hpp"
 #include "TList.h"
 #include "TClass.h"
+#include "TSystem.h"
 #ifdef nullptr
 #undef nullptr
 #endif
@@ -14,6 +15,9 @@ using namespace System;
 using namespace System::Reflection;
 
 #pragma make_public(TObject)
+
+#include <string>
+using std::string;
 
 namespace ROOTNET {
 	namespace Utility{
@@ -107,6 +111,42 @@ namespace ROOTNET {
 
 			if (net_class_name != nullptr) {
 				return _class_map[net_class_name];
+			}
+
+			///
+			/// Is this a class that is well known, but its wrapper library just isn't loaded yet?
+			/// Note: ROOT has the .rootmap facility so it can tell where unknown class libraries are located.
+			/// We have to duplicate that functionality here to some extent. To do that we are making a pretty
+			/// explicit assumption about the names of the wrapper libraries and how they were generated. If that
+			/// isn't correct, this code will fail. So this is a bit brittle.
+			///
+
+			if (class_info->GetSharedLibs()) {
+				string shared_library (class_info->GetSharedLibs());
+				int first_space = shared_library.find(" ");
+				if (first_space != shared_library.npos) {
+					shared_library = shared_library.substr(0, first_space);
+				}
+
+				int dot_index = shared_library.find(".");
+				if (dot_index != shared_library.npos) {
+					shared_library = shared_library.substr(0, dot_index);
+				}
+
+				try {
+					if (gSystem->Load(shared_library.c_str()) >= 0) {
+						string wrapperLib = shared_library + "Wrapper";
+						System::Reflection::Assembly::Load(gcnew String(wrapperLib.c_str()));
+						net_class_name = NetTranslatedClass(cpp_class_name);
+						if (net_class_name != nullptr) {
+							return _class_map[net_class_name];
+						}
+					}
+				} catch (std::exception &)
+				{
+				} catch (System::Exception ^)
+				{
+				}
 			}
 
 			///
