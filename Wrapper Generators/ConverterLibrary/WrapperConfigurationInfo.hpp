@@ -11,6 +11,7 @@
 
 class RootClassInfo;
 class RootClassMethodArg;
+class RootClassMethod;
 
 class WrapperConfigurationInfo
 {
@@ -48,6 +49,9 @@ public:
 
 	/// Fix up method arguments for "special cases"
 	static void FixUpMethodArguments (const RootClassInfo *class_info, const std::string &method_name, std::vector<RootClassMethodArg> &methods);
+
+	/// Return false if a particular method shouldn't be made hidden accoring to some specialized rules.
+	static bool MakeMethodHidden (const RootClassMethod &method);
 
 	/// Some properties are "bad"
 	static bool CheckPropertyNameBad (const RootClassInfo *class_info, const std::string &property_name);

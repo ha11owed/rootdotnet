@@ -548,6 +548,30 @@ void WrapperConfigurationInfo::FixUpMethodArguments (const RootClassInfo *class_
 }
 
 ///
+/// Should we hid this method? Mostly we want to return yes to this, but once and a while there
+/// is a bad method, and we need to reset it.
+///
+bool WrapperConfigurationInfo::MakeMethodHidden (const RootClassMethod &method)
+{
+	///
+	/// TTree::Process with the void * should show through to down-level guys. For whatever
+	/// reason they decided to omit it in the root dict file, so we need to put it
+	/// back. This is a little artificial - anyone who inherrits from TTree is
+	/// going to get this treatment.
+	///
+
+	if (method.CPPName() == "Process"
+		&& method.ClassOfMethodDefinition() == "TTree"
+		&& method.arguments()[0].CPPTypeName() == "TSelector*"
+		) {
+			string temp = method.arguments()[0].CPPTypeName();
+		return false;
+	}
+
+	return true;
+}
+
+///
 /// Sometimes there are property names that are bad in the sense that if we use them
 /// in one class, the infect the interface, and then they will force us to use them down-stream.
 /// this is killer b/c that also means that if a method has the prop name later on that will cause

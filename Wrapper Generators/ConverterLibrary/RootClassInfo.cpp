@@ -38,6 +38,7 @@ using std::back_inserter;
 using std::inserter;
 using std::mem_fun_ref;
 using std::bind2nd;
+using std::copy;
 
 /// The normal initializer
 RootClassInfo::RootClassInfo(const std::string &name)
@@ -598,7 +599,11 @@ std::vector<RootClassMethod> RootClassInfo::GetAllPrototypesForThisClassImpl (bo
 	methods_with_name(methods_in_top_level_class)));
   method_set hidden_method_list;
   flatten_method_set_list (hidden_methods, hidden_method_list);
-  for_each(hidden_method_list.begin(), hidden_method_list.end(), bind2nd(mem_fun_ref(&RootClassMethod::SetHidden), true));
+  for (method_set::iterator itr = hidden_method_list.begin(); itr != hidden_method_list.end(); itr++) {
+	  if (WrapperConfigurationInfo::MakeMethodHidden(*itr)) {
+		  itr->SetHidden(true);
+	  }
+  }
   copy(hidden_method_list.begin(), hidden_method_list.end(), inserter(methods_as_set, methods_as_set.begin()));
 
   ///
