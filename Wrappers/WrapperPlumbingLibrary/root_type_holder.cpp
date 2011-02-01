@@ -6,6 +6,7 @@
 #include "root_type_holder.hpp"
 #include "TList.h"
 #include "TClass.h"
+#include "TBaseClass.h"
 #include "TSystem.h"
 #ifdef nullptr
 #undef nullptr
@@ -101,6 +102,15 @@ namespace ROOTNET {
 		/// down the first inherritance branch and then the second (recursively). I doubt this
 		/// is the best algorithm, but until there is a problem it seems to work!
 		///
+		Type ^root_type_holder::GetBestMatchType(::TBaseClass *base_class_info)
+		{
+			///
+			/// Move to something more reasonable - that has actual information in it!
+			///
+
+			return GetBestMatchType(base_class_info->GetClassPointer());
+		}
+
 		Type ^root_type_holder::GetBestMatchType(::TClass *class_info)
 		{
 			/// Walk the inherritance tree to see if we can find something...
@@ -168,7 +178,7 @@ namespace ROOTNET {
 
 			for (int i = 0; i < base_classes->GetEntries(); i++)
 			{
-				TClass *c = static_cast<::TClass*>(base_classes->At(0));
+				TBaseClass *c = static_cast<::TBaseClass*>(base_classes->At(0));
 				Type ^t = GetBestMatchType(c);
 				if (t != nullptr) {
 					return t;

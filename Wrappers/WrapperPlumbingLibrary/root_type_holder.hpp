@@ -6,6 +6,7 @@
 
 #include <string>
 
+class TBaseClass;
 class TClass;
 
 namespace ROOTNET {
@@ -18,15 +19,13 @@ namespace ROOTNET {
 			/// are loaded, etc.
 			static root_type_holder (void);
 
-			/// Returns true if the type is known to the library.
-			//static bool TypeKnown (const System::String ^type_name);
-
-			/// Returns the type specifier for the requested name.
-			//static System::Type ^GetType (const std::string &type_name);
-
 			/// Returns the best match type for a class -- it will walk the inherritance hierarchy
 			static System::Type ^GetBestMatchType (::TClass *class_info);
+
 		private:
+			/// Returns the best match type for a class -- it will walk the inherritance hierarchy
+			static System::Type ^GetBestMatchType (::TBaseClass *class_info);
+
 			/// This is the main library of all types.
 			static System::Collections::Generic::Dictionary<System::String^, System::Type^> ^_class_map
 				= gcnew System::Collections::Generic::Dictionary<System::String^, System::Type^>();
