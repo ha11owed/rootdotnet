@@ -68,7 +68,7 @@
       <ForcedIncludeFiles>w32pragma.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libCore.lib</AdditionalDependencies>
+      <AdditionalDependencies>libCore.lib;libTree.lib;libHist.lib;libRIO.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -103,6 +103,7 @@
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WrapperPlumbingLibrary\WrapperPlumbingLibrary.vcxproj">
@@ -113,19 +114,24 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="ROOTSource\NTDirectory.cpp" />
+    <ClCompile Include="ROOTSource\NTDirectoryFile.cpp" />
+    <ClCompile Include="ROOTSource\NTFile.cpp" />
     <ClCompile Include="ROOTSource\NTNamed.cpp" />
     <ClCompile Include="ROOTSource\NTObject.cpp" />
     <ClCompile Include="ROOTSource\NTSystem.cpp" />
-    <ClCompile Include="ROOTSource\NTWinNTSystem.cpp" />
     <ClCompile Include="ROOTSource\root_type_helpers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="ROOTSource\libCore-make_public.hpp" />
+    <ClInclude Include="ROOTSource\libRIO-make_public.hpp" />
+    <ClInclude Include="ROOTSource\NTDirectory.hpp" />
+    <ClInclude Include="ROOTSource\NTDirectoryFile.hpp" />
+    <ClInclude Include="ROOTSource\NTFile.hpp" />
     <ClInclude Include="ROOTSource\NTNamed.hpp" />
     <ClInclude Include="ROOTSource\NTObject.hpp" />
     <ClInclude Include="ROOTSource\NTSystem.hpp" />
-    <ClInclude Include="ROOTSource\NTWinNTSystem.hpp" />
     <ClInclude Include="ROOTSource\root_type_helpers.hpp" />
   </ItemGroup>
   <ItemGroup>
