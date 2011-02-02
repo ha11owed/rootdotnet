@@ -1011,10 +1011,10 @@ void ClassTranslator::emit_function_body(const RootClassMethod &method, const Ro
   ///
 
   if (method.IsAmbiguous()) {
-	emitter.start_line() << "throw gcnew System::NotImplementedException(\"Method has ambiguous C++ resolution: not currently supported.\");" << endl;
+	emitter.start_line() << "throw gcnew ::System::NotImplementedException(\"Method has ambiguous C++ resolution: not currently supported.\");" << endl;
 	return;
   } else if (method.IsHidden()) {
-	emitter.start_line() << "throw gcnew System::NotImplementedException(\"Method has is protected in C++ class: can't be accessed.\");" << endl;
+	emitter.start_line() << "throw gcnew ::System::NotImplementedException(\"Method has is protected in C++ class: can't be accessed.\");" << endl;
 	return;
   }
 
