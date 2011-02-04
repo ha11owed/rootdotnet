@@ -280,6 +280,9 @@ namespace t_RootClassInfo
 
 	}
 
+#ifdef notanymore
+	/// In ROOT 5.28 they have fixed this inconsitency, and so this test no longer is relavent.
+
 	[TestMethod]
 	void TestHiddenPropertyWithWeirdParameter()
 	{
@@ -313,6 +316,7 @@ namespace t_RootClassInfo
 	  const RootClassMethod *ms = p->setter_method();
 	  Assert::IsTrue (ms->IsHidden(), "Method isn't hidden!");
 	}
+#endif
 
 	[TestMethod]
 	void TestForProtectedAndPublicMethodConst()
