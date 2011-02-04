@@ -22,7 +22,7 @@ public:
   {
   }
 
-  TPointerSimpleType(const std::string &simple_type, bool is_const = false);
+  TPointerSimpleType(const std::string &simple_type, bool is_const = false, bool array_reference = false);
 
   /// We will have to generate some code for this!
   inline bool requires_translation (void) const {
@@ -39,6 +39,10 @@ public:
 
   /// We want to write out a small customized array accessor type
   void write_out_clr_types (SourceEmitter &output);
+
+  /// Make sure to always return the pointer version of things
+  std::string cpp_code_typename(void) const;
+
 private:
   bool _is_const;
   const std::string _base_type;

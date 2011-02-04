@@ -5,6 +5,7 @@
 #include "WrapperConfigurationInfo.hpp"
 #include "CPPNetTypeMapper.hpp"
 #include "RootClassInfo.hpp"
+#include "RootClassMethod.hpp"
 #include "RootClassInfoCollection.hpp"
 #include "RootClassMethodArg.hpp"
 #include "ConverterErrorLog.hpp"
@@ -209,7 +210,6 @@ void WrapperConfigurationInfo::InitTypeTranslators()
 	  CPPNetTypeMapper::instance()->AddTypeMapper (new TPointerSimpleType ("const " + simple_type, true));
 	  CPPNetTypeMapper::instance()->AddTypeMapper (new TTSimpleReference (simple_type));
 	  CPPNetTypeMapper::instance()->AddTypeMapper (new TTSimpleReference ("const " + simple_type, true));
-
 	  CPPNetTypeMapper::instance()->AddTypeMapper (new TVectorArray(simple_type));
 
 	  if (canbe_unsigned[i]) {
@@ -245,6 +245,10 @@ void WrapperConfigurationInfo::InitTypeTranslators()
 	CPPNetTypeMapper::instance()->AddTypeMapper (new TPointerSimpleType ("const unsigned char", true));
 	CPPNetTypeMapper::instance()->AddTypeMapper (new TTSimpleReference ("char"));
 	CPPNetTypeMapper::instance()->AddTypeMapper (new TTSimpleReference ("unsigned char", false));
+
+	CPPNetTypeMapper::instance()->AddTypeMapper (new TVectorArray("char"));
+	CPPNetTypeMapper::instance()->AddTypeMapper (new TPointerSimpleType ("char", false, true));
+	CPPNetTypeMapper::instance()->AddTypeMapper (new TPointerSimpleType ("const char", true, true));
 
 	///
 	/// Finally, setup all the features for the classes we are translating
@@ -545,6 +549,21 @@ void WrapperConfigurationInfo::FixUpMethodArguments (const RootClassInfo *class_
 				args[0].ResetType("TSelector*", "TSelector");
 			}
 	}
+}
+
+///
+/// Fix up a return type for certian methods.
+///
+string WrapperConfigurationInfo::FixupMethodReturnType(const RootClassInfo *class_info, const RootClassMethod *method_info, const string &return_typename)
+{
+	if ((method_info->ClassOfMethodDefinition() == "TBuffer")
+		&& (method_info->NETName() == "Buffer")
+		&& return_typename == "char*")
+	{
+		return "char[]";
+	}
+
+	return return_typename;
 }
 
 ///

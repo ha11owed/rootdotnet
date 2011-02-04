@@ -355,7 +355,8 @@ string RootClassMethod::return_type (void) const
 	if (_return_type.size() != 0) {
 		return _return_type;
 	}
-	return _root_method_info->GetReturnTypeName();
+	_return_type = WrapperConfigurationInfo::FixupMethodReturnType(_parent, this, _root_method_info->GetReturnTypeName());
+	return _return_type;
 }
 
 ///
@@ -371,7 +372,7 @@ void RootClassMethod::SetReturnType (const string &rtn_type)
 ///
 string RootClassMethod::raw_return_type (void) const
 {
-	string result(_root_method_info->GetReturnTypeName());
+	string result(return_type());
 	if (result.find('&') != result.npos) {
 		result.erase(result.find('&'));
 	}

@@ -141,7 +141,7 @@ private:
 	bool _skip_method;
 	bool _covar_method;
 	int _number_args;
-	std::string _return_type;
+	mutable std::string _return_type;
 	mutable std::string _netname;
 
 	mutable bool _is_user_conversion;

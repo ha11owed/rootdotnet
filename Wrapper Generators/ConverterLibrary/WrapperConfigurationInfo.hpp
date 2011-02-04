@@ -50,6 +50,9 @@ public:
 	/// Fix up method arguments for "special cases"
 	static void FixUpMethodArguments (const RootClassInfo *class_info, const std::string &method_name, std::vector<RootClassMethodArg> &methods);
 
+	/// Fix up method return type for "special cases"
+	static std::string FixupMethodReturnType(const RootClassInfo *class_info, const RootClassMethod *method_info, const std::string &return_typename);
+
 	/// Return false if a particular method shouldn't be made hidden accoring to some specialized rules.
 	static bool MakeMethodHidden (const RootClassMethod &method);
 
