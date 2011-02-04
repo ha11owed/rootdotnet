@@ -319,7 +319,7 @@ namespace t_Translation
 
 	  const RootClassProperty *p;
 	  for (int i = 0; i < props.size(); i++) {
-		if (props[i].name() == "3sProbability") {
+		if (props[i].name() == "A3sProbability") {
 		  p = &props[i];
 		  break;
 		}
