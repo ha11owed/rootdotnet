@@ -9,6 +9,7 @@
 #include "CPPNetTypeMapper.hpp"
 #include "TTSimpleType.hpp"
 #include "TTROOTClass.hpp"
+#include "TTROOTenum.hpp"
 
 #include "TApplication.h"
 #include "TSystem.h"
@@ -134,6 +135,38 @@ namespace t_RootClassInfo
 	  Assert::IsTrue(find_if(cprotos.begin(),cprotos.end(),findmethodname("IsA")) == cprotos.end(), "The clean inherrited method IsA should not be present list - it is!");
 
 	  delete cinfo;
+	}
+
+	///
+	/// GetDragType comes from two sub-classes. How do we pick either one??? Very hard to know! So, we have to "bail".
+	///
+	[TestMethod]
+	void TestForIntHiding()
+	{
+		gSystem->Load("libGuiBld");
+
+	  CPPNetTypeMapper::instance()->AddTypeMapper(new TTSimpleType("int", "int"));
+	  CPPNetTypeMapper::instance()->AddTypedefMapping("Int_t", "int");
+	  CPPNetTypeMapper::instance()->AddTypedefMapping("Width_t", "int");
+	  CPPNetTypeMapper::instance()->AddTypeMapper(new TTROOTenum("EDragType"));
+
+	  auto cinfo = new RootClassInfo("TGuiBldDragManager");
+		const vector<RootClassMethod> protos (cinfo->GetAllPrototypesForThisClass(true));
+		
+		///
+		/// There should be only one GetDragType method
+		///
+
+		int count = 0;
+		for (int i = 0; i < protos.size(); i++) {
+			if (protos[i].NETName() == "GetDragType")
+				count++;
+		}
+		Assert::AreEqual(1, count, "incorrect count of GetDragType");
+
+		auto m = FindMethod("GetDragType", protos);
+		Assert::IsTrue("EDragType" == m->return_type(), "Incorrect return type");
+		
 	}
 
 	[TestMethod]

@@ -177,7 +177,8 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 	methods_to_skip.insert("TGWindow::GetMainFrame");
 	methods_to_skip.insert("TRootBrowser::GetMainFrame");
 	methods_to_skip.insert("TRootBrowserLite::GetMainFrame");
-
+	methods_to_skip.insert("TGFrame::GetDragType");
+	methods_to_skip.insert("TVirtualDragManager::GetDragType");
 
 	return methods_to_skip;
 }
@@ -598,7 +599,7 @@ bool WrapperConfigurationInfo::MakeMethodHidden (const RootClassMethod &method)
 ///
 /// This is an artifiact, btw, of the way that we do the translation: the base class defines everything it
 /// does in an interface. After that you always have to implement that interface. So, something that works find in
-/// A can cause a compiler error in B if B : public B!!
+/// A can cause a compiler error in B if B : public A!!
 ///
 bool WrapperConfigurationInfo::CheckPropertyNameBad (const RootClassInfo *class_info, const std::string &property_name)
 {
