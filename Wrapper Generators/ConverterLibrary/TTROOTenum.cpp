@@ -48,3 +48,14 @@ void TTROOTenum::translate_to_net(const std::string &name_net, const std::string
 {
 	emitter.start_line() << net_interface_name() << " " << name_net << " = (" << net_typename() << ") " << name_cpp << ";" << endl;
 }
+
+///
+/// Return the interface name. For a global guy i tis in the ROOT namespace... Otherwise, it is
+/// in the interface.
+std::string TTROOTenum::net_interface_name (void) const
+{
+	if (net_typename().find("::") == net_typename().npos)
+		return "ROOTNET::" + net_typename();
+
+	return "ROOTNET::Interface::" + net_typename();
+}

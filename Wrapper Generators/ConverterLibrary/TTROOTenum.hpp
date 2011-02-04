@@ -27,9 +27,7 @@ public:
 	}
 
 	/// Make sure we know where we are getting this from!
-	inline std::string net_interface_name (void) const {
-		return "ROOTNET::Interface::" + net_typename();
-	}
+	std::string net_interface_name (void) const;
 
 	virtual void translate_to_cpp (const std::string &name_net, const std::string &name_cpp, SourceEmitter &emitter) const;
 	virtual void translate_to_net (const std::string &name_net, const std::string &name_cpp, SourceEmitter &emitter) const;
