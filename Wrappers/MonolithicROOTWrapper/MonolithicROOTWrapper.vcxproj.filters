@@ -21,25 +21,16 @@
     <ClCompile Include="AssemblyInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ROOTSource\NTBuffer.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTBufferFile.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
     <ClCompile Include="ROOTSource\NTObject.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
     <ClCompile Include="ROOTSource\root_type_helpers.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
-    <ClCompile Include="ROOTSource\NTDirectory.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
-    <ClCompile Include="ROOTSource\NTDirectoryFile.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
-    <ClCompile Include="ROOTSource\NTFile.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
-    <ClCompile Include="ROOTSource\NTNamed.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
-    <ClCompile Include="ROOTSource\NTSystem.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,28 +41,19 @@
     <ClInclude Include="ROOTSource\libCore-make_public.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
+    <ClInclude Include="ROOTSource\libRIO-make_public.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTBuffer.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTBufferFile.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
     <ClInclude Include="ROOTSource\NTObject.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\root_type_helpers.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\libRIO-make_public.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTDirectory.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTDirectoryFile.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTFile.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTNamed.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTSystem.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
   </ItemGroup>

@@ -114,24 +114,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="ROOTSource\NTDirectory.cpp" />
-    <ClCompile Include="ROOTSource\NTDirectoryFile.cpp" />
-    <ClCompile Include="ROOTSource\NTFile.cpp" />
-    <ClCompile Include="ROOTSource\NTNamed.cpp" />
+    <ClCompile Include="ROOTSource\NTBuffer.cpp" />
+    <ClCompile Include="ROOTSource\NTBufferFile.cpp" />
     <ClCompile Include="ROOTSource\NTObject.cpp" />
-    <ClCompile Include="ROOTSource\NTSystem.cpp" />
     <ClCompile Include="ROOTSource\root_type_helpers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="ROOTSource\libCore-make_public.hpp" />
     <ClInclude Include="ROOTSource\libRIO-make_public.hpp" />
-    <ClInclude Include="ROOTSource\NTDirectory.hpp" />
-    <ClInclude Include="ROOTSource\NTDirectoryFile.hpp" />
-    <ClInclude Include="ROOTSource\NTFile.hpp" />
-    <ClInclude Include="ROOTSource\NTNamed.hpp" />
+    <ClInclude Include="ROOTSource\NTBuffer.hpp" />
+    <ClInclude Include="ROOTSource\NTBufferFile.hpp" />
     <ClInclude Include="ROOTSource\NTObject.hpp" />
-    <ClInclude Include="ROOTSource\NTSystem.hpp" />
     <ClInclude Include="ROOTSource\root_type_helpers.hpp" />
   </ItemGroup>
   <ItemGroup>
