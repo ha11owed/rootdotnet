@@ -96,11 +96,40 @@ void RootEnum::init_cint_data() const
 	}
 }
 
-string RootEnum::Name() const
+///
+/// Return the name with no class specification, etc.
+///
+string RootEnum::NameQualified() const
 {
 	if (_name == "enum ") {
 		return "enum_";
 	} else {
 		return _name;
 	}
+}
+
+///
+/// Return the full name
+///
+string RootEnum::NameUnqualified() const
+{
+	if (_name == "enum ") {
+		return "enum_";
+	} else {
+		int index = _name.find("::");
+		if (index == _name.npos) {
+			return _name;
+		}
+
+		string stripped (_name.substr(index+2));
+		return stripped;
+	}
+}
+
+///
+/// Return true if this is defined in a class
+///
+bool RootEnum::IsClassDefined() const
+{
+	return _name.find("::") != _name.npos;
 }

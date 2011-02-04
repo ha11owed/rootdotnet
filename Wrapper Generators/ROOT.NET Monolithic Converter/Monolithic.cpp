@@ -172,8 +172,8 @@ int main()
 		auto info = RootClassInfoCollection::GetRootClassInfo(all_classes[i]);
 		for (unsigned ienum = 0; ienum < info.GetClassEnums().size(); ienum++) {
 			auto enumInfo = info.GetClassEnums()[ienum];
-			if (enumInfo.Name().size() > 0) {
-				rep_state.register_enum_translation(enumInfo.Name());
+			if (enumInfo.NameUnqualified().size() > 0) {
+				rep_state.register_enum_translation(enumInfo.NameQualified());
 			}
 		}
 	}

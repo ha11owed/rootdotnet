@@ -32,13 +32,20 @@ public:
 		return _values;
 	}
 
-	std::string Name(void) const;
+	/// Returns the full name of the enum
+	std::string NameQualified(void) const;
+
+	/// Returns the plane name - so w/out class info, etc.
+	std::string NameUnqualified(void) const;
 
 	/// Return the name of the include file in ROOT where we are defined.
 	std::string include_filename (void) const;
 
 	/// Library where the enum is usually located.
 	std::string LibraryName (void) const;
+
+	//// Returns true if this enum was class defined rather than globally defined.
+	bool IsClassDefined (void) const;
 
 private:
 	std::string _name;

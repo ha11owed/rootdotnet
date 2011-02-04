@@ -34,114 +34,114 @@ using namespace	Microsoft::VisualStudio::TestTools::UnitTesting;
 namespace {
   class findmethodname {
   public:
-    findmethodname(const string n)
-      : _name(n)
-    {}
-    bool operator() (const RootClassMethod &info)
-    {
-      return info.CPPName() == _name;
-    }
+	findmethodname(const string n)
+	  : _name(n)
+	{}
+	bool operator() (const RootClassMethod &info)
+	{
+	  return info.CPPName() == _name;
+	}
   private:
-    string _name;
+	string _name;
   };
 }
 
 namespace t_RootClassInfo
 {
 
-    [TestClass]
+	[TestClass]
   public ref class BasicOperations
   {
   private:
-    TestContext^ testContextInstance;
+	TestContext^ testContextInstance;
 
   public: 
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    property Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ TestContext
-    {
-      Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ get()
-      {
+	/// <summary>
+	///Gets or sets the test context which provides
+	///information about and functionality for the current test run.
+	///</summary>
+	property Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ TestContext
+	{
+	  Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ get()
+	  {
 	return testContextInstance;
-      }
-      System::Void set(Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ value)
-      {
+	  }
+	  System::Void set(Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ value)
+	  {
 	testContextInstance = value;
-      }
-    };
+	  }
+	};
 
-    [ClassInitialize]
-    static void SetupClassTest(Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ testContext)
-    {
-      int nargs = 2;
-      char *argv[2];
-      argv[0] = "ROOTWrapperGenerator.exe";
-      argv[1] = "-b";
-      TApplication *app = new TApplication ("ROOTWrapperGenerator", &nargs, argv);
-      gSystem->Load("libHist");
-      gSystem->Load("libHist");
-      gSystem->Load("libRooFit");
-    }
+	[ClassInitialize]
+	static void SetupClassTest(Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ testContext)
+	{
+	  int nargs = 2;
+	  char *argv[2];
+	  argv[0] = "ROOTWrapperGenerator.exe";
+	  argv[1] = "-b";
+	  TApplication *app = new TApplication ("ROOTWrapperGenerator", &nargs, argv);
+	  gSystem->Load("libHist");
+	  gSystem->Load("libHist");
+	  gSystem->Load("libRooFit");
+	}
 
-    /// Make sure the type translators are empty!
-    [TestCleanup]
+	/// Make sure the type translators are empty!
+	[TestCleanup]
 	[TestInitialize]
-    void CleanOutTypeSystem()
-    {
-      CPPNetTypeMapper::Reset();
+	void CleanOutTypeSystem()
+	{
+	  CPPNetTypeMapper::Reset();
 	  RootClassInfoCollection::Reset();
-    }
+	}
 
-    [TestMethod]
-    void CheckBasicAccessors()
-    {
-      RootClassInfo *cinfo = new RootClassInfo ("TH1F");
-      Assert::IsTrue (cinfo->CPPName() == "TH1F", "CPP Name is incorrect");
-      Assert::IsTrue (cinfo->NETName() == "NTH1F", "NET Name is incorrect");
-      delete cinfo;
-    }
+	[TestMethod]
+	void CheckBasicAccessors()
+	{
+	  RootClassInfo *cinfo = new RootClassInfo ("TH1F");
+	  Assert::IsTrue (cinfo->CPPName() == "TH1F", "CPP Name is incorrect");
+	  Assert::IsTrue (cinfo->NETName() == "NTH1F", "NET Name is incorrect");
+	  delete cinfo;
+	}
 
-    [TestMethod]
-    void CheckBasicInherritance()
-    {
-      RootClassInfo *cinfo = new RootClassInfo ("TH1F");
-      vector<string> inherrited_classes (cinfo->GetDirectInheritedClasses());
-      Assert::IsFalse (find(inherrited_classes.begin(), inherrited_classes.end(), "TNamed") != inherrited_classes.end(), "TNamed listed as direct inherrited");
-      Assert::IsTrue (find(inherrited_classes.begin(), inherrited_classes.end(), "TH1") != inherrited_classes.end(), "TNamed is not listed as direct inherrited");
-      delete cinfo;
-    }
+	[TestMethod]
+	void CheckBasicInherritance()
+	{
+	  RootClassInfo *cinfo = new RootClassInfo ("TH1F");
+	  vector<string> inherrited_classes (cinfo->GetDirectInheritedClasses());
+	  Assert::IsFalse (find(inherrited_classes.begin(), inherrited_classes.end(), "TNamed") != inherrited_classes.end(), "TNamed listed as direct inherrited");
+	  Assert::IsTrue (find(inherrited_classes.begin(), inherrited_classes.end(), "TH1") != inherrited_classes.end(), "TNamed is not listed as direct inherrited");
+	  delete cinfo;
+	}
 
-    [TestMethod]
-    void GetInherritedPrototypes()
-    {
-      RootClassInfo *cinfo = new RootClassInfo ("TH1F");
-      
-      /// Check getting lots of protoypes.
-      vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
-      Assert::IsTrue (protos.size() > 0, "No inherrited prototypes were returned");
-      Assert::IsFalse(find_if(protos.begin(),protos.end(),findmethodname("Add")) != protos.end(), "The inherrited method Add is present in the prototype list");
-      Assert::IsTrue(find_if(protos.begin(),protos.end(),findmethodname("AddBinContent")) != protos.end(), "The inherrited method AddBinContent is not present in the prototype list");
-      Assert::IsTrue(find_if(protos.begin(),protos.end(),findmethodname("Copy")) != protos.end(), "The inherrited method Copy is not present in the prototype list");
+	[TestMethod]
+	void GetInherritedPrototypes()
+	{
+	  RootClassInfo *cinfo = new RootClassInfo ("TH1F");
+	  
+	  /// Check getting lots of protoypes.
+	  vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
+	  Assert::IsTrue (protos.size() > 0, "No inherrited prototypes were returned");
+	  Assert::IsFalse(find_if(protos.begin(),protos.end(),findmethodname("Add")) != protos.end(), "The inherrited method Add is present in the prototype list");
+	  Assert::IsTrue(find_if(protos.begin(),protos.end(),findmethodname("AddBinContent")) != protos.end(), "The inherrited method AddBinContent is not present in the prototype list");
+	  Assert::IsTrue(find_if(protos.begin(),protos.end(),findmethodname("Copy")) != protos.end(), "The inherrited method Copy is not present in the prototype list");
 
-      /// Check getting the "cleaned" prototypes. Assume our type manager knows nothing at this point! ;-)
-      vector<RootClassMethod> cprotos (cinfo->GetPrototypesImplementedByThisClass(true));
-      Assert::IsTrue (cprotos.size() > 0, "No cleaned inherrited prototypes were returned");
-      Assert::IsTrue(find_if(cprotos.begin(),cprotos.end(),findmethodname("AddBinContent")) == cprotos.end(), "The clean inherrited method AddBinContent should not be present in the prototype list");
-      Assert::IsTrue(find_if(cprotos.begin(),cprotos.end(),findmethodname("Copy")) == cprotos.end(), "The clean inherrited method Copy is present in the prototype list - it isn't clean!");
-      Assert::IsFalse(find_if(cprotos.begin(),cprotos.end(),findmethodname("Reset")) == cprotos.end(), "The clean inherrited method Reset should be present list - it isn't!");
-      Assert::IsTrue(find_if(cprotos.begin(),cprotos.end(),findmethodname("IsA")) == cprotos.end(), "The clean inherrited method IsA should not be present list - it is!");
+	  /// Check getting the "cleaned" prototypes. Assume our type manager knows nothing at this point! ;-)
+	  vector<RootClassMethod> cprotos (cinfo->GetPrototypesImplementedByThisClass(true));
+	  Assert::IsTrue (cprotos.size() > 0, "No cleaned inherrited prototypes were returned");
+	  Assert::IsTrue(find_if(cprotos.begin(),cprotos.end(),findmethodname("AddBinContent")) == cprotos.end(), "The clean inherrited method AddBinContent should not be present in the prototype list");
+	  Assert::IsTrue(find_if(cprotos.begin(),cprotos.end(),findmethodname("Copy")) == cprotos.end(), "The clean inherrited method Copy is present in the prototype list - it isn't clean!");
+	  Assert::IsFalse(find_if(cprotos.begin(),cprotos.end(),findmethodname("Reset")) == cprotos.end(), "The clean inherrited method Reset should be present list - it isn't!");
+	  Assert::IsTrue(find_if(cprotos.begin(),cprotos.end(),findmethodname("IsA")) == cprotos.end(), "The clean inherrited method IsA should not be present list - it is!");
 
-      delete cinfo;
-    }
+	  delete cinfo;
+	}
 
-    [TestMethod]
-    void TypeMapLookups()
-    {
-      /// Make sure we can't translate TObject!
-      Assert::IsFalse(CPPNetTypeMapper::instance()->has_mapping("TObject"), "Type mapper claims we can translate TObject - that is bad!");
-    }
+	[TestMethod]
+	void TypeMapLookups()
+	{
+	  /// Make sure we can't translate TObject!
+	  Assert::IsFalse(CPPNetTypeMapper::instance()->has_mapping("TObject"), "Type mapper claims we can translate TObject - that is bad!");
+	}
 
 	const RootClassMethod *FindMethod(const string &mname, const vector<RootClassMethod> &protos)
 	{
@@ -153,61 +153,61 @@ namespace t_RootClassInfo
 	  return 0;
 	}
 
-    [TestMethod]
-    void MethodTranslationAbility()
-    {
-      RootClassInfo *cinfo = new RootClassInfo ("TH1F");
+	[TestMethod]
+	void MethodTranslationAbility()
+	{
+	  RootClassInfo *cinfo = new RootClassInfo ("TH1F");
 
-      // Get a method
-      vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
+	  // Get a method
+	  vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
 
-      // Find the Copy method...
-      const RootClassMethod *method = FindMethod("Copy", protos);
-      Assert::IsTrue (method != 0, "Could not find the Copy method in the list of TH1F methods!");
-      Assert::IsFalse(method->can_be_translated(), "We shouldn't be able to translate the Copy method!");
+	  // Find the Copy method...
+	  const RootClassMethod *method = FindMethod("Copy", protos);
+	  Assert::IsTrue (method != 0, "Could not find the Copy method in the list of TH1F methods!");
+	  Assert::IsFalse(method->can_be_translated(), "We shouldn't be able to translate the Copy method!");
 
-      // The Class method, which is static and returns TClass, shouldn't translate.
-      const RootClassMethod *classMethod = FindMethod("Class", protos);
-      Assert::IsTrue (classMethod != 0, "Could not find the raw Class method");
-      Assert::IsFalse (classMethod->can_be_translated(), "We shouldn't be able to translate the Class method!");
+	  // The Class method, which is static and returns TClass, shouldn't translate.
+	  const RootClassMethod *classMethod = FindMethod("Class", protos);
+	  Assert::IsTrue (classMethod != 0, "Could not find the raw Class method");
+	  Assert::IsFalse (classMethod->can_be_translated(), "We shouldn't be able to translate the Class method!");
 
-      // The IsA method, which is static and returns TClass, shouldn't translate.
-      const RootClassMethod *isaMethod = FindMethod("IsA", protos);
-      Assert::IsTrue (isaMethod != 0, "Could not find the raw IsA method");
-      Assert::IsFalse (isaMethod->can_be_translated(), "We shouldn't be able to translate the IsA method!");
+	  // The IsA method, which is static and returns TClass, shouldn't translate.
+	  const RootClassMethod *isaMethod = FindMethod("IsA", protos);
+	  Assert::IsTrue (isaMethod != 0, "Could not find the raw IsA method");
+	  Assert::IsFalse (isaMethod->can_be_translated(), "We shouldn't be able to translate the IsA method!");
 
-      delete cinfo;
-    }
-
-    [TestMethod]
-    void FindResetMethodInTH1F()
-    {
-      /// Reset is an inherrited method, which should be implemented in both clean and unclean versions
-      /// - it has a Option_t argument, but that is a default argument.
-      RootClassInfo *cinfo = new RootClassInfo ("TH1F");
-      vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
-      Assert::IsTrue(FindMethod("Reset", protos) != 0, "Unable to find TH1F::Reset in complete list of methods");
-      vector<RootClassMethod> cprotos (cinfo->GetPrototypesImplementedByThisClass(true));
-      Assert::IsTrue(FindMethod("Reset", cprotos) != 0, "Unable to find TH1F::Reset in clean list of methods");
-      delete cinfo;
-    }
+	  delete cinfo;
+	}
 
 	[TestMethod]
-    void TranslatorMeansFinding()
-    {
-      /// Make sure if we declare something to the type system that we can then translate an associated method!
-      RootClassInfo *cinfo = new RootClassInfo ("TH1F");
-      vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
-      const RootClassMethod *method = FindMethod("AddBinContent", protos);
-      Assert::IsTrue(method != nullptr, "Unable to find the AddBinContent method in TH1F");
-      Assert::IsFalse(method->can_be_translated(), "Method is marked as being able to translate - should not be!");
+	void FindResetMethodInTH1F()
+	{
+	  /// Reset is an inherrited method, which should be implemented in both clean and unclean versions
+	  /// - it has a Option_t argument, but that is a default argument.
+	  RootClassInfo *cinfo = new RootClassInfo ("TH1F");
+	  vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
+	  Assert::IsTrue(FindMethod("Reset", protos) != 0, "Unable to find TH1F::Reset in complete list of methods");
+	  vector<RootClassMethod> cprotos (cinfo->GetPrototypesImplementedByThisClass(true));
+	  Assert::IsTrue(FindMethod("Reset", cprotos) != 0, "Unable to find TH1F::Reset in clean list of methods");
+	  delete cinfo;
+	}
 
-      /// Declare the missing type - Int_t.
-      CPPNetTypeMapper::instance()->AddTypedefMapping("Int_t", "int");
-      CPPNetTypeMapper::instance()->AddTypeMapper(new TTSimpleType ("int", "int"));
+	[TestMethod]
+	void TranslatorMeansFinding()
+	{
+	  /// Make sure if we declare something to the type system that we can then translate an associated method!
+	  RootClassInfo *cinfo = new RootClassInfo ("TH1F");
+	  vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
+	  const RootClassMethod *method = FindMethod("AddBinContent", protos);
+	  Assert::IsTrue(method != nullptr, "Unable to find the AddBinContent method in TH1F");
+	  Assert::IsFalse(method->can_be_translated(), "Method is marked as being able to translate - should not be!");
 
-      Assert::IsTrue(method->can_be_translated(), "Method should not be translatable, but isn't!");
-    }
+	  /// Declare the missing type - Int_t.
+	  CPPNetTypeMapper::instance()->AddTypedefMapping("Int_t", "int");
+	  CPPNetTypeMapper::instance()->AddTypeMapper(new TTSimpleType ("int", "int"));
+
+	  Assert::IsTrue(method->can_be_translated(), "Method should not be translatable, but isn't!");
+	}
 
 	[TestMethod]
 	void TestIllegalMethodNames()
@@ -217,7 +217,7 @@ namespace t_RootClassInfo
 	  vector<RootClassMethod> protos (cinfo.GetAllPrototypesForThisClass(false));
 	  bool seen_one = false;
 	  for (int i = 0; i < protos.size(); i++) {
-  		const RootClassMethod &m (protos[i]);
+		const RootClassMethod &m (protos[i]);
 		if (m.CPPName() == "operator=") {
 		  Assert::IsTrue(m.has_return_value() || !m.can_be_translated(), "This operator should always have a return type!");
 		  seen_one = true;
@@ -227,23 +227,23 @@ namespace t_RootClassInfo
 	}
 
 	[TestMethod]
-    void TestBadMethodNames()
-    {
-      /// Make sure if we declare something to the type system that we can then translate an associated method!
-      RootClassInfo cinfo ("TH1F");
+	void TestBadMethodNames()
+	{
+	  /// Make sure if we declare something to the type system that we can then translate an associated method!
+	  RootClassInfo cinfo ("TH1F");
 	  set<string> bad_methods;
 	  bad_methods.insert("Reset");
 	  cinfo.set_bad_method_names(bad_methods);
 
-      vector<RootClassMethod> protos (cinfo.GetPrototypesImplementedByThisClass(false));
-      const RootClassMethod *method = FindMethod("Reset", protos);
+	  vector<RootClassMethod> protos (cinfo.GetPrototypesImplementedByThisClass(false));
+	  const RootClassMethod *method = FindMethod("Reset", protos);
 	  Assert::IsTrue(method == 0, "The Reset should not have been translated");
 
-      RootClassInfo cinfo1 ("TH1F");
-      vector<RootClassMethod> protos1 (cinfo1.GetPrototypesImplementedByThisClass(false));
-      method = FindMethod("Reset", protos1);
+	  RootClassInfo cinfo1 ("TH1F");
+	  vector<RootClassMethod> protos1 (cinfo1.GetPrototypesImplementedByThisClass(false));
+	  method = FindMethod("Reset", protos1);
 	  Assert::IsTrue(method != 0, "The Reset should have been translated");
-    }
+	}
 
 	[TestMethod]
 	void TestRooOperatorEqual()
@@ -332,6 +332,46 @@ namespace t_RootClassInfo
 
 	  Assert::AreEqual(pgoodm.size(), pbadm.size(), "Should have same number of methods no matter what!");
 	  Assert::AreEqual(pgood.size(), pbad.size(), "Should have same number of properties no matter what!");
+	}
+
+	[TestMethod]
+	void TestClassEnumEvents()
+	{
+		gSystem->Load("libRIO");
+		RootClassInfo buffer ("TBuffer");
+		auto enums = buffer.GetClassEnums();
+		RootEnum *e = 0;
+		for (int i = 0; i < enums.size(); i++) {
+			auto name (enums[i].NameUnqualified());
+			if (name.find("EMode") != name.npos) {
+				e = &enums[i];
+			}
+		}
+		Assert::IsTrue(e != 0, "Did not find an enum called EMode");
+
+		Assert::IsTrue(e->NameQualified() == "TBuffer::EMode", "name wasn't as expected");
+		Assert::IsTrue(e->NameUnqualified() == "EMode", "unqualified name is not right");
+	}
+
+	[TestMethod]
+	void TestClassEnumEmptyDoneRight()
+	{
+		gSystem->Load("libRIO");
+		RootClassInfo buffer ("TBuffer");
+		auto enums = buffer.GetClassEnums();
+		for (int i = 0; i < enums.size(); i++) {
+			Assert::IsFalse(enums[i].NameQualified() == "TBuffer::", "No enum should be called TBuffer::!");
+		}
+	}
+
+	[TestMethod]
+	void TestEnumKnows()
+	{
+		auto enY = new RootEnum("TBuffer::EMode");
+		auto enN = new RootEnum("EUser");
+
+		Assert::IsTrue(enY->IsClassDefined(), "class qualifier should have been detected");
+		Assert::IsFalse(enN->IsClassDefined(), "class qualifier missing, global guy");
 	}
 
 	[TestMethod]
@@ -463,8 +503,8 @@ namespace t_RootClassInfo
 	void TestPropNamedCorrectly()
 	{
 	  RootClassInfo cinfo ("TConfidenceLevel");
-      CPPNetTypeMapper::instance()->AddTypedefMapping("Double_t", "double");
-      CPPNetTypeMapper::instance()->AddTypeMapper(new TTSimpleType ("double", "double"));
+	  CPPNetTypeMapper::instance()->AddTypedefMapping("Double_t", "double");
+	  CPPNetTypeMapper::instance()->AddTypeMapper(new TTSimpleType ("double", "double"));
 	  vector<RootClassProperty> props (cinfo.GetProperties());
 
 	  for (int i = 0; i < props.size(); i++) {
@@ -482,8 +522,8 @@ namespace t_RootClassInfo
 	  /// methods (gecause you had to have GetX at least), and that is what hid this guy!
 	  ///
 
-      CPPNetTypeMapper::instance()->AddTypedefMapping("Double_t", "double");
-      CPPNetTypeMapper::instance()->AddTypeMapper(new TTSimpleType ("double", "double"));
+	  CPPNetTypeMapper::instance()->AddTypedefMapping("Double_t", "double");
+	  CPPNetTypeMapper::instance()->AddTypeMapper(new TTSimpleType ("double", "double"));
 
 	  RootClassInfo cinfo ("TVector3");
 

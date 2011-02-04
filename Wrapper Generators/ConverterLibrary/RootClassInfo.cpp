@@ -847,14 +847,27 @@ const vector<RootEnum> &RootClassInfo::GetClassEnums() const
 			TDataMember *d = static_cast<TDataMember*> (member_list->At(i));
 			if ((d->Property() & (kIsEnum | kIsStatic)) == (kIsEnum | kIsStatic)) {
 				///
-				/// Get the name of the enum... blank if it is class level.
+				/// Get the name of the enum... blank if it is class level. Also, remove all qualifiers
 				///
+
 				string enum_name = d->GetFullTypeName();
 				int class_start = enum_name.find(_name + "::");
 				if (class_start == string::npos) {
 					break;
 				}
-				enum_name = enum_name.substr(class_start+2 + _name.size());
+
+				unsigned int space = enum_name.rfind(" ");
+				if (space != enum_name.npos) {
+					enum_name = enum_name.substr(space+1);
+				}
+
+				/// If it is a class level enum, i tis constants and shouldn't be
+				/// listed at all.
+				if (enum_name.find("::") == enum_name.size()-2) {
+					enum_name = "";
+				}
+
+				//enum_name = enum_name.substr(class_start+2 + _name.size());
 				string const_name = d->GetName();
 
 				///

@@ -185,22 +185,22 @@ string CPPNetTypeMapper::resolve_typedefs (const string &in_name) const
   string name (in_name);
   bool is_const = false;
   if (name.find("const ") == 0) {
-    is_const = true;
-    name = name.substr(6);
+	is_const = true;
+	name = name.substr(6);
   }
   map<string, string>::const_iterator itr;
   string found_type (name);
   int count = 0;
   while ((itr = _typedef_map.find(found_type)) != _typedef_map.end()) {
-    found_type = itr->second;
-    count++;
-    if (count > 100) {
-      ConverterErrorLog::log_type_error(name, "Circular/recursive type definition detected.");
-      throw runtime_error ("Typedef " + name + " has a circular typedef definition -- giving up!");
-    }
+	found_type = itr->second;
+	count++;
+	if (count > 100) {
+	  ConverterErrorLog::log_type_error(name, "Circular/recursive type definition detected.");
+	  throw runtime_error ("Typedef " + name + " has a circular typedef definition -- giving up!");
+	}
   }
   if (is_const) {
-    found_type = "const " + found_type;
+	found_type = "const " + found_type;
   }
 
   return found_type;
@@ -219,15 +219,15 @@ bool CPPNetTypeMapper::has_mapping (const string &class_name)
 namespace {
   class write_out_types {
   public:
-    inline write_out_types (SourceEmitter &output)
-      : _output (output)
-    {}
-    inline void operator() (const pair<string, CPPNetTypeMapper::TypeTranslator*> &item)
-    {
-      item.second->write_out_clr_types(_output);
-    }
+	inline write_out_types (SourceEmitter &output)
+	  : _output (output)
+	{}
+	inline void operator() (const pair<string, CPPNetTypeMapper::TypeTranslator*> &item)
+	{
+	  item.second->write_out_clr_types(_output);
+	}
   private:
-    SourceEmitter &_output;
+	SourceEmitter &_output;
   };
 }
 
@@ -239,7 +239,7 @@ namespace {
 void CPPNetTypeMapper::write_out_clr_type_support_files(SourceEmitter &output) const
 {
   for_each (_cpp_translator_map.begin(), _cpp_translator_map.end(),
-    write_out_types (output));
+	write_out_types (output));
 }
 
 ///

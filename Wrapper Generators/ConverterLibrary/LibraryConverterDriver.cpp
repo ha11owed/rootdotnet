@@ -570,7 +570,7 @@ void LibraryConverterDriver::translate(void)
 			libName = _single_library_name;
 		}
 		string output_dir = _output_dir + "\\" + libName + "\\Source";
-		files_by_library[libName].push_back(info.Name());
+		files_by_library[libName].push_back(info.NameUnqualified());
 		check_dir (output_dir);
 		translator.SetOutputDir (output_dir);
 		translator.translate (info);

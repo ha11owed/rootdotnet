@@ -7,8 +7,17 @@
 using std::string;
 using std::endl;
 
+namespace {
+	string createNetName (const string &name)
+	{
+		if (name.find("::") == name.npos)
+			return name;
+		return "N" + name;
+	}
+}
+
 TTROOTenum::TTROOTenum(const string &enum_name)
-: TypeTranslator (enum_name, enum_name)
+: TypeTranslator (createNetName(enum_name), enum_name)
 {
 }
 
