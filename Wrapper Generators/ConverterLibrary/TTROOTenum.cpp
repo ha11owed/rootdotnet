@@ -8,7 +8,7 @@ using std::string;
 using std::endl;
 
 TTROOTenum::TTROOTenum(const string &enum_name)
-: TypeTranslator ("EButtonState", "EButtonState")
+: TypeTranslator (enum_name, enum_name)
 {
 }
 
