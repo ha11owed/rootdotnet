@@ -212,7 +212,7 @@ namespace t_MethodInherritance
 	  vector<RootClassProperty> props (cinfo->GetProperties());
 	  bool found_it = false;
 	  for (int i = 0; i < props.size(); i++) {
-		if (props[i].name() == "PRMarkerSize") {
+		if (props[i].name() == "MarkerSize") {
 		  found_it = true;
 		}
 	  }

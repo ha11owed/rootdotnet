@@ -72,9 +72,8 @@ int main()
 
 #ifndef notyet
 	/// The below lines are used during debugging in order to build a single (problem) class.
-	asked_for_class_list.push_back ("TObject");
-	asked_for_class_list.push_back ("TFile");
-	asked_for_class_list.push_back ("TSystem");
+	asked_for_class_list.push_back ("TBufferFile");
+	asked_for_class_list.push_back ("TClass");
 
 	/// Make sure the libraries that are going to be needed are loaded!
 	libraries_to_load.push_back ("libCore");
@@ -163,6 +162,25 @@ int main()
 	for (unsigned int i = 0; i < asked_for_enum_list.size(); i++) {
 		rep_state.request_enum_translation (asked_for_enum_list[i]);
 	}
+
+	///
+	/// Next, for classes with enums in the classes that are public - those will be translated, but
+	/// we need to inform the type system of them.
+	///
+
+	for (unsigned int i = 0; i < all_classes.size(); i++) {
+		auto info = RootClassInfoCollection::GetRootClassInfo(all_classes[i]);
+		for (unsigned ienum = 0; ienum < info.GetClassEnums().size(); ienum++) {
+			auto enumInfo = info.GetClassEnums()[ienum];
+			if (enumInfo.Name().size() > 0) {
+				rep_state.register_enum_translation(enumInfo.Name());
+			}
+		}
+	}
+
+	///
+	/// Next, do the translation
+	///
 
 	ClassTranslator translator (output_dir);
 	translator.include_in_header("root_type_helpers.hpp");

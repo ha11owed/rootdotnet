@@ -186,7 +186,7 @@ namespace t_RootClassInfo
 	  RootClassInfo &cinfo (RootClassInfoCollection::GetRootClassInfo("TSocket"));
 	  vector<RootClassProperty> props(cinfo.GetProperties());
 
-	  const RootClassProperty *p = FindProperty("PROption", props);
+	  const RootClassProperty *p = FindProperty("Option", props);
 
 	  Assert::IsFalse(p == 0, "Could not find the GetOption property!");
 	  Assert::IsTrue(p->isGetter(), "It isn't a getter!?");
@@ -274,7 +274,7 @@ namespace t_RootClassInfo
 	  m = FindMethod("SetMaximum", 1, methods);
 	  Assert::IsTrue(m != 0, "SetMaximum was not found");
 
-	  RootClassProperty *p = FindProperty ("PRMaximum", props);
+	  RootClassProperty *p = FindProperty ("Maximum", props);
 
 	  Assert::IsTrue(p != 0, "Did not find the Maximum property!");
 
@@ -299,10 +299,10 @@ namespace t_RootClassInfo
 
 	  vector<RootClassProperty> props (cinfo.GetProperties());
 
-	  RootClassProperty *p = FindProperty ("PRViewport", props);
+	  RootClassProperty *p = FindProperty ("Viewport", props);
 
-	  Assert::IsTrue (p != 0, "Could not find the PRViewport property!");
-	  Assert::IsTrue (p->isSetter(), "The PRViewport property isn't a setter!");
+	  Assert::IsTrue (p != 0, "Could not find the Viewport property!");
+	  Assert::IsTrue (p->isSetter(), "The Viewport property isn't a setter!");
 
 	  vector<RootClassMethod> methods (cinfo.GetAllPrototypesForThisClass(true));
 	  const RootClassMethod *m = FindMethod ("SetViewport", 1, methods);
@@ -367,7 +367,7 @@ namespace t_RootClassInfo
 	  Assert::IsTrue(m != 0, "Could not find GetDragType method!");
 
 	  vector<RootClassProperty> props (cinfo.GetProperties());
-	  RootClassProperty *p = FindProperty ("PRDragType", props);
+	  RootClassProperty *p = FindProperty ("DragType", props);
 	  Assert::IsTrue (p != 0, "Could not find the Drag Property!");
 	  Assert::IsTrue (p->isGetter(), "Property should be a getter!");
 	}

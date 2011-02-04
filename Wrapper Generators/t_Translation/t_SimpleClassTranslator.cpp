@@ -253,8 +253,8 @@ namespace t_Translation
 
 	  trans->translate(RootClassInfo("TVirtualX"));
 
-	  Assert::IsTrue(FileUtilities::FindString(".\\TestForPropertyRender\\NTVirtualX.hpp", "property float PRMarkerSize"), "The property MarkerSize isn't there!?!");
-	  Assert::IsTrue(FileUtilities::FindString(".\\TestForPropertyRender\\NTVirtualX.hpp", "property float PRTextAngle"), "The property TextAngle isn't there!?!");
+	  Assert::IsTrue(FileUtilities::FindString(".\\TestForPropertyRender\\NTVirtualX.hpp", "property float MarkerSize"), "The property MarkerSize isn't there!?!");
+	  Assert::IsTrue(FileUtilities::FindString(".\\TestForPropertyRender\\NTVirtualX.hpp", "property float TextAngle"), "The property TextAngle isn't there!?!");
 
 	  delete trans;
 	}
@@ -282,8 +282,8 @@ namespace t_Translation
 	  trans->translate(RootClassInfoCollection::GetRootClassInfo("TAttMarker"));
 	  trans->translate(RootClassInfoCollection::GetRootClassInfo("TVirtualX"));
 
-	  Assert::IsTrue(FileUtilities::FindString(".\\TestForPropertyRender\\NTVirtualX.hpp", "property float PRMarkerSize"), "The property MarkerSize isn't there!?!");
-	  Assert::IsTrue(FileUtilities::FindString(".\\TestForPropertyRender\\NTVirtualX.hpp", "property float PRTextAngle"), "The property TextAngle isn't there!?!");
+	  Assert::IsTrue(FileUtilities::FindString(".\\TestForPropertyRender\\NTVirtualX.hpp", "property float MarkerSize"), "The property MarkerSize isn't there!?!");
+	  Assert::IsTrue(FileUtilities::FindString(".\\TestForPropertyRender\\NTVirtualX.hpp", "property float TextAngle"), "The property TextAngle isn't there!?!");
 
 	  delete trans;
 	}
@@ -306,6 +306,7 @@ namespace t_Translation
 	  delete trans;	  
 	}
 
+	/// THis no longer works with 5.28 - the mehtods are missing now. :(
 	[TestMethod]
 	void TestRenamedProperties()
 	{
@@ -318,7 +319,7 @@ namespace t_Translation
 
 	  const RootClassProperty *p;
 	  for (int i = 0; i < props.size(); i++) {
-		if (props[i].name() == "PR3sProbability") {
+		if (props[i].name() == "3sProbability") {
 		  p = &props[i];
 		  break;
 		}

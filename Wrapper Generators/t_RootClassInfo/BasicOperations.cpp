@@ -294,7 +294,7 @@ namespace t_RootClassInfo
 	  vector<RootClassProperty> props (cinfo->GetProperties());
 	  bool found_it = false;
 	  for (int i = 0; i < props.size(); i++) {
-		if (props[i].name() == "PRTextAngle") {
+		if (props[i].name() == "TextAngle") {
 		  found_it = true;
 		}
 	  }
@@ -379,7 +379,7 @@ namespace t_RootClassInfo
 	  bool found_it = false;
 	  for (int i = 0; i < pgood.size(); i++) {
 		const RootClassProperty &p(pgood[i]);
-		if (p.name() == "PRMarkerSize") {
+		if (p.name() == "MarkerSize") {
 		  found_it = true;
 		}
 	  }
