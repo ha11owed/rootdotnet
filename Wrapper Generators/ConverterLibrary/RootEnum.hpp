@@ -47,6 +47,9 @@ public:
 	//// Returns true if this enum was class defined rather than globally defined.
 	bool IsClassDefined (void) const;
 
+	/// Returns the .NET name of the place this is defined (NTDocParser).
+	std::string NETClassName() const;
+
 private:
 	std::string _name;
 	bool _self_fill;

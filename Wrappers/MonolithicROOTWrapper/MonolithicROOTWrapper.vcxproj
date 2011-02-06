@@ -68,7 +68,7 @@
       <ForcedIncludeFiles>w32pragma.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libCore.lib;libTree.lib;libHist.lib;libRIO.lib;libGuiBld.lib;libGui.lib</AdditionalDependencies>
+      <AdditionalDependencies>libCore.lib;libHtml.lib;libTree.lib;libHist.lib;libRIO.lib;libGuiBld.lib;libGui.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -114,29 +114,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="ROOTSource\EDragType.cpp" />
-    <ClCompile Include="ROOTSource\NTGFrame.cpp" />
-    <ClCompile Include="ROOTSource\NTGObject.cpp" />
-    <ClCompile Include="ROOTSource\NTGuiBldDragManager.cpp" />
-    <ClCompile Include="ROOTSource\NTGWindow.cpp" />
+    <ClCompile Include="ROOTSource\NTDocOutput.cpp" />
+    <ClCompile Include="ROOTSource\NTDocParser.cpp" />
     <ClCompile Include="ROOTSource\NTObject.cpp" />
-    <ClCompile Include="ROOTSource\NTQObject.cpp" />
-    <ClCompile Include="ROOTSource\NTVirtualDragManager.cpp" />
+    <ClCompile Include="ROOTSource\NTString.cpp" />
     <ClCompile Include="ROOTSource\root_type_helpers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="ROOTSource\EDragType.hpp" />
     <ClInclude Include="ROOTSource\libCore-make_public.hpp" />
-    <ClInclude Include="ROOTSource\libGui-make_public.hpp" />
-    <ClInclude Include="ROOTSource\libGuiBld-make_public.hpp" />
-    <ClInclude Include="ROOTSource\NTGFrame.hpp" />
-    <ClInclude Include="ROOTSource\NTGObject.hpp" />
-    <ClInclude Include="ROOTSource\NTGuiBldDragManager.hpp" />
-    <ClInclude Include="ROOTSource\NTGWindow.hpp" />
+    <ClInclude Include="ROOTSource\libHtml-make_public.hpp" />
+    <ClInclude Include="ROOTSource\NTDocOutput.hpp" />
+    <ClInclude Include="ROOTSource\NTDocParser.hpp" />
     <ClInclude Include="ROOTSource\NTObject.hpp" />
-    <ClInclude Include="ROOTSource\NTQObject.hpp" />
-    <ClInclude Include="ROOTSource\NTVirtualDragManager.hpp" />
+    <ClInclude Include="ROOTSource\NTString.hpp" />
     <ClInclude Include="ROOTSource\root_type_helpers.hpp" />
   </ItemGroup>
   <ItemGroup>

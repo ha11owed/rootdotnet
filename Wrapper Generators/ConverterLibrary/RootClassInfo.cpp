@@ -902,6 +902,28 @@ const vector<RootEnum> &RootClassInfo::GetClassEnums() const
 	return _enum_info;
 }
 
+///
+/// Returns a list of all the other libraries that will need to be on our include path
+/// so that any generated includes can be grabbed.
+///
+/// Sources of this are:
+///   - class based enums
+///
+vector<string> RootClassInfo::OtherReferencedLibraries() const
+{
+	auto enums = GetReferencedEnums();
+	vector<string> libraries;
+	for_each(enums.begin(), enums.end(), [&libraries, this] (string &enum_name) {
+		RootEnum aEnum (enum_name);
+		if (aEnum.IsClassDefined()) {
+			if (aEnum.LibraryName() != LibraryName()) {
+				libraries.push_back(aEnum.LibraryName());
+			}
+		}
+	});
+	return libraries;
+}
+
 namespace {
   template <class T>
   RootClassMethod set_as_hidden_if_not_in_list(RootClassMethod source, T list)

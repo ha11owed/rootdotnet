@@ -544,6 +544,21 @@ void LibraryConverterDriver::translate(void)
 		[&rep_state] (const string &s) { rep_state.register_enum_translation(s); });
 
 	///
+	/// Next, look for class enums - enums that are defined at class level, and get this
+	/// marked as things that can be translated.
+	///
+
+	for (unsigned int i = 0; i < all_classes.size(); i++) {
+		auto info = RootClassInfoCollection::GetRootClassInfo(all_classes[i]);
+		for (unsigned ienum = 0; ienum < info.GetClassEnums().size(); ienum++) {
+			auto enumInfo = info.GetClassEnums()[ienum];
+			if (enumInfo.NameUnqualified().size() > 0) {
+				rep_state.register_enum_translation(enumInfo.NameQualified());
+			}
+		}
+	}
+
+	///
 	/// Write out everything that is translated into the base directory so
 	/// that if anyone wants to follow on with further translations they know
 	/// what already exists.
@@ -581,7 +596,8 @@ void LibraryConverterDriver::translate(void)
 	/// single class!
 	///
 
-	string class_name;
+	string class_name; // So the error message makes more sense! :-)
+	map<string, set<string> > other_library_includes;
 	try{
 		while (rep_state.classes_to_translate()) {
 			class_name = rep_state.next_class();
@@ -599,6 +615,9 @@ void LibraryConverterDriver::translate(void)
 			string libName = info.LibraryName();
 			files_by_library[libName].push_back("N" + class_name);
 
+			auto libs = info.OtherReferencedLibraries();
+			other_library_includes[libName].insert(libs.begin(), libs.end());
+
 			string output_dir = _output_dir + "\\" + libName + "\\Source";
 			check_dir (output_dir);
 			translator.SetOutputDir (output_dir);
@@ -608,6 +627,7 @@ void LibraryConverterDriver::translate(void)
 		cout << "Error processing class '" << class_name << "' - message: '" << e.what() << "'." << endl;
 		throw;
 	}
+
 	///
 	/// One trick is that we have to make sure that everyone is sharing the same
 	/// C++ types - this is b/c we may need to access the C++ pointer types in one
@@ -678,7 +698,7 @@ void LibraryConverterDriver::translate(void)
 	vector<string> extra_include_dirs (_include_dirs.begin(), _include_dirs.end());
 	vector<string> link_library_dirs (_library_dirs.begin(), _library_dirs.end());
 
-	create_project_files proj_maker(_output_dir, translator, _libs_to_translate, extra_files, extra_include_dirs, link_library_dirs);
+	create_project_files proj_maker(_output_dir, translator, _libs_to_translate, extra_files, extra_include_dirs, other_library_includes, link_library_dirs);
 	proj_maker.add_guids(initial_guids);
 	create_project_files result(for_each (files_by_library.begin(), files_by_library.end(), proj_maker));
 	

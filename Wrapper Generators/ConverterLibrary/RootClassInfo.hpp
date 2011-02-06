@@ -57,10 +57,10 @@ public:
 	/// returned.
 	const std::vector<RootClassMethod> &GetPrototypesImplementedByThisClass (bool clean = false) const;
 
-    /// Returns a list of ROOT methods associated with this class and any class
-    /// that is above it on the class chain. If clean is set to true, only
-    /// those methods that can be implemented are returned. Results are cached.
-    const std::vector<RootClassMethod> &GetAllPrototypesForThisClass (bool clean) const;
+	/// Returns a list of ROOT methods associated with this class and any class
+	/// that is above it on the class chain. If clean is set to true, only
+	/// those methods that can be implemented are returned. Results are cached.
+	const std::vector<RootClassMethod> &GetAllPrototypesForThisClass (bool clean) const;
 
 	/// Check to see if there is a method we know about by this name
 	bool has_method (const std::string &method_name) const;
@@ -94,6 +94,10 @@ public:
 	/// Returns a list of properties
 	const std::vector<RootClassProperty> &GetProperties(void) const;
 
+	/// Sometimes we need to reference somethign that requires us to
+	/// force an include... from another library. We return the list here.
+	std::vector<std::string> OtherReferencedLibraries() const;
+
 private:
 	mutable std::vector<std::string> _inherited_classes;
 	mutable bool _inherited_good;
@@ -101,7 +105,7 @@ private:
 	mutable std::vector<std::string> _inherited_classes_deep;
 	mutable bool _inherited_deep_good;
 
-    std::vector<RootClassMethod> RootClassInfo::GetAllPrototypesForThisClassImpl (bool clean) const;
+	std::vector<RootClassMethod> RootClassInfo::GetAllPrototypesForThisClassImpl (bool clean) const;
 	mutable std::vector<RootClassMethod> _methods;
 	mutable bool _methods_good;
 	mutable std::vector<RootClassMethod> _methods_clean;

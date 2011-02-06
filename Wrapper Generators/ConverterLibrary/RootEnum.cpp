@@ -5,7 +5,9 @@
 #include "RootEnum.hpp"
 #include "ROOTHelpers.h"
 #include "ConverterErrorLog.hpp"
+#include "RootClassInfoCollection.hpp"
 
+#include "TClass.h"
 #include "Api.h"
 
 #include <vector>
@@ -60,6 +62,18 @@ string RootEnum::LibraryName() const
 	return _library_name;
 }
 
+string RootEnum::NETClassName() const
+{
+	init_cint_data();
+	string class_name (_include_filename);
+	auto eon = class_name.find(".");
+	if (eon != string::npos)
+	{
+		class_name = class_name.substr(0, eon);
+	}
+	return "N" + class_name;
+}
+
 ///
 /// Load up cint stuff
 ///
@@ -71,14 +85,39 @@ void RootEnum::init_cint_data() const
 	_cint_inited = true;
 
 	///
-	/// Get the low-down from CINT
+	/// Get the class name that contains this enum then we have to figure out where the class is defined
 	///
 
-	G__ClassInfo *cinfo = new G__ClassInfo (_name.c_str());
+	string class_name (_name);
+	auto indexOfClass = class_name.rfind("::");
+	bool is_class_defined = indexOfClass != string::npos;
+	if (is_class_defined) {
+		class_name = class_name.substr(0, indexOfClass);
+	}
+
+	///
+	/// Things are pretty simple if this is a class enum
+	///
+
+	if (is_class_defined)
+	{
+		auto &c = RootClassInfoCollection::GetRootClassInfo(class_name);
+		_library_name = c.LibraryName();
+		_include_filename = c.include_filename();
+		return;
+	}
+
+	///
+	/// Get the low-down from CINT for the actual enum.
+	///
+
+	string full_name;
+
+	G__ClassInfo *cinfo = new G__ClassInfo (class_name.c_str());
 	if (!cinfo->IsValid()) {
 		ConverterErrorLog::log_type_error(_name, "CINT doesn't seem to know about this enum!");
+		full_name = "TObject.h";
 		_library_name = "libCore";
-		_include_filename = "TObject.h";
 	}
 
 	///
@@ -87,13 +126,22 @@ void RootEnum::init_cint_data() const
 
 	if (cinfo->DefFile() == 0) {
 		_library_name = "libCore";
-		_include_filename = "TObject.h";
+		full_name = "TObject.h";
+		ConverterErrorLog::log_type_error(_name, "CINT doesn't seem to know the file where this object is defined!");
 	} else {
-		_include_filename = cinfo->DefFile();
-		int index = _include_filename.find_last_of ("/");
-		index = index == string::npos ? -1 : index;
-		_include_filename = _include_filename.substr(index+1);
+		full_name = cinfo->DefFile();
 	}
+
+	///
+	/// Now do the parse for the actual name of the include.
+	///
+
+	int index = full_name.find_last_of ("/");
+	if (index != string::npos) {
+		index = index == string::npos ? -1 : index;
+		full_name = full_name.substr(index+1);
+	}
+	_include_filename = full_name;
 }
 
 ///

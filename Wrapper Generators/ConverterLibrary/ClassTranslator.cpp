@@ -172,14 +172,18 @@ void ClassTranslator::translate(RootClassInfo &class_info)
 
 	///
 	/// Enum's can't be forward declared -- they have to be included... If they are class enums, however, then
-	/// they should just come in.
+	/// they should just come in - unless they are in a different class! :(
 	///
 
 	for (unsigned int i = 0; i < class_info.GetReferencedEnums().size(); i++) {
 		RootEnum dep_enum (class_info.GetReferencedEnums()[i]);
-		if (CPPNetTypeMapper::instance()->has_mapping(dep_enum.NameQualified()) && !dep_enum.IsClassDefined()) {
-			if (emit_this_enum(class_info, dep_enum)) {
-				hpp_emitter.include_file(dep_enum.NameUnqualified() + ".hpp");
+		if (CPPNetTypeMapper::instance()->has_mapping(dep_enum.NameQualified())) {
+			if (dep_enum.IsClassDefined()) {
+				hpp_emitter.include_file(dep_enum.NETClassName() + ".hpp");
+			} else {
+				if (emit_this_enum(class_info, dep_enum)) {
+					hpp_emitter.include_file(dep_enum.NameUnqualified() + ".hpp");
+				}
 			}
 		}
 	}
@@ -1343,6 +1347,10 @@ bool ClassTranslator::emit_this_header(const RootClassInfo &class_being_wrapped,
 {
 	return true;
 }
+
+///
+/// We will write out a seperate file for an enum as long as it isn't a class enum
+///
 bool ClassTranslator::emit_this_enum(const RootClassInfo &class_being_wrapped, const RootEnum &dependent_class)
 {
 	return true;

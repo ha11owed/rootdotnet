@@ -21,31 +21,19 @@
     <ClCompile Include="AssemblyInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ROOTSource\NTGFrame.cpp">
+    <ClCompile Include="ROOTSource\NTDocOutput.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
-    <ClCompile Include="ROOTSource\NTGObject.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
-    <ClCompile Include="ROOTSource\NTGuiBldDragManager.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
-    <ClCompile Include="ROOTSource\NTGWindow.cpp">
+    <ClCompile Include="ROOTSource\NTDocParser.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
     <ClCompile Include="ROOTSource\NTObject.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
-    <ClCompile Include="ROOTSource\NTQObject.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
-    <ClCompile Include="ROOTSource\NTVirtualDragManager.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
     <ClCompile Include="ROOTSource\root_type_helpers.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
-    <ClCompile Include="ROOTSource\EDragType.cpp">
+    <ClCompile Include="ROOTSource\NTString.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,37 +44,22 @@
     <ClInclude Include="ROOTSource\libCore-make_public.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
-    <ClInclude Include="ROOTSource\libGuiBld-make_public.hpp">
+    <ClInclude Include="ROOTSource\libHtml-make_public.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
-    <ClInclude Include="ROOTSource\libGui-make_public.hpp">
+    <ClInclude Include="ROOTSource\NTDocOutput.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
-    <ClInclude Include="ROOTSource\NTGFrame.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTGObject.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTGuiBldDragManager.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTGWindow.hpp">
+    <ClInclude Include="ROOTSource\NTDocParser.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\NTObject.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
-    <ClInclude Include="ROOTSource\NTQObject.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTVirtualDragManager.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
     <ClInclude Include="ROOTSource\root_type_helpers.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
-    <ClInclude Include="ROOTSource\EDragType.hpp">
+    <ClInclude Include="ROOTSource\NTString.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
   </ItemGroup>

@@ -10,6 +10,7 @@
 #include <map>
 #include <algorithm>
 #include <iterator>
+#include <set>
 
 class ClassTranslator;
 
@@ -20,9 +21,10 @@ public:
 		const std::vector<std::string> &global_link_dep, 
 		const std::vector<std::string> &extra_files,
 		const std::vector<std::string> &extra_include_dirs,
+		const std::map<std::string, std::set<std::string> > &includes_by_library,
 		const std::vector<std::string> &link_libs)
 		: _base_dir (proj_dir), _translator(trans), _global_link_dependencies(global_link_dep), _extra_files (extra_files),
-		_extra_include_dirs(extra_include_dirs), _link_libs(link_libs)
+		_extra_include_dirs(extra_include_dirs), _link_libs(link_libs), _includes_by_library(includes_by_library)
 	{}
 	void operator() (const std::pair<std::string, std::vector<std::string> > &library_classes);
 	std::vector<std::pair<std::string, std::string> > ProjectGuids (void) const {return _project_guid;}
@@ -40,5 +42,6 @@ private:
 	const std::vector<std::string> &_global_link_dependencies;
 	const std::vector<std::string> &_extra_include_dirs;
 	const std::vector<std::string> &_link_libs;
+	const std::map<std::string, std::set<std::string> > &_includes_by_library;
 };
 
