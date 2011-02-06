@@ -615,9 +615,6 @@ void LibraryConverterDriver::translate(void)
 			string libName = info.LibraryName();
 			files_by_library[libName].push_back("N" + class_name);
 
-			auto libs = info.OtherReferencedLibraries();
-			other_library_includes[libName].insert(libs.begin(), libs.end());
-
 			string output_dir = _output_dir + "\\" + libName + "\\Source";
 			check_dir (output_dir);
 			translator.SetOutputDir (output_dir);

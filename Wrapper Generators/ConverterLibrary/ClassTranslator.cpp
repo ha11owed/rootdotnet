@@ -172,17 +172,23 @@ void ClassTranslator::translate(RootClassInfo &class_info)
 
 	///
 	/// Enum's can't be forward declared -- they have to be included... If they are class enums, however, then
-	/// they should just come in - unless they are in a different class! :(
+	/// they should just come in. If they are in other libraries, then they will be pulled in with the reference.
+	/// The trick comes b/c if they are defined in the library we are working on right now, then they will have to
+	/// be included. Ugh.
 	///
 
 	for (unsigned int i = 0; i < class_info.GetReferencedEnums().size(); i++) {
 		RootEnum dep_enum (class_info.GetReferencedEnums()[i]);
 		if (CPPNetTypeMapper::instance()->has_mapping(dep_enum.NameQualified())) {
-			if (dep_enum.IsClassDefined()) {
-				hpp_emitter.include_file(dep_enum.NETClassName() + ".hpp");
-			} else {
+			if (!dep_enum.IsClassDefined()) {
 				if (emit_this_enum(class_info, dep_enum)) {
 					hpp_emitter.include_file(dep_enum.NameUnqualified() + ".hpp");
+				}
+			} else {
+				if (dep_enum.LibraryName() == class_info.LibraryName()) {
+					if (dep_enum.NETClassName() != class_info.NETName()) {
+						hpp_emitter.include_file(dep_enum.NETClassName() + ".hpp");
+					}
 				}
 			}
 		}
