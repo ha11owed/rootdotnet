@@ -143,6 +143,9 @@ string CPPNetTypeMapper::normalize_template_referece(const string &in_name)
 		/// that comes from TObject, then we want to make sure that we can deal with this vector!
 		///
 
+		if (!instance()->has_mapping(arg)) {
+			return in_name;
+		}
 		auto trans = instance()->get_translator_from_cpp(arg);
 		if (trans == 0) {
 			return in_name;
