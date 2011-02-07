@@ -33,10 +33,8 @@ RootClassField::RootClassField(TDataMember *f)
 	: _root_field(f), _trans(0)
 {
 	if (!(_root_field->Property() & kIsArray)) {
-		try {
+		if (CPPNetTypeMapper::instance()->has_mapping(_root_field->GetTrueTypeName())) {
 			_trans = CPPNetTypeMapper::instance()->get_translator_from_cpp(_root_field->GetTrueTypeName());
-		} catch (exception &) {
-			_trans = 0;
 		}
 	}
 }
