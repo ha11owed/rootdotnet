@@ -433,6 +433,9 @@ vector<string> WrapperConfigurationInfo::RemoveBadLibraries(const std::vector<st
 	bad_libs.push_back("libNew");
 	bad_libs.push_back("libCintex");
 	bad_libs.push_back("libReflex");
+	bad_libs.push_back("libGviz");
+	bad_libs.push_back("libRCastor");
+	bad_libs.push_back("libRFIO");
 	vector<string> libraries(library_list);
 	for (unsigned int i = 0; i < bad_libs.size(); i++) {
 		vector<string>::iterator itr;
@@ -626,6 +629,22 @@ bool WrapperConfigurationInfo::CheckPropertyNameBad (const RootClassInfo *class_
 			return true;
 		}
 	}
+
+	if (property_name == "ColumnSize"
+		|| property_name == "ColumnType"
+		|| property_name == "Dimensions"
+		|| property_name == "NumberOfColumns"
+		|| property_name == "Offset"
+		|| property_name == "RowClass"
+		|| property_name == "TypeSize"
+		) {
+		vector<string> allcls = class_info->GetInheritedClassesDeep();
+		allcls.push_back(class_info->CPPName());
+		if (find(allcls.begin(), allcls.end(), "TTable") != allcls.end()) {
+			return true;
+		}
+	}
+
 	return false;
 }
 
