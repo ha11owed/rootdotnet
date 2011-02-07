@@ -62,16 +62,24 @@ string RootEnum::LibraryName() const
 	return _library_name;
 }
 
+///
+/// Return the .NET class name that this enum is defined in. If it is the
+/// global space, just return a blank.
+///
 string RootEnum::NETClassName() const
 {
 	init_cint_data();
-	string class_name (_include_filename);
-	auto eon = class_name.find(".");
-	if (eon != string::npos)
-	{
-		class_name = class_name.substr(0, eon);
+
+	if (!IsClassDefined()) {
+		return "";
 	}
-	return "N" + class_name;
+
+	int lastID = _name.rfind("::");
+	if (lastID == string::npos) {
+		return "";
+	}
+
+	return "N" + _name.substr(0, lastID);
 }
 
 ///
