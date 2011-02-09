@@ -71,10 +71,24 @@ vector<string> WrapperConfigurationInfo::RemoveBrokenClasses (const vector<strin
 
 	vector<string> result;
 	for (unsigned int i = 0; i < class_list.size(); i++) {
-	  if (class_list[i] == "string") {
-		ConverterErrorLog::log_type_error(class_list[i], "Can't convert STL classes like string!");
-		continue;
-	  }
+		///
+		/// Some basic things we can't do yet, like a STL string and all iterators. We know how to translate
+		/// the iterators as arguments, but not as an individual wrapper.
+		///
+
+		if (class_list[i] == "string" || class_list[i] == "std::string") {
+			ConverterErrorLog::log_type_error(class_list[i], "Can't convert STL classes like string!");
+			continue;
+		}
+
+		if (class_list[i].find("<") != string::npos) {
+			continue;
+		}
+
+		///
+		/// See if the list is on the bad-list error from the previous scan.
+		///
+
 		RootClassInfo &info (RootClassInfoCollection::GetRootClassInfo(class_list[i]));
 		if (bad_headers.find(info.include_filename()) == bad_headers.end()) {
 			result.push_back(class_list[i]);
@@ -114,6 +128,28 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 	// RooAbsReal::_evalErrorList
 	methods_to_skip.insert("RooAbsReal::numEvalErrorItems");
 	methods_to_skip.insert("RooAbsReal::evalErrorIter");
+	// RooFactorWSTool::_of
+	methods_to_skip.insert("RooFactoryWSTool::as_ARG");
+	methods_to_skip.insert("RooFactoryWSTool::as_PDF");
+	methods_to_skip.insert("RooFactoryWSTool::as_FUNC");
+	methods_to_skip.insert("RooFactoryWSTool::as_VAR");
+	methods_to_skip.insert("RooFactoryWSTool::as_VARLV");
+	methods_to_skip.insert("RooFactoryWSTool::as_RMODEL");
+	methods_to_skip.insert("RooFactoryWSTool::as_CAT");
+	methods_to_skip.insert("RooFactoryWSTool::as_CATLV");
+	methods_to_skip.insert("RooFactoryWSTool::as_CATFUNC");
+	methods_to_skip.insert("RooFactoryWSTool::as_SET");
+	methods_to_skip.insert("RooFactoryWSTool::as_LIST");
+	methods_to_skip.insert("RooFactoryWSTool::as_DATA");
+	methods_to_skip.insert("RooFactoryWSTool::as_DHIST");
+	methods_to_skip.insert("RooFactoryWSTool::as_DSET");
+	methods_to_skip.insert("RooFactoryWSTool::as_OBJ");
+	methods_to_skip.insert("RooFactoryWSTool::as_STRING");
+	methods_to_skip.insert("RooFactoryWSTool::as_INT");
+	methods_to_skip.insert("RooFactoryWSTool::as_DOUBLE");
+	// RooRealIntegral::_cacheAllNDim
+	methods_to_skip.insert("RooRealIntegral::setCacheAllNumeric");
+	methods_to_skip.insert("RooRealIntegral::getCacheAllNumeric");
 	
 	// TEveLine::fgDefaultSmooth
 	methods_to_skip.insert("TEveLine::GetDefaultSmooth");

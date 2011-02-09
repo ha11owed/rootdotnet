@@ -21,6 +21,7 @@
 #include <iostream>
 #include <set>
 #include <stdio.h>
+#include <stdexcept>
 
 using std::ostringstream;
 using std::endl;
@@ -56,12 +57,13 @@ ClassTranslator::~ClassTranslator(void)
 void ClassTranslator::translate(RootClassInfo &class_info)
 {
 	///
-	/// Clean up the class inheritance list. And make sure that everything is well in there
+	/// Clean up the class inheritance list. And make sure that everything is well in there. If this fails, then
+	/// we need fail hard b/c others might be depending on this class being translated.
 	///
 
 	clean_inheritance_list (class_info);
 	if (!check_inheritance_list(class_info)) {
-		return;
+		throw new runtime_error ("Class '" + class_info.CPPName() + "' has some bad classes in its inherritance tree");
 	}
 
 	///
@@ -304,12 +306,17 @@ namespace {
 		/// Translators to represent the C++/.NET arguments.
 		const CPPNetTypeMapper::TypeTranslator *_index_type;
 		const CPPNetTypeMapper::TypeTranslator * _return_type;
+
+		/// The method this is based on
+		const RootClassMethod *_method;
+
 		/// True if this has a get and a set (you can set the internal value). You can always get it...
 		bool _is_setter;
 
 		inline CPPIndexerInfo (void)
 			: _is_setter(false), _index_type(0), _return_type(0)
 		{}
+
 	};
 
 	/// Helper task to convert a map into a vector. Just makes code below
@@ -379,6 +386,7 @@ namespace {
 				CPPIndexerInfo temp;
 				temp._index_type = CPPNetTypeMapper::instance()->get_translator_from_cpp(method.arguments()[0].CPPTypeName());
 				temp._return_type = tt;
+				temp._method = &method;
 				result_map[index_argument] = temp;
 			} else {
 				if (result_map[index_argument]._return_type->cpp_core_typename() != tt->cpp_core_typename()) {
@@ -1256,6 +1264,9 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
   /// Deal with the indexer methods. This is like above, only we know exactly what we are
   /// writing so we can move a little faster with fewer if statements. :-)
   ///
+  /// Indexers can suffer from covarient returns as well, so we need to double
+  /// check which operator we are calling for indexing!
+  ///
 
   vector<CPPIndexerInfo> indexers (SortIndexers(arrayOperators));
   for (unsigned int i = 0; i < indexers.size(); i++) {
@@ -1265,8 +1276,13 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 	emitter.brace_open();
 	string arg_name (emit_translation_net_cpp ("index", iinfo._index_type, emitter));
 	string return_val ("f_abc_return");
-	emitter.start_line() << iinfo._return_type->cpp_code_typename() << " " << return_val << " = "
-	  << " (*_instance)[" << arg_name << "];" << endl;
+	emitter.start_line() << iinfo._return_type->cpp_code_typename() << " " << return_val << " = ";
+	if (iinfo._method->ClassOfMethodDefinition() != info.CPPName()) {
+		emitter() << " _instance->" << iinfo._method->ClassOfMethodDefinition() << "::operator[](" << arg_name << ");" << endl;
+	} else {
+		emitter() << " (*_instance)[" << arg_name << "];" << endl;
+	}
+
 	if (!iinfo._index_type->clean_up_matters_for_return_value_only()) {
 	  emit_translation_net_cpp_cleanup ("index", arg_name, iinfo._index_type, emitter);
 	}

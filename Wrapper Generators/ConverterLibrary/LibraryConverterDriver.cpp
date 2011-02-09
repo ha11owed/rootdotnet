@@ -621,7 +621,7 @@ void LibraryConverterDriver::translate(void)
 			translator.translate (info);
 		}
 	} catch (exception &e) {
-		cout << "Error processing class '" << class_name << "' - message: '" << e.what() << "'." << endl;
+		cout << "Major error processing class '" << class_name << "' - message: '" << e.what() << "'." << endl;
 		throw;
 	}
 

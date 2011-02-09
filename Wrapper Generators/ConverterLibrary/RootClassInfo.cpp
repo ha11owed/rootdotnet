@@ -559,7 +559,7 @@ std::vector<RootClassMethod> RootClassInfo::GetAllPrototypesForThisClassImpl (bo
   {
 	method_set subclass_methods_for_covar;
 	flatten_method_set_list (changed_parents_all, subclass_methods_for_covar);
-	method_set_covar duplicate_methods_from_subclasses, duplicate_methods_from_thisclass;
+	method_set duplicate_methods_from_subclasses, duplicate_methods_from_thisclass;
 	std::set_intersection(
 	  subclass_methods_for_covar.begin(), subclass_methods_for_covar.end(),
 	  methods_as_set.begin(), methods_as_set.end(),
@@ -570,7 +570,7 @@ std::vector<RootClassMethod> RootClassInfo::GetAllPrototypesForThisClassImpl (bo
 	  subclass_methods_for_covar.begin(), subclass_methods_for_covar.end(),
 	  inserter(duplicate_methods_from_thisclass, duplicate_methods_from_subclasses.begin()),
 	  RCMOrdering());
-	method_set_covar::const_iterator itr_tc, itr_sc;
+	method_set::const_iterator itr_tc, itr_sc;
 	for (itr_tc = duplicate_methods_from_thisclass.begin(), itr_sc = duplicate_methods_from_subclasses.begin();
 	  itr_tc != duplicate_methods_from_thisclass.end();
 	  itr_tc++, itr_sc++) {
@@ -1008,7 +1008,9 @@ const std::vector<RootClassProperty> &RootClassInfo::GetProperties(void) const
 	/// the pov of the configuration
 
 	string prop_name = method.NETName().substr(3);
-	if (has_method(prop_name) || WrapperConfigurationInfo::CheckPropertyNameBad(this, prop_name)) {
+	if (has_method(prop_name)
+		|| TClass::GetClass(prop_name.c_str()) != 0
+		|| WrapperConfigurationInfo::CheckPropertyNameBad(this, prop_name)) {
 		prop_name = prop_name + "_GetSetProperty";
 	}
 

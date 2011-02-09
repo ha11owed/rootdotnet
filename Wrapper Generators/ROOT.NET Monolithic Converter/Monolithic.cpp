@@ -72,11 +72,15 @@ int main()
 
 #ifndef notyet
 	/// The below lines are used during debugging in order to build a single (problem) class.
-	asked_for_class_list.push_back ("TGLOverlayElement");
-	asked_for_class_list.push_back ("TObject");
+	asked_for_class_list.push_back ("TDirectory");
+	asked_for_class_list.push_back ("TFileIter");
+	asked_for_class_list.push_back ("TGenericTable");
+	asked_for_class_list.push_back ("TIndexTable");
+	asked_for_class_list.push_back ("TTableDescriptor");
 
 	/// Make sure the libraries that are going to be needed are loaded!
-	libraries_to_load.push_back ("libRGL");
+	libraries_to_load.push_back ("libTable");
+	libraries_to_load.push_back ("libCore");
 
 #ifdef later
 	libraries_to_load.push_back ("libHist");

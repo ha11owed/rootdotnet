@@ -21,13 +21,40 @@
     <ClCompile Include="AssemblyInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ROOTSource\NTGLOverlayElement.cpp">
+    <ClCompile Include="ROOTSource\NTDataSet.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTIndexTable.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTNamed.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
     <ClCompile Include="ROOTSource\NTObject.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
+    <ClCompile Include="ROOTSource\NTTable.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
     <ClCompile Include="ROOTSource\root_type_helpers.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTDirectory.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTFileIter.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTGenericTable.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTIterator.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTListIter.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTTableDescriptor.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,16 +65,43 @@
     <ClInclude Include="ROOTSource\libCore-make_public.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
-    <ClInclude Include="ROOTSource\libRGL-make_public.hpp">
+    <ClInclude Include="ROOTSource\libTable-make_public.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
-    <ClInclude Include="ROOTSource\NTGLOverlayElement.hpp">
+    <ClInclude Include="ROOTSource\NTDataSet.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTIndexTable.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTNamed.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\NTObject.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
+    <ClInclude Include="ROOTSource\NTTable.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
     <ClInclude Include="ROOTSource\root_type_helpers.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTDirectory.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTFileIter.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTGenericTable.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTIterator.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTListIter.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTTableDescriptor.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
   </ItemGroup>
