@@ -27,5 +27,16 @@ namespace ROOTNET
 				SetNull();
 			}
 		}
+
+		///
+		/// Do a dynamic lookup of a method and see if we can't invoke it.
+		///
+		/// There are lots of limitations to this:
+		///
+		bool ROOTDOTNETBaseTObject::TryInvokeMember (System::Dynamic::InvokeMemberBinder ^binder, array<Object^> ^args, Object^% result)
+		{
+			return false;
+		}
+
 	}
 }

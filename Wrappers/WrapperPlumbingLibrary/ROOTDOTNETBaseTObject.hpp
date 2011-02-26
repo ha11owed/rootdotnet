@@ -11,7 +11,10 @@ namespace ROOTNET
 		/// Actually, the main reason this is hear is so that we can cleanly factor the plumbing library code
 		/// and the actual generated classes. :-)
 		///
-		public ref class ROOTDOTNETBaseTObject abstract
+		/// Also includes simple Dynamic implementation. Note that the DLR will use any static implemenations first,
+		/// and then call one of the Tryxxx methods that we override here.
+		///
+		public ref class ROOTDOTNETBaseTObject abstract : System::Dynamic::DynamicObject
 		{
 		public:
 			ROOTDOTNETBaseTObject(void);
@@ -21,6 +24,9 @@ namespace ROOTNET
 			virtual void DeleteHeldObject (void) = 0;
 			/// Drop the object from our internal tables. This is done just before it is to be deleted!
 			virtual void DropObjectFromTables (void) = 0;
+
+			/// Dynamic implementions.
+			virtual bool TryInvokeMember (System::Dynamic::InvokeMemberBinder ^binder, array<Object^> ^args, Object^% result) override;
 
 			/// Destructors and finalizers. The finalizer will delete the ROOT memory.
 			/// The dtor will call the finalizer (so it doesn't happen twice!). Probably no
