@@ -5,8 +5,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WrapperPlumbingLibrary", "W
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MonolithicROOTWrapper", "MonolithicROOTWrapper\MonolithicROOTWrapper.vcxproj", "{A2BC6278-DB75-4ECB-B593-9760D94A4993}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestNulLCall", "TestNulLCall\TestNulLCall.csproj", "{5FBB8C9A-ED87-4548-BC6C-568143B3C06B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,18 +41,6 @@ Global
 		{A2BC6278-DB75-4ECB-B593-9760D94A4993}.Release|Win32.ActiveCfg = Release|Win32
 		{A2BC6278-DB75-4ECB-B593-9760D94A4993}.Release|Win32.Build.0 = Release|Win32
 		{A2BC6278-DB75-4ECB-B593-9760D94A4993}.Release|x86.ActiveCfg = Release|Win32
-		{5FBB8C9A-ED87-4548-BC6C-568143B3C06B}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{5FBB8C9A-ED87-4548-BC6C-568143B3C06B}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{5FBB8C9A-ED87-4548-BC6C-568143B3C06B}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{5FBB8C9A-ED87-4548-BC6C-568143B3C06B}.Debug|Win32.ActiveCfg = Debug|x86
-		{5FBB8C9A-ED87-4548-BC6C-568143B3C06B}.Debug|x86.ActiveCfg = Debug|x86
-		{5FBB8C9A-ED87-4548-BC6C-568143B3C06B}.Debug|x86.Build.0 = Debug|x86
-		{5FBB8C9A-ED87-4548-BC6C-568143B3C06B}.Release|Any CPU.ActiveCfg = Release|x86
-		{5FBB8C9A-ED87-4548-BC6C-568143B3C06B}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{5FBB8C9A-ED87-4548-BC6C-568143B3C06B}.Release|Mixed Platforms.Build.0 = Release|x86
-		{5FBB8C9A-ED87-4548-BC6C-568143B3C06B}.Release|Win32.ActiveCfg = Release|x86
-		{5FBB8C9A-ED87-4548-BC6C-568143B3C06B}.Release|x86.ActiveCfg = Release|x86
-		{5FBB8C9A-ED87-4548-BC6C-568143B3C06B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
