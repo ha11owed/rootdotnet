@@ -70,42 +70,13 @@ int main()
 	/// Setup the above variables and figure out what we are going to do.
 	///
 
-#ifndef notyet
 	/// The below lines are used during debugging in order to build a single (problem) class.
+	asked_for_class_list.push_back ("TROOT");
 	asked_for_class_list.push_back ("TDirectory");
-	asked_for_class_list.push_back ("TFileIter");
-	asked_for_class_list.push_back ("TGenericTable");
-	asked_for_class_list.push_back ("TIndexTable");
-	asked_for_class_list.push_back ("TTableDescriptor");
 
 	/// Make sure the libraries that are going to be needed are loaded!
-	libraries_to_load.push_back ("libTable");
+	///libraries_to_load.push_back ("libTable");
 	libraries_to_load.push_back ("libCore");
-
-#ifdef later
-	libraries_to_load.push_back ("libHist");
-	libraries_to_load.push_back ("libGraf3d");
-	libraries_to_load.push_back ("libGraf");
-	libraries_to_load.push_back ("libGeom");
-	libraries_to_load.push_back ("libGeomPainter");
-#endif
-#else
-	/// Scan a large list of libraries!
-	scan_libraries_for_classes = true;
-
-	///
-	/// Some default libraries to load...
-	///
-
-	libraries_to_load.push_back ("libHist");
-	libraries_to_load.push_back ("libTree");
-	libraries_to_load.push_back ("libCore");
-	libraries_to_load.push_back ("libMathCore");
-	libraries_to_load.push_back ("libGraf");
-	libraries_to_load.push_back ("libGraf3d");
-	libraries_to_load.push_back ("libMatrix");
-	libraries_to_load.push_back ("libMinuit");
-#endif
 
 	output_dir = "..\\..\\Wrappers\\MonolithicROOTWrapper\\ROOTSource";
 
