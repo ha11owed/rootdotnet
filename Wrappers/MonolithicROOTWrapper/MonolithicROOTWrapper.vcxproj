@@ -114,34 +114,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="ROOTSource\NTDataSet.cpp" />
     <ClCompile Include="ROOTSource\NTDirectory.cpp" />
-    <ClCompile Include="ROOTSource\NTFileIter.cpp" />
-    <ClCompile Include="ROOTSource\NTGenericTable.cpp" />
-    <ClCompile Include="ROOTSource\NTIndexTable.cpp" />
-    <ClCompile Include="ROOTSource\NTIterator.cpp" />
-    <ClCompile Include="ROOTSource\NTListIter.cpp" />
     <ClCompile Include="ROOTSource\NTNamed.cpp" />
     <ClCompile Include="ROOTSource\NTObject.cpp" />
-    <ClCompile Include="ROOTSource\NTTable.cpp" />
-    <ClCompile Include="ROOTSource\NTTableDescriptor.cpp" />
+    <ClCompile Include="ROOTSource\NTROOT.cpp" />
     <ClCompile Include="ROOTSource\root_type_helpers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="ROOTSource\libCore-make_public.hpp" />
-    <ClInclude Include="ROOTSource\libTable-make_public.hpp" />
-    <ClInclude Include="ROOTSource\NTDataSet.hpp" />
     <ClInclude Include="ROOTSource\NTDirectory.hpp" />
-    <ClInclude Include="ROOTSource\NTFileIter.hpp" />
-    <ClInclude Include="ROOTSource\NTGenericTable.hpp" />
-    <ClInclude Include="ROOTSource\NTIndexTable.hpp" />
-    <ClInclude Include="ROOTSource\NTIterator.hpp" />
-    <ClInclude Include="ROOTSource\NTListIter.hpp" />
     <ClInclude Include="ROOTSource\NTNamed.hpp" />
     <ClInclude Include="ROOTSource\NTObject.hpp" />
-    <ClInclude Include="ROOTSource\NTTable.hpp" />
-    <ClInclude Include="ROOTSource\NTTableDescriptor.hpp" />
+    <ClInclude Include="ROOTSource\NTROOT.hpp" />
     <ClInclude Include="ROOTSource\root_type_helpers.hpp" />
   </ItemGroup>
   <ItemGroup>
