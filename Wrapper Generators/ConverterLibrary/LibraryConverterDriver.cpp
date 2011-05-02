@@ -559,14 +559,6 @@ void LibraryConverterDriver::translate(void)
 	}
 
 	///
-	/// Write out everything that is translated into the base directory so
-	/// that if anyone wants to follow on with further translations they know
-	/// what already exists.
-	///
-
-	history.save_history(_output_dir, all_classes, all_enums);
-
-	///
 	/// Now translate the enums. Unfortunately, we can't tell what libraries they
 	/// are actually in. The good news is that they are dependency free, so we can
 	/// put them where we like. When translating everything we put them in the core
@@ -624,6 +616,14 @@ void LibraryConverterDriver::translate(void)
 		cout << "Major error processing class '" << class_name << "' - message: '" << e.what() << "'." << endl;
 		throw;
 	}
+
+	///
+	/// Write out everything that is translated into the base directory so
+	/// that if anyone wants to follow on with further translations they know
+	/// what already exists.
+	///
+
+	history.save_history(_output_dir, all_classes, all_enums, files_by_library);
 
 	///
 	/// One trick is that we have to make sure that everyone is sharing the same

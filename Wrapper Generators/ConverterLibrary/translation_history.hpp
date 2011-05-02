@@ -18,7 +18,8 @@ public:
 
 	void save_history (const std::string &dir,
 		const std::vector<std::string> &classes_translated,
-		const std::vector<std::string> &enums_translated);
+		const std::vector<std::string> &enums_translated,
+		const std::map<std::string, std::vector<std::string>> &filesByLibrary);
 
 	void load_history (const std::string &dir);
 

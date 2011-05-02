@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <string>
 #include <stdexcept>
+#include <map>
 
 #include <Windows.h>
 
@@ -20,6 +21,10 @@ using std::string;
 using std::endl;
 using std::runtime_error;
 using std::getline;
+using std::vector;
+using std::map;
+using std::for_each;
+using std::pair;
 
 translation_history::translation_history(void)
 {
@@ -30,20 +35,55 @@ translation_history::~translation_history(void)
 {
 }
 
+namespace
+{
+	///
+	/// See if we can figure out what the library name is for a particular class.
+	string findFile(const string &className, const map<string, string> &filesByLibrary)
+	{
+		auto lookup = filesByLibrary.find(className);
+		if (lookup == filesByLibrary.end())
+			return "";
+		return lookup->second;
+	}
+}
 
 ///
 /// Write out the history of this translation job
 ///
 void translation_history::save_history (const std::string &dir,
 		const std::vector<std::string> &classes_translated,
-		const std::vector<std::string> &enums_translated)
+		const std::vector<std::string> &enums_translated,
+		const map<string, vector<string>> &filesByLibrary)
 {
+	///
+	/// Reparse the filesByLibrary to make it simpler to do the lookups
+	///
+
+	map<string, string> classLibraries;
+	for_each (filesByLibrary.begin(), filesByLibrary.end(),
+		[&classLibraries] (const pair<string, vector<string>> &item) {
+			auto libName = item.first;
+			auto &refCL = classLibraries;
+			for_each(item.second.begin(), item.second.end(),
+				[&libName, &refCL] (const string &cname) {
+					refCL[cname] = libName;
+					if (cname[0] == 'N')
+						refCL[cname.substr(1)] = libName;
+			});
+			
+	});
+
+	///
+	/// Ok, next we should actually dump out the file.
+	///
+
 	ofstream converted_info ((dir + "\\converted_items.txt").c_str());
 
 	for_each(classes_translated.begin(), classes_translated.end(),
-		[&converted_info] (const string &s) { converted_info << "class " << s << endl; });
+		[&converted_info, &classLibraries] (const string &s) { converted_info << "class " << s << findFile(s, classLibraries) << endl; });
 	for_each(enums_translated.begin(), enums_translated.end(),
-		[&converted_info] (const string &s) { converted_info << "enum " << s << endl; });
+		[&converted_info, &classLibraries] (const string &s) { converted_info << "enum " << s << findFile(s, classLibraries) << endl; });
 
 	converted_info.close();
 }
