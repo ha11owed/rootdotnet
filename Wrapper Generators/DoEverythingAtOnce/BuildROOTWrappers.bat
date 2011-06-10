@@ -9,7 +9,7 @@ REM
 
 REM Setup the environment
 set "ROOTSYS=%1"
-set "PATH=%1\bin;%PATH%"
+set "PATH=%1\bin;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE;%PATH%"
 
 REM Build everything so we can actually run programs! :-)
 echo Building code to do the translation...
