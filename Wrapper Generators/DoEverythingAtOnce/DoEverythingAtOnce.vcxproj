@@ -42,7 +42,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <NMakeBuildCommandLine>cd "$(SolutionDir)"
-"$(ProjectDir)BuildROOTWrappers.bat" c:\root ROOTWrappersFromMSVC</NMakeBuildCommandLine>
+"$(ProjectDir)BuildROOTWrappers.bat" c:\root ROOTWrappersFromMSVC c:\root\NETWrappers</NMakeBuildCommandLine>
     <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
   </PropertyGroup>
   <ItemDefinitionGroup>
