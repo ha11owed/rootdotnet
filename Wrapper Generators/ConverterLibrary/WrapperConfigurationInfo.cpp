@@ -110,10 +110,47 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 
 	set<string> methods_to_skip;
 
-	/// 5.26 or earlier - these may not apply, but that was the last
-	/// time we were careful!
+	///
+	/// ::Error turns out to be an ambiguous method - because we can't detect
+	/// it properly (currently) we are going to just not translate anything
+	/// having to do with it!
+	///
+
+	methods_to_skip.insert("TFitResult::Error");
+	methods_to_skip.insert("FitResult::Error");
+	methods_to_skip.insert("ROOT::Fit::FitResult::Error");
+	methods_to_skip.insert("TObject::Error");
+
+	///
+	/// While .NET can deal with covariant returns, my code is having
+	/// some trouble. So, till this becomes a higher priority, we are
+	/// going to ignore them. :-)
+	///
+
+	methods_to_skip.insert("TGMainFrame::GetMainFrame");
+	methods_to_skip.insert("TGFrame::GetMainFrame");
+	methods_to_skip.insert("TGWindow::GetMainFrame");
+	methods_to_skip.insert("TRootBrowser::GetMainFrame");
+	methods_to_skip.insert("TRootBrowserLite::GetMainFrame");
+
+	methods_to_skip.insert("TGFrame::GetDragType");
+	methods_to_skip.insert("TVirtualDragManager::GetDragType");
+
+	///
+	/// Next are version specific things that have to be not-translated.
+	/// Most of the time these are due to bad linkages in ROOT - that Windows
+	/// can't deal with. Note that the bulk of these were determined before
+	/// we started doing this by version number. As a result, many of them
+	/// are just lumped in.
+	///
+
 	if (svn_id < 31883)
 	{
+		///
+		/// 5.26 or earlier - these may not apply, but that was the last
+		/// time we were careful!
+		///
+
 		/// TStyleManager::fgStyleManager
 		methods_to_skip.insert("TStyleManager::GetSM");
 
@@ -205,23 +242,8 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 		// TFitEditor::fgFitDialog is missing
 		methods_to_skip.insert("TFitEditor::GetFP");
 
-		/// Amb method: Error
-		methods_to_skip.insert("TFitResult::Error");
-		methods_to_skip.insert("FitResult::Error");
-		methods_to_skip.insert("ROOT::Fit::FitResult::Error");
-		methods_to_skip.insert("TObject::Error");
-
 		/// TFileCacheRead - some circular definitions
 		methods_to_skip.insert("TFileCacheRead::AddBranch");
-
-		/// My code is messing up the covar returns on this guy
-		methods_to_skip.insert("TGMainFrame::GetMainFrame");
-		methods_to_skip.insert("TGFrame::GetMainFrame");
-		methods_to_skip.insert("TGWindow::GetMainFrame");
-		methods_to_skip.insert("TRootBrowser::GetMainFrame");
-		methods_to_skip.insert("TRootBrowserLite::GetMainFrame");
-		methods_to_skip.insert("TGFrame::GetDragType");
-		methods_to_skip.insert("TVirtualDragManager::GetDragType");
 	}
 	else if (svn_id < 37603)
 	{

@@ -15,7 +15,7 @@ REM Build everything so we can actually run programs! :-)
 echo Building code to do the translation...
 devenv /nologo "Wrapper Generators.sln" /project "FindBadRootHeaders" /build "Release|Win32"
 devenv /nologo "Wrapper Generators.sln" /project "ROOT.NET Library Converter" /build "Release|Win32"
-devenv /nologo "Wrapper Generators.sln" /project "ROOT.NET Addon Library Converter" /build "Release|Win32"
+devenv /nologo "Wrapper Generators.sln" /project "ROOT.NET Addon Library Converter" /build "Release|Win32" /out builderrors.log
 
 REM Find all bad headers in this distro of ROOT.
 
