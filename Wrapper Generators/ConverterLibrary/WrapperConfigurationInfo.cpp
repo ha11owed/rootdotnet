@@ -101,120 +101,135 @@ vector<string> WrapperConfigurationInfo::RemoveBrokenClasses (const vector<strin
 }
 
 ///
-/// Return a list of methods that we cna't translate for whatever reason
+/// Return a list of methods that we cna't translate for whatever reason. We
+/// do this by svn revision number. So this requires some care and feeding.
 ///
 set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 {
+	auto svn_id = gROOT->GetSvnRevision();
+
 	set<string> methods_to_skip;
 
-	/// TStyleManager::fgStyleManager
-	methods_to_skip.insert("TStyleManager::GetSM");
+	/// 5.26 or earlier - these may not apply, but that was the last
+	/// time we were careful!
+	if (svn_id < 31883)
+	{
+		/// TStyleManager::fgStyleManager
+		methods_to_skip.insert("TStyleManager::GetSM");
 
-	/// Some bad globals in RooFitCore library
-	// RooAbsPdf::_globalSelectComp
-	methods_to_skip.insert("RooAbsPdf::isSelectedComp");
-	// RooNumber::infinity (RooBinning) - used in the ctor of RooBinning
-	methods_to_skip.insert("RooBinning::RooBinning");
-	methods_to_skip.insert("RooNormListManager::setVerbose");
-	methods_to_skip.insert("RooErrorVar::removeMin");
-	methods_to_skip.insert("RooErrorVar::removeMax");
-	methods_to_skip.insert("RooErrorVar::removeRange");
-	methods_to_skip.insert("RooRealVar::removeMin");
-	methods_to_skip.insert("RooRealVar::removeMax");
-	methods_to_skip.insert("RooRealVar::removeRange");
-	// RooAbsReal::_doLogEvalError
-	methods_to_skip.insert("RooAbsReal::evalErrorLoggingEnabled");
-	methods_to_skip.insert("RooAbsReal::enableEvalErrorLogging");
-	// RooAbsReal::_evalErrorList
-	methods_to_skip.insert("RooAbsReal::numEvalErrorItems");
-	methods_to_skip.insert("RooAbsReal::evalErrorIter");
-	// RooFactorWSTool::_of
-	methods_to_skip.insert("RooFactoryWSTool::as_ARG");
-	methods_to_skip.insert("RooFactoryWSTool::as_PDF");
-	methods_to_skip.insert("RooFactoryWSTool::as_FUNC");
-	methods_to_skip.insert("RooFactoryWSTool::as_VAR");
-	methods_to_skip.insert("RooFactoryWSTool::as_VARLV");
-	methods_to_skip.insert("RooFactoryWSTool::as_RMODEL");
-	methods_to_skip.insert("RooFactoryWSTool::as_CAT");
-	methods_to_skip.insert("RooFactoryWSTool::as_CATLV");
-	methods_to_skip.insert("RooFactoryWSTool::as_CATFUNC");
-	methods_to_skip.insert("RooFactoryWSTool::as_SET");
-	methods_to_skip.insert("RooFactoryWSTool::as_LIST");
-	methods_to_skip.insert("RooFactoryWSTool::as_DATA");
-	methods_to_skip.insert("RooFactoryWSTool::as_DHIST");
-	methods_to_skip.insert("RooFactoryWSTool::as_DSET");
-	methods_to_skip.insert("RooFactoryWSTool::as_OBJ");
-	methods_to_skip.insert("RooFactoryWSTool::as_STRING");
-	methods_to_skip.insert("RooFactoryWSTool::as_INT");
-	methods_to_skip.insert("RooFactoryWSTool::as_DOUBLE");
-	// RooRealIntegral::_cacheAllNDim
-	methods_to_skip.insert("RooRealIntegral::setCacheAllNumeric");
-	methods_to_skip.insert("RooRealIntegral::getCacheAllNumeric");
+		/// Some bad globals in RooFitCore library
+		// RooAbsPdf::_globalSelectComp
+		methods_to_skip.insert("RooAbsPdf::isSelectedComp");
+		// RooNumber::infinity (RooBinning) - used in the ctor of RooBinning
+		methods_to_skip.insert("RooBinning::RooBinning");
+		methods_to_skip.insert("RooNormListManager::setVerbose");
+		methods_to_skip.insert("RooErrorVar::removeMin");
+		methods_to_skip.insert("RooErrorVar::removeMax");
+		methods_to_skip.insert("RooErrorVar::removeRange");
+		methods_to_skip.insert("RooRealVar::removeMin");
+		methods_to_skip.insert("RooRealVar::removeMax");
+		methods_to_skip.insert("RooRealVar::removeRange");
+		// RooAbsReal::_doLogEvalError
+		methods_to_skip.insert("RooAbsReal::evalErrorLoggingEnabled");
+		methods_to_skip.insert("RooAbsReal::enableEvalErrorLogging");
+		// RooAbsReal::_evalErrorList
+		methods_to_skip.insert("RooAbsReal::numEvalErrorItems");
+		methods_to_skip.insert("RooAbsReal::evalErrorIter");
+		// RooFactorWSTool::_of
+		methods_to_skip.insert("RooFactoryWSTool::as_ARG");
+		methods_to_skip.insert("RooFactoryWSTool::as_PDF");
+		methods_to_skip.insert("RooFactoryWSTool::as_FUNC");
+		methods_to_skip.insert("RooFactoryWSTool::as_VAR");
+		methods_to_skip.insert("RooFactoryWSTool::as_VARLV");
+		methods_to_skip.insert("RooFactoryWSTool::as_RMODEL");
+		methods_to_skip.insert("RooFactoryWSTool::as_CAT");
+		methods_to_skip.insert("RooFactoryWSTool::as_CATLV");
+		methods_to_skip.insert("RooFactoryWSTool::as_CATFUNC");
+		methods_to_skip.insert("RooFactoryWSTool::as_SET");
+		methods_to_skip.insert("RooFactoryWSTool::as_LIST");
+		methods_to_skip.insert("RooFactoryWSTool::as_DATA");
+		methods_to_skip.insert("RooFactoryWSTool::as_DHIST");
+		methods_to_skip.insert("RooFactoryWSTool::as_DSET");
+		methods_to_skip.insert("RooFactoryWSTool::as_OBJ");
+		methods_to_skip.insert("RooFactoryWSTool::as_STRING");
+		methods_to_skip.insert("RooFactoryWSTool::as_INT");
+		methods_to_skip.insert("RooFactoryWSTool::as_DOUBLE");
+		// RooRealIntegral::_cacheAllNDim
+		methods_to_skip.insert("RooRealIntegral::setCacheAllNumeric");
+		methods_to_skip.insert("RooRealIntegral::getCacheAllNumeric");
 	
-	// TEveLine::fgDefaultSmooth
-	methods_to_skip.insert("TEveLine::GetDefaultSmooth");
-	methods_to_skip.insert("TEveLine::SetDefaultSmooth");
+		// TEveLine::fgDefaultSmooth
+		methods_to_skip.insert("TEveLine::GetDefaultSmooth");
+		methods_to_skip.insert("TEveLine::SetDefaultSmooth");
 
-	// TEveTrackProjected::fgBreakTracks
-	methods_to_skip.insert("TEveTrackProjected::GetBreakTracks");
-	methods_to_skip.insert("TEveTrackProjected::SetBreakTracks");
+		// TEveTrackProjected::fgBreakTracks
+		methods_to_skip.insert("TEveTrackProjected::GetBreakTracks");
+		methods_to_skip.insert("TEveTrackProjected::SetBreakTracks");
 
-	/// Bad globals from libTable
-	// TDataSet(fgMainSet)
-	methods_to_skip.insert("TDataSet::GetMainSet");
-	methods_to_skip.insert("TDataSet::AddMain");
-	// TTableDescriptor(fgColDescriptors)
-	methods_to_skip.insert("TTableDescriptor::GetDescriptorPointer");
-	methods_to_skip.insert("TTableDescriptor::SetDescriptorPointer");
-	methods_to_skip.insert("TChair::GetRowDescriptors");
-	// TDataSetIter::fgNullDataSet
-	methods_to_skip.insert("TDataSetIter::operator* ()");
-	methods_to_skip.insert("TDataSetIter::GetNullSet");
-	// TIndexTable::fgColDescriptors
-	methods_to_skip.insert("TIndexTable::GetDescriptorPointer");
-	methods_to_skip.insert("TIndexTable::SetDescriptorPointer");
+		/// Bad globals from libTable
+		// TDataSet(fgMainSet)
+		methods_to_skip.insert("TDataSet::GetMainSet");
+		methods_to_skip.insert("TDataSet::AddMain");
+		// TTableDescriptor(fgColDescriptors)
+		methods_to_skip.insert("TTableDescriptor::GetDescriptorPointer");
+		methods_to_skip.insert("TTableDescriptor::SetDescriptorPointer");
+		methods_to_skip.insert("TChair::GetRowDescriptors");
+		// TDataSetIter::fgNullDataSet
+		methods_to_skip.insert("TDataSetIter::operator* ()");
+		methods_to_skip.insert("TDataSetIter::GetNullSet");
+		// TIndexTable::fgColDescriptors
+		methods_to_skip.insert("TIndexTable::GetDescriptorPointer");
+		methods_to_skip.insert("TIndexTable::SetDescriptorPointer");
 
-	/// Bad globsl from libRGL
-	// TGLSelectBuffer::fbMaxSize is another undefined symbol.
-	methods_to_skip.insert("TGLSelectBuffer::CanGrow");
-	// TGLUtil::fgDrawQuality is missing
-	methods_to_skip.insert("TGLUtil::SetDrawQuality");
-	methods_to_skip.insert("TGLUtil::ResetDrawQuality");
-	// TGLUtil::fgDefaultDrawQuality is missing
-	methods_to_skip.insert("TGLUtil::GetDefaultDrawQuality");
-	methods_to_skip.insert("TGLUtil::SetDefaultDrawQuality");
-	// TGLUtil::fgColorLockCount
-	methods_to_skip.insert("TGLUtil::IsColorLocked");
+		/// Bad globsl from libRGL
+		// TGLSelectBuffer::fbMaxSize is another undefined symbol.
+		methods_to_skip.insert("TGLSelectBuffer::CanGrow");
+		// TGLUtil::fgDrawQuality is missing
+		methods_to_skip.insert("TGLUtil::SetDrawQuality");
+		methods_to_skip.insert("TGLUtil::ResetDrawQuality");
+		// TGLUtil::fgDefaultDrawQuality is missing
+		methods_to_skip.insert("TGLUtil::GetDefaultDrawQuality");
+		methods_to_skip.insert("TGLUtil::SetDefaultDrawQuality");
+		// TGLUtil::fgColorLockCount
+		methods_to_skip.insert("TGLUtil::IsColorLocked");
 	
-	/// libVMC
-	// Missing TVirtualMC::fgMC;
-	methods_to_skip.insert("TVirtualMC::GetMC");
+		/// libVMC
+		// Missing TVirtualMC::fgMC;
+		methods_to_skip.insert("TVirtualMC::GetMC");
 
-	/// libGeomBuilder
-	// TGeoTreeDialog::fgSelectedObj
-	methods_to_skip.insert("TGeoTreeDialog::GetSelected");
+		/// libGeomBuilder
+		// TGeoTreeDialog::fgSelectedObj
+		methods_to_skip.insert("TGeoTreeDialog::GetSelected");
 
-	/// libFitPanelWrapper
-	// TFitEditor::fgFitDialog is missing
-	methods_to_skip.insert("TFitEditor::GetFP");
+		/// libFitPanelWrapper
+		// TFitEditor::fgFitDialog is missing
+		methods_to_skip.insert("TFitEditor::GetFP");
 
-	/// Amb method: Error
-	methods_to_skip.insert("TFitResult::Error");
-	methods_to_skip.insert("FitResult::Error");
-	methods_to_skip.insert("ROOT::Fit::FitResult::Error");
-	methods_to_skip.insert("TObject::Error");
+		/// Amb method: Error
+		methods_to_skip.insert("TFitResult::Error");
+		methods_to_skip.insert("FitResult::Error");
+		methods_to_skip.insert("ROOT::Fit::FitResult::Error");
+		methods_to_skip.insert("TObject::Error");
 
-	/// TFileCacheRead - some circular definitions
-	methods_to_skip.insert("TFileCacheRead::AddBranch");
+		/// TFileCacheRead - some circular definitions
+		methods_to_skip.insert("TFileCacheRead::AddBranch");
 
-	/// My code is messing up the covar returns on this guy
-	methods_to_skip.insert("TGMainFrame::GetMainFrame");
-	methods_to_skip.insert("TGFrame::GetMainFrame");
-	methods_to_skip.insert("TGWindow::GetMainFrame");
-	methods_to_skip.insert("TRootBrowser::GetMainFrame");
-	methods_to_skip.insert("TRootBrowserLite::GetMainFrame");
-	methods_to_skip.insert("TGFrame::GetDragType");
-	methods_to_skip.insert("TVirtualDragManager::GetDragType");
+		/// My code is messing up the covar returns on this guy
+		methods_to_skip.insert("TGMainFrame::GetMainFrame");
+		methods_to_skip.insert("TGFrame::GetMainFrame");
+		methods_to_skip.insert("TGWindow::GetMainFrame");
+		methods_to_skip.insert("TRootBrowser::GetMainFrame");
+		methods_to_skip.insert("TRootBrowserLite::GetMainFrame");
+		methods_to_skip.insert("TGFrame::GetDragType");
+		methods_to_skip.insert("TVirtualDragManager::GetDragType");
+	}
+	else if (svn_id < 37603)
+	{
+		/// 5.28 and friends
+	} else
+	{
+			/// 5.30 and friends
+	}
 
 	return methods_to_skip;
 }
