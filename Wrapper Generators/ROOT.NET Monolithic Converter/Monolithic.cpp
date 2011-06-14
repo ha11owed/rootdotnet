@@ -71,12 +71,13 @@ int main()
 	///
 
 	/// The below lines are used during debugging in order to build a single (problem) class.
-	asked_for_class_list.push_back ("TROOT");
-	asked_for_class_list.push_back ("TDirectory");
+	/// The below lines are used during debugging in order to build a single (problem) class.
+	asked_for_class_list.push_back ("TVirtualDragManager");
+	asked_for_class_list.push_back ("TObject");
+	asked_for_enum_list.push_back("EDragType");
 
 	/// Make sure the libraries that are going to be needed are loaded!
-	///libraries_to_load.push_back ("libTable");
-	libraries_to_load.push_back ("libCore");
+	libraries_to_load.push_back ("libGui");
 
 	output_dir = "..\\..\\Wrappers\\MonolithicROOTWrapper\\ROOTSource";
 

@@ -46,7 +46,7 @@ void TTROOTenum::translate_to_cpp(const std::string &name_net, const std::string
 ///
 void TTROOTenum::translate_to_net(const std::string &name_net, const std::string &name_cpp, SourceEmitter &emitter) const
 {
-	emitter.start_line() << net_interface_name() << " " << name_net << " = (" << net_typename() << ") " << name_cpp << ";" << endl;
+	emitter.start_line() << net_interface_name() << " " << name_net << " = (" << net_interface_name() << ") " << name_cpp << ";" << endl;
 }
 
 ///
