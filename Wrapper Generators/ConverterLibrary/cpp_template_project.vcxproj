@@ -39,7 +39,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)\..\WrapperPlumbingLibrary
 <!-- ADDIncludes -->
 ;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996;4383;4244;4800</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4383;4244;4800;4351</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
