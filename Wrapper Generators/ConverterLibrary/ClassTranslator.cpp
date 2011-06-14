@@ -41,7 +41,7 @@ using std::transform;
 using std::inserter;
 
 ClassTranslator::ClassTranslator(const std::string &base_dir)
-: _base_directory (base_dir)
+	: _base_directory (base_dir)
 {
 	load_globals();
 
@@ -596,10 +596,10 @@ void ClassTranslator::generate_interface (RootClassInfo &class_info, SourceEmitt
 	for (vector<RootClassProperty>::const_iterator itr = properties.begin(); itr != properties.end(); itr++) {
 		emitter.start_line() << "property " << itr->property_type() << " " << itr->name() << " {" << endl;
 		if (itr->isGetter()) {
-		  emitter.start_line() << "  " << itr->property_type() << " get ();" << endl;
+			emitter.start_line() << "  " << itr->property_type() << " get ();" << endl;
 		}
 		if (itr->isSetter()) {
-		  emitter.start_line() << "  void set (" << itr->property_type() << " value);" << endl;
+			emitter.start_line() << "  void set (" << itr->property_type() << " value);" << endl;
 		}
 		emitter.start_line() << "}" << endl;
 	}
@@ -849,10 +849,10 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	for (vector<RootClassProperty>::const_iterator itr = properties.begin(); itr != properties.end(); itr++) {
 		emitter.start_line() << "property " << itr->property_type() << " " << itr->name() << " {" << endl;
 		if (itr->isGetter()) {
-		  emitter.start_line() << "  virtual " << itr->property_type() << " get ();" << endl;
+			emitter.start_line() << "  virtual " << itr->property_type() << " get ();" << endl;
 		}
 		if (itr->isSetter()) {
-		  emitter.start_line() << "  virtual void set (" << itr->property_type() << " value);" << endl;
+			emitter.start_line() << "  virtual void set (" << itr->property_type() << " value);" << endl;
 		}
 		emitter.start_line() << "}" << endl;
 	}
@@ -928,12 +928,12 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 			emitter.brace_close();
 
 #ifdef junker
-      property ::System::String ^ DrawOption {
-        ::System::String ^ get ();
-        void set (::System::String ^ value);
-      }
-				emitter.start_line() << "static Interface::" << info.NETName() << " ^" << globals[i] << " = gcnew " << info.NETName() << "(::" << globals[i] << ");" << endl;
-				emitter.start_line() << "static Interface::" << info.NETName() << " ^" << globals[i] << " = Loader" << globals[i] << "();" << endl;
+			property ::System::String ^ DrawOption {
+				::System::String ^ get ();
+				void set (::System::String ^ value);
+			}
+			emitter.start_line() << "static Interface::" << info.NETName() << " ^" << globals[i] << " = gcnew " << info.NETName() << "(::" << globals[i] << ");" << endl;
+			emitter.start_line() << "static Interface::" << info.NETName() << " ^" << globals[i] << " = Loader" << globals[i] << "();" << endl;
 #endif
 		}
 	}
@@ -1027,7 +1027,7 @@ namespace {
 				result[i] = '_';
 		}
 		return result;
-		
+
 	}
 
 	/// Emit code to issue a "return" statement of some sort
@@ -1048,88 +1048,88 @@ namespace {
 ///
 void ClassTranslator::emit_function_body(const RootClassMethod &method, const RootClassInfo &info, SourceEmitter &emitter)
 {
-  ///
-  /// If we can't translate the method, we should bail out right away.
-  ///
+	///
+	/// If we can't translate the method, we should bail out right away.
+	///
 
-  if (method.IsAmbiguous()) {
-	emitter.start_line() << "throw gcnew ::System::NotImplementedException(\"Method has ambiguous C++ resolution: not currently supported.\");" << endl;
-	return;
-  } else if (method.IsHidden()) {
-	emitter.start_line() << "throw gcnew ::System::NotImplementedException(\"Method has is protected in C++ class: can't be accessed.\");" << endl;
-	return;
-  }
-
-  ///
-  /// Setup for return - we may not use it (this function may not demand it).
-  ///
-
-  string return_var ("f_abz_result"); // Common (potential) name.
-
-  ///
-  /// Translate the arguments into CPP land from .net land
-  ///
-
-  const vector<RootClassMethodArg> &args = method.arguments();
-  vector<string> cpp_argnames (emit_cpp_args(args, emitter));
-
-  ///
-  /// Now that we have the arguments in hand, we can write the body of the function.
-  ///
-
-  if (method.IsCtor()) {
-	emitter.start_line() << "_instance = new ::" << info.CPPName() << "(";
-	for (unsigned int i = 0; i < cpp_argnames.size(); i++) {
-	  if (i != 0) {
-		emitter() << ", ";
-	  }
-	  emitter() << cpp_argnames[i];
+	if (method.IsAmbiguous()) {
+		emitter.start_line() << "throw gcnew ::System::NotImplementedException(\"Method has ambiguous C++ resolution: not currently supported.\");" << endl;
+		return;
+	} else if (method.IsHidden()) {
+		emitter.start_line() << "throw gcnew ::System::NotImplementedException(\"Method has is protected in C++ class: can't be accessed.\");" << endl;
+		return;
 	}
-	emitter() << ");" << endl;
-	emit_registration(info, emitter, true);
-  } else {
-	const CPPNetTypeMapper::TypeTranslator *return_translator = method.get_return_type_translator();
-	if (return_translator != 0) {
-	  emitter.start_line() << return_translator->cpp_code_typename() << " " << return_var << " = ";
+
+	///
+	/// Setup for return - we may not use it (this function may not demand it).
+	///
+
+	string return_var ("f_abz_result"); // Common (potential) name.
+
+	///
+	/// Translate the arguments into CPP land from .net land
+	///
+
+	const vector<RootClassMethodArg> &args = method.arguments();
+	vector<string> cpp_argnames (emit_cpp_args(args, emitter));
+
+	///
+	/// Now that we have the arguments in hand, we can write the body of the function.
+	///
+
+	if (method.IsCtor()) {
+		emitter.start_line() << "_instance = new ::" << info.CPPName() << "(";
+		for (unsigned int i = 0; i < cpp_argnames.size(); i++) {
+			if (i != 0) {
+				emitter() << ", ";
+			}
+			emitter() << cpp_argnames[i];
+		}
+		emitter() << ");" << endl;
+		emit_registration(info, emitter, true);
 	} else {
-	  emitter.start_line();
+		const CPPNetTypeMapper::TypeTranslator *return_translator = method.get_return_type_translator();
+		if (return_translator != 0) {
+			emitter.start_line() << return_translator->cpp_code_typename() << " " << return_var << " = ";
+		} else {
+			emitter.start_line();
+		}
+
+		/// If static, then make the static call
+		if (method.IsStatic()) {
+			emitter() << "::" << method.ClassOfMethodDefinition() << "::" << method.NETName();
+		} else {
+			if (method.IsConst()) {
+				emitter() << "((const " << info.CPPName() << " *) _instance)->";
+			} else {
+				emitter() << "_instance->";
+			}
+			emitter() << method.FullName();
+		}
+		emitter() << "(";
+		for (unsigned int i = 0; i < cpp_argnames.size(); i++) {
+			if (i != 0) {
+				emitter() << ", ";
+			}
+			emitter() << cpp_argnames[i];
+		}
+		emitter() << ");" << endl;
 	}
 
-	/// If static, then make the static call
-	if (method.IsStatic()) {
-	  emitter() << "::" << method.ClassOfMethodDefinition() << "::" << method.NETName();
-	} else {
-	  if (method.IsConst()) {
-		emitter() << "((const " << info.CPPName() << " *) _instance)->";
-	  } else {
-		emitter() << "_instance->";
-	  }
-	  emitter() << method.FullName();
+	///
+	/// Next, do any clean up required from the argument translation. I hope this is exception
+	/// safe!!! (memory leaks bad!!).
+	///
+
+	clean_up_args (args, cpp_argnames, emitter);
+
+	///
+	/// If there is a return. 
+	///
+
+	if ((!method.IsAmbiguous() && !method.IsHidden()) && !method.IsCtor() && method.has_return_value()) {
+		emit_return (method.get_return_type_translator(), return_var, emitter);
 	}
-	emitter() << "(";
-	for (unsigned int i = 0; i < cpp_argnames.size(); i++) {
-	  if (i != 0) {
-		emitter() << ", ";
-	  }
-	  emitter() << cpp_argnames[i];
-	}
-	emitter() << ");" << endl;
-  }
-
-  ///
-  /// Next, do any clean up required from the argument translation. I hope this is exception
-  /// safe!!! (memory leaks bad!!).
-  ///
-
-  clean_up_args (args, cpp_argnames, emitter);
-
-  ///
-  /// If there is a return. 
-  ///
-
-  if ((!method.IsAmbiguous() && !method.IsHidden()) && !method.IsCtor() && method.has_return_value()) {
-	emit_return (method.get_return_type_translator(), return_var, emitter);
-  }
 }
 
 ///
@@ -1145,189 +1145,189 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 	emitter() << "#undef nullptr" << endl;
 	emitter() << "#endif" << endl;
 
-  ///
-  /// First, do our particular c-tors...
-  ///
-
-  emitter.start_line() << info.NETName() << "::" << info.NETName() << "(::" << info.CPPName() << " *instance)" << endl;
-  emitter.start_line() << " : _instance(instance)" << endl;
-  emitter.brace_open();
-  emit_registration(info, emitter, false);
-  emitter.brace_close();
-
-  emitter.start_line() << info.NETName() << "::" << info.NETName() << "(::" << info.CPPName() << " &instance)" << endl;
-  emitter.start_line() << " : _instance(&instance)" << endl;
-  emitter.brace_open();
-  emit_registration(info, emitter, false);
-  emitter.brace_close();
-
-  ///
-  /// Drop this object from registration info
-  ///
-
-  emitter.start_line() << "void " << info.NETName() << "::DropObjectFromTables (void)" << endl;
-  emitter.brace_open();
-  if (info.InheritsFromTObject() || info.CPPName() == "TObject") {
-	emitter.start_line() << "ROOTNET::Utility::ROOTObjectManager::instance()->ForgetAboutObject(_instance);" << endl;
-  }
-  emitter.brace_close();
-
-
-  ///
-  /// Do all the public methods, ctors and etc. that we need to get done!
-  /// Some methods have the same signature, differing only by a "const" or
-  /// similar. So we make sure we don't write those out twice.
-  ///
-
-  set<string> written_methods;
-  vector<RootClassMethod> arrayOperators;
-  const vector<RootClassMethod> &class_protos (info.GetAllPrototypesForThisClass(true));
-
-  for (unsigned int i = 0; i < class_protos.size(); i++) {
-	const RootClassMethod &method = class_protos[i];
-
-	if (method.IsIndexer()) {
-	  arrayOperators.push_back(method);
-	  continue;
-	}
-
-	if (!method.IsGoodForClass()) {
-	  continue;
-	}
-
-	try {
-	  string n_header = method.generate_normalized_method_header();
-	  if (written_methods.find(n_header) != written_methods.end()) {
-		continue;
-	  }
-	  written_methods.insert(n_header);
-
-	  if (method.has_return_value() && method.get_return_type_translator()->is_reference_to_object()) {
-		continue;
-	  }
-
-	  emitter.start_line() << method.generate_method_header(true) << endl;
-	  emitter.brace_open();
-	} catch (runtime_error &e) {
-	  cout << "  translation failed (" << method.CPPName() << "): " << e.what() << endl;
-	  continue;
-	}
-
 	///
-	/// Great. Now do the call to actually make the "stuff" happy
+	/// First, do our particular c-tors...
 	///
 
-	emit_function_body(method, info, emitter);
-
-	///
-	/// Done with the method
-	///
-
-	emitter.brace_close();
-	emitter() << endl;
-  }
-
-  ///
-  /// Emit any extra features
-  ///
-
-  FeatureManager::GetFeaturesFor(info).emit_class_methods(info, emitter);
-
-  ///
-  /// Do the properties for this object.
-  ///
-
-  const vector<RootClassProperty> &properties (info.GetProperties());
-  for (vector<RootClassProperty>::const_iterator itr = properties.begin(); itr != properties.end(); itr++) {
-	if (itr->isGetter()) {
-	  emitter.start_line() << itr->property_type() << " " << info.NETName() << "::" << itr->name() << "::get ()" << endl;
-	  emitter.brace_open();
-	  emit_function_body(*(itr->getter_method()), info, emitter);
-	  emitter.brace_close();
-	}
-	if (itr->isSetter()) {
-	  emitter.start_line() << "void " << info.NETName() << "::" << itr->name() << "::set (" << itr->property_type()
-		<< " " << itr->setter_method()->arguments()[0].get_argname()  << ")" << endl;
-	  emitter.brace_open();
-	  emit_function_body(*(itr->setter_method()), info, emitter);
-	  emitter.brace_close();
-	}
-  }
-  
-  ///
-  /// Emit fields for this object. Symantics are a little tricky here in the following sense - a field can
-  /// have only a single type for get/set. If we the two types aren't the same then we are a little bit stuck. So
-  /// we prefer the 'get' over the setup. That usually works out in the ROOT world.
-  ///
-
-  auto &fields (info.GetAllDataFields(true));
-  for (int i = 0; i < fields.size(); i++) {
-	  const RootClassField &f(fields[i]);
-
-	  if (f.GetterOK()) {
-		  emitter.start_line() << f.NETType() << " " << info.NETName() << "::" << f.NETName() << "::get ()" << endl;
-		  emitter.brace_open();
-		  emit_return(f.Translator(), "_instance->" + f.CPPName(), emitter);
-		  emitter.brace_close();
-	  }
-
-	  if (f.SetterOK()) {
-		  emitter.start_line() << "void " << info.NETName() << "::" << f.NETName()
-			  << "::set (" << f.NETType() << " f_xyz_val)" << endl;
-		  emitter.brace_open();
-		  auto tempname (emit_translation_net_cpp("f_xyz_val", f.Translator(), emitter));
-		  emitter.start_line() << "    _instance->" << f.CPPName() << " = " << tempname << ";" << endl;
-		  emit_translation_net_cpp_cleanup("f_xyz_val", tempname, f.Translator(), emitter);
-		  emitter.brace_close();
-	  }
-
-
-  }
-
-  ///
-  /// Deal with the indexer methods. This is like above, only we know exactly what we are
-  /// writing so we can move a little faster with fewer if statements. :-)
-  ///
-  /// Indexers can suffer from covarient returns as well, so we need to double
-  /// check which operator we are calling for indexing!
-  ///
-
-  vector<CPPIndexerInfo> indexers (SortIndexers(arrayOperators));
-  for (unsigned int i = 0; i < indexers.size(); i++) {
-	CPPIndexerInfo &iinfo (indexers[i]);
-
-	emitter.start_line() << iinfo._return_type->net_return_type_name() << " " << info.NETName() << "::default::get(" << iinfo._index_type->net_interface_name() << " index)" << endl;
+	emitter.start_line() << info.NETName() << "::" << info.NETName() << "(::" << info.CPPName() << " *instance)" << endl;
+	emitter.start_line() << " : _instance(instance)" << endl;
 	emitter.brace_open();
-	string arg_name (emit_translation_net_cpp ("index", iinfo._index_type, emitter));
-	string return_val ("f_abc_return");
-	emitter.start_line() << iinfo._return_type->cpp_code_typename() << " " << return_val << " = ";
-	if (iinfo._method->ClassOfMethodDefinition() != info.CPPName()) {
-		emitter() << " _instance->" << iinfo._method->ClassOfMethodDefinition() << "::operator[](" << arg_name << ");" << endl;
-	} else {
-		emitter() << " (*_instance)[" << arg_name << "];" << endl;
-	}
-
-	if (!iinfo._index_type->clean_up_matters_for_return_value_only()) {
-	  emit_translation_net_cpp_cleanup ("index", arg_name, iinfo._index_type, emitter);
-	}
-	emit_return (iinfo._return_type, return_val, emitter);
+	emit_registration(info, emitter, false);
 	emitter.brace_close();
 
-	if (iinfo._is_setter) {
-	  emitter.start_line() << "void " << info.NETName() << "::default::set(" << iinfo._index_type->net_interface_name() << " index, " << iinfo._return_type->net_return_type_name() << " value)" << endl;
-	  emitter.brace_open();
-	  string arg_name (emit_translation_net_cpp ("index", iinfo._index_type, emitter));
-	  string value_name (emit_translation_net_cpp ("value", iinfo._return_type, emitter));
-	  emitter.start_line() << "  (*_instance)[" << arg_name << "] = " << value_name << ";" << endl;
-	  if (!iinfo._index_type->clean_up_matters_for_return_value_only()) {
-		emit_translation_net_cpp_cleanup ("index", arg_name, iinfo._index_type, emitter);
-	  }
-	  if (!iinfo._return_type->clean_up_matters_for_return_value_only()) {
-		emit_translation_net_cpp_cleanup ("value", value_name, iinfo._return_type, emitter);
-	  }
-	  emitter.brace_close();
+	emitter.start_line() << info.NETName() << "::" << info.NETName() << "(::" << info.CPPName() << " &instance)" << endl;
+	emitter.start_line() << " : _instance(&instance)" << endl;
+	emitter.brace_open();
+	emit_registration(info, emitter, false);
+	emitter.brace_close();
+
+	///
+	/// Drop this object from registration info
+	///
+
+	emitter.start_line() << "void " << info.NETName() << "::DropObjectFromTables (void)" << endl;
+	emitter.brace_open();
+	if (info.InheritsFromTObject() || info.CPPName() == "TObject") {
+		emitter.start_line() << "ROOTNET::Utility::ROOTObjectManager::instance()->ForgetAboutObject(_instance);" << endl;
 	}
-  }
+	emitter.brace_close();
+
+
+	///
+	/// Do all the public methods, ctors and etc. that we need to get done!
+	/// Some methods have the same signature, differing only by a "const" or
+	/// similar. So we make sure we don't write those out twice.
+	///
+
+	set<string> written_methods;
+	vector<RootClassMethod> arrayOperators;
+	const vector<RootClassMethod> &class_protos (info.GetAllPrototypesForThisClass(true));
+
+	for (unsigned int i = 0; i < class_protos.size(); i++) {
+		const RootClassMethod &method = class_protos[i];
+
+		if (method.IsIndexer()) {
+			arrayOperators.push_back(method);
+			continue;
+		}
+
+		if (!method.IsGoodForClass()) {
+			continue;
+		}
+
+		try {
+			string n_header = method.generate_normalized_method_header();
+			if (written_methods.find(n_header) != written_methods.end()) {
+				continue;
+			}
+			written_methods.insert(n_header);
+
+			if (method.has_return_value() && method.get_return_type_translator()->is_reference_to_object()) {
+				continue;
+			}
+
+			emitter.start_line() << method.generate_method_header(true) << endl;
+			emitter.brace_open();
+		} catch (runtime_error &e) {
+			cout << "  translation failed (" << method.CPPName() << "): " << e.what() << endl;
+			continue;
+		}
+
+		///
+		/// Great. Now do the call to actually make the "stuff" happy
+		///
+
+		emit_function_body(method, info, emitter);
+
+		///
+		/// Done with the method
+		///
+
+		emitter.brace_close();
+		emitter() << endl;
+	}
+
+	///
+	/// Emit any extra features
+	///
+
+	FeatureManager::GetFeaturesFor(info).emit_class_methods(info, emitter);
+
+	///
+	/// Do the properties for this object.
+	///
+
+	const vector<RootClassProperty> &properties (info.GetProperties());
+	for (vector<RootClassProperty>::const_iterator itr = properties.begin(); itr != properties.end(); itr++) {
+		if (itr->isGetter()) {
+			emitter.start_line() << itr->property_type() << " " << info.NETName() << "::" << itr->name() << "::get ()" << endl;
+			emitter.brace_open();
+			emit_function_body(*(itr->getter_method()), info, emitter);
+			emitter.brace_close();
+		}
+		if (itr->isSetter()) {
+			emitter.start_line() << "void " << info.NETName() << "::" << itr->name() << "::set (" << itr->property_type()
+				<< " " << itr->setter_method()->arguments()[0].get_argname()  << ")" << endl;
+			emitter.brace_open();
+			emit_function_body(*(itr->setter_method()), info, emitter);
+			emitter.brace_close();
+		}
+	}
+
+	///
+	/// Emit fields for this object. Symantics are a little tricky here in the following sense - a field can
+	/// have only a single type for get/set. If we the two types aren't the same then we are a little bit stuck. So
+	/// we prefer the 'get' over the setup. That usually works out in the ROOT world.
+	///
+
+	auto &fields (info.GetAllDataFields(true));
+	for (int i = 0; i < fields.size(); i++) {
+		const RootClassField &f(fields[i]);
+
+		if (f.GetterOK()) {
+			emitter.start_line() << f.NETType() << " " << info.NETName() << "::" << f.NETName() << "::get ()" << endl;
+			emitter.brace_open();
+			emit_return(f.Translator(), "_instance->" + f.CPPName(), emitter);
+			emitter.brace_close();
+		}
+
+		if (f.SetterOK()) {
+			emitter.start_line() << "void " << info.NETName() << "::" << f.NETName()
+				<< "::set (" << f.NETType() << " f_xyz_val)" << endl;
+			emitter.brace_open();
+			auto tempname (emit_translation_net_cpp("f_xyz_val", f.Translator(), emitter));
+			emitter.start_line() << "    _instance->" << f.CPPName() << " = " << tempname << ";" << endl;
+			emit_translation_net_cpp_cleanup("f_xyz_val", tempname, f.Translator(), emitter);
+			emitter.brace_close();
+		}
+
+
+	}
+
+	///
+	/// Deal with the indexer methods. This is like above, only we know exactly what we are
+	/// writing so we can move a little faster with fewer if statements. :-)
+	///
+	/// Indexers can suffer from covarient returns as well, so we need to double
+	/// check which operator we are calling for indexing!
+	///
+
+	vector<CPPIndexerInfo> indexers (SortIndexers(arrayOperators));
+	for (unsigned int i = 0; i < indexers.size(); i++) {
+		CPPIndexerInfo &iinfo (indexers[i]);
+
+		emitter.start_line() << iinfo._return_type->net_return_type_name() << " " << info.NETName() << "::default::get(" << iinfo._index_type->net_interface_name() << " index)" << endl;
+		emitter.brace_open();
+		string arg_name (emit_translation_net_cpp ("index", iinfo._index_type, emitter));
+		string return_val ("f_abc_return");
+		emitter.start_line() << iinfo._return_type->cpp_code_typename() << " " << return_val << " = ";
+		if (iinfo._method->ClassOfMethodDefinition() != info.CPPName()) {
+			emitter() << " _instance->" << iinfo._method->ClassOfMethodDefinition() << "::operator[](" << arg_name << ");" << endl;
+		} else {
+			emitter() << " (*_instance)[" << arg_name << "];" << endl;
+		}
+
+		if (!iinfo._index_type->clean_up_matters_for_return_value_only()) {
+			emit_translation_net_cpp_cleanup ("index", arg_name, iinfo._index_type, emitter);
+		}
+		emit_return (iinfo._return_type, return_val, emitter);
+		emitter.brace_close();
+
+		if (iinfo._is_setter) {
+			emitter.start_line() << "void " << info.NETName() << "::default::set(" << iinfo._index_type->net_interface_name() << " index, " << iinfo._return_type->net_return_type_name() << " value)" << endl;
+			emitter.brace_open();
+			string arg_name (emit_translation_net_cpp ("index", iinfo._index_type, emitter));
+			string value_name (emit_translation_net_cpp ("value", iinfo._return_type, emitter));
+			emitter.start_line() << "  (*_instance)[" << arg_name << "] = " << value_name << ";" << endl;
+			if (!iinfo._index_type->clean_up_matters_for_return_value_only()) {
+				emit_translation_net_cpp_cleanup ("index", arg_name, iinfo._index_type, emitter);
+			}
+			if (!iinfo._return_type->clean_up_matters_for_return_value_only()) {
+				emit_translation_net_cpp_cleanup ("value", value_name, iinfo._return_type, emitter);
+			}
+			emitter.brace_close();
+		}
+	}
 
 }
 
