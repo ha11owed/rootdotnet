@@ -32,7 +32,7 @@ copy release\cpp_template_project.vcxproj .
 copy release\solution_template.sln .
 
 REM Next, build the wrapers!
-echo "Building the wrappers"
+echo Building the wrappers
 "release\ROOT.NET Library Converter" -d ..\Wrappers\%2
 
 REM Copy over the property sheet...
