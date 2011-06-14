@@ -90,7 +90,7 @@
       <ForcedIncludeFiles>w32pragma.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libCore.lib;libTable.lib;libRGL.lib;libGpad.lib;libHist.lib;libTree.lib;libMathCore.lib;libGeom.lib;libGraf.lib;libGraf3d.lib;libMatrix.lib;libMinuit.lib</AdditionalDependencies>
+      <AdditionalDependencies>libCore.lib;libGui.lib;libTable.lib;libRGL.lib;libGpad.lib;libHist.lib;libTree.lib;libMathCore.lib;libGeom.lib;libGraf.lib;libGraf3d.lib;libMatrix.lib;libMinuit.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -114,19 +114,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="ROOTSource\NTDirectory.cpp" />
-    <ClCompile Include="ROOTSource\NTNamed.cpp" />
-    <ClCompile Include="ROOTSource\NTObject.cpp" />
-    <ClCompile Include="ROOTSource\NTROOT.cpp" />
+    <ClCompile Include="ROOTSource\EDragType.cpp" />
+    <ClCompile Include="ROOTSource\NTVirtualDragManager.cpp" />
     <ClCompile Include="ROOTSource\root_type_helpers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="ROOTSource\libCore-make_public.hpp" />
-    <ClInclude Include="ROOTSource\NTDirectory.hpp" />
-    <ClInclude Include="ROOTSource\NTNamed.hpp" />
-    <ClInclude Include="ROOTSource\NTObject.hpp" />
-    <ClInclude Include="ROOTSource\NTROOT.hpp" />
+    <ClInclude Include="ROOTSource\EDragType.hpp" />
+    <ClInclude Include="ROOTSource\libGui-make_public.hpp" />
+    <ClInclude Include="ROOTSource\NTVirtualDragManager.hpp" />
     <ClInclude Include="ROOTSource\root_type_helpers.hpp" />
   </ItemGroup>
   <ItemGroup>
