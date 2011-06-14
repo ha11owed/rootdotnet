@@ -11,13 +11,11 @@ REM Setup the environment
 set "ROOTSYS=%1"
 set "PATH=%1\bin;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE;%PATH%"
 
-echo ROOTSYS = %ROOTSYS%
-
 REM Build everything so we can actually run programs! :-)
 echo Building code to do the translation...
 devenv /nologo "Wrapper Generators.sln" /project "FindBadRootHeaders" /build "Release|Win32"
 devenv /nologo "Wrapper Generators.sln" /project "ROOT.NET Library Converter" /build "Release|Win32"
-devenv /nologo "Wrapper Generators.sln" /project "ROOT.NET Addon Library Converter" /build "Release|Win32" /out builderrors.log
+devenv /nologo "Wrapper Generators.sln" /project "ROOT.NET Addon Library Converter" /build "Release|Win32"
 
 REM Find all bad headers in this distro of ROOT.
 
