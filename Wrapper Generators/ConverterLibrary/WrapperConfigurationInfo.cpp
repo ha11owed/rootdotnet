@@ -136,6 +136,17 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 	methods_to_skip.insert("TGFrame::GetDragType");
 	methods_to_skip.insert("TVirtualDragManager::GetDragType");
 
+	//
+	// For C++ you can specify just a class reference in one object if you use it as a pointer
+	// in another. For us to do that in ROOT.NET we'd have to build one library of interfaces and
+	// one library of the objects, unfortunately. Since I've elected not to x2 the # of libraries,
+	// there are a few places where we much watch out for this. My code can't resolve these at the
+	// moment, so we just put them in here.
+	//
+
+	// TFileCacheRead - used in libRIO, but depends on libTreeWrapper, which depends on libNet, which depends on libRIO.
+	methods_to_skip.insert("TFileCacheRead::AddBranch");
+
 	///
 	/// Next are version specific things that have to be not-translated.
 	/// Most of the time these are due to bad linkages in ROOT - that Windows
@@ -242,8 +253,6 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 		// TFitEditor::fgFitDialog is missing
 		methods_to_skip.insert("TFitEditor::GetFP");
 
-		/// TFileCacheRead - some circular definitions
-		methods_to_skip.insert("TFileCacheRead::AddBranch");
 	}
 	else if (svn_id < 37603)
 	{
