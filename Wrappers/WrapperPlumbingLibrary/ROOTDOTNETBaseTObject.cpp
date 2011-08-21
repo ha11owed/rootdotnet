@@ -12,12 +12,17 @@ namespace ROOTNET
 		}
 
 		/// dtor calls the finalizer
+		/// This is called only if we manually delete the object
+		/// (in a C# program, this would never get called).
 		ROOTDOTNETBaseTObject::~ROOTDOTNETBaseTObject()
 		{
 			this->!ROOTDOTNETBaseTObject();
 		}
 
-		/// Finalizer releases unmanaged resources.
+		/// Finalizer
+		/// This is called by the GC as it is being cleaned up. This is the 
+		/// normal path to deletion in C#, and is run on a seperate thread
+		/// (the finalizer thread).
 		ROOTDOTNETBaseTObject::!ROOTDOTNETBaseTObject()
 		{
 			DropObjectFromTables();
@@ -26,6 +31,13 @@ namespace ROOTNET
 			} else {
 				SetNull();
 			}
+		}
+
+		///
+		/// Change (perhaps) who is the owner. It would be nice
+		void ROOTDOTNETBaseTObject::SetNativePointerOwner(bool newIsOwner)
+		{
+			_owner = newIsOwner;
 		}
 
 		///

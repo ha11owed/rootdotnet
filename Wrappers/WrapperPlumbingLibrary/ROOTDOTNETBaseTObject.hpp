@@ -25,7 +25,7 @@ namespace ROOTNET
 			/// Drop the object from our internal tables. This is done just before it is to be deleted!
 			virtual void DropObjectFromTables (void) = 0;
 			/// Reset ownership to be not us so we don't delete it. Used when ROOT takes over ownership because of something we do.
-			void SetNativePointerOwner(bool owner) { _owner = owner; }
+			void SetNativePointerOwner(bool owner);
 
 			/// Dynamic implementions.
 			virtual bool TryInvokeMember (System::Dynamic::InvokeMemberBinder ^binder, array<Object^> ^args, Object^% result) override;
