@@ -7,6 +7,17 @@ namespace ROOTNET
 	namespace Utility
 	{
 		///
+		/// Why was the pointer set to null. This is a little helpful for trying to debug things.
+		///
+		public enum class ReasonPointerNullEnum {
+			kNothingHappenedYet = 0, // The pointer shoul dnot be null yet
+			kSetNullCalled = 1, // SetNull method was called
+			kObjectDeleted = 2, // The object was deleted with DeleteHeldObject.
+			kObjectNotDeleted = 3, // The object was deleted with DeleteHeldObject, but it isn't an object we are allowed to delete due to the generation!
+			kObjectFinalized = 4, // Object finalizer was called - you should never see this!!
+		};
+
+		///
 		/// The base-base-base-base object that is used for all objects that are wrapped by TObject.
 		/// Actually, the main reason this is hear is so that we can cleanly factor the plumbing library code
 		/// and the actual generated classes. :-)
@@ -24,8 +35,13 @@ namespace ROOTNET
 			virtual void DeleteHeldObject (void) = 0;
 			/// Drop the object from our internal tables. This is done just before it is to be deleted!
 			virtual void DropObjectFromTables (void) = 0;
+
 			/// Reset ownership to be not us so we don't delete it. Used when ROOT takes over ownership because of something we do.
 			void SetNativePointerOwner(bool owner);
+
+			/// Set why our pointer is null. Really shouldn't be called by anyone other than
+			/// this library in order to not trample on the info.
+			void SetNullReason (ReasonPointerNullEnum reason) { _whyNull = reason; }
 
 			/// Dynamic implementions.
 			virtual bool TryInvokeMember (System::Dynamic::InvokeMemberBinder ^binder, array<Object^> ^args, Object^% result) override;
@@ -36,7 +52,14 @@ namespace ROOTNET
 			~ROOTDOTNETBaseTObject(void);
 			!ROOTDOTNETBaseTObject(void);
 		protected:
+			/// True if we are the owner and should delete the underlying C++ object
+			/// if this guy gets garbage collected.
 			bool _owner;
+
+			/// Keep track of why our pointer was set to null. Mostly helpful is
+			/// tracking down bombs and crashes.
+			ReasonPointerNullEnum _whyNull;
+
 		};
 	}
 }

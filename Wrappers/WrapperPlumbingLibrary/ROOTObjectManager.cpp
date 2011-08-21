@@ -177,7 +177,9 @@ namespace ROOTNET
 				}
 
 				///
-				/// And drop the object from our internal table.
+				/// And drop the object from our internal table. Those that already have the object will
+				/// continue to hold onto it. But it can't come back from root any longer as root is the
+				/// one telling us to drop it!
 				///
 
 				_reader_writer_root_map_lock->EnterWriteLock();

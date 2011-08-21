@@ -7,7 +7,7 @@ namespace ROOTNET
 	namespace Utility
 	{
 		ROOTDOTNETBaseTObject::ROOTDOTNETBaseTObject(void)
-			: _owner(false)
+			: _owner(false), _whyNull(ReasonPointerNullEnum::kNothingHappenedYet)
 		{
 		}
 
@@ -31,6 +31,7 @@ namespace ROOTNET
 			} else {
 				SetNull();
 			}
+			SetNullReason(ReasonPointerNullEnum::kObjectFinalized);
 		}
 
 		///
@@ -49,6 +50,5 @@ namespace ROOTNET
 		{
 			return false;
 		}
-
 	}
 }

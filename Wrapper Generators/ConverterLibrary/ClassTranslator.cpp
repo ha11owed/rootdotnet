@@ -762,7 +762,7 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	///
 
 	emitter.start_line() << "public:" << endl;
-	emitter.start_line() << "virtual void SetNull (void) override { _instance = 0;}" << endl;
+	emitter.start_line() << "virtual void SetNull (void) override { _instance = 0; SetNullReason(ROOTNET::Utility::ReasonPointerNullEnum::kSetNullCalled);}" << endl;
 	emitter.start_line() << "virtual void DropObjectFromTables (void) override;" << endl;
 
 	///
@@ -770,9 +770,9 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	///
 
 	if (info.CanDelete()) {
-		emitter.start_line() << "virtual void DeleteHeldObject (void) override { delete _instance; _instance = 0;}" << endl;
+		emitter.start_line() << "virtual void DeleteHeldObject (void) override { delete _instance; _instance = 0;SetNullReason(ROOTNET::Utility::ReasonPointerNullEnum::kObjectDeleted);}" << endl;
 	} else {
-		emitter.start_line() << "virtual void DeleteHeldObject (void) override {_instance = 0;}" << endl;
+		emitter.start_line() << "virtual void DeleteHeldObject (void) override {_instance = 0;SetNullReason(ROOTNET::Utility::ReasonPointerNullEnum::kObjectNotDeleted);}" << endl;
 	}
 
 	///
