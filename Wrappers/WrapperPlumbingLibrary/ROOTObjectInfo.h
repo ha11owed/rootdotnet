@@ -20,7 +20,7 @@ namespace ROOTNET
 		public:
 			ROOTObjectInfo(::TObject *root_object_to_track, const ROOTNET::Utility::ROOTDOTNETBaseTObject ^net_obj);
 
-			/// Return the .NET object
+			/// Return the .NET object. Returns null if the weak reference is no longer good.
 			const ROOTNET::Utility::ROOTDOTNETBaseTObject ^GetNETObject(void);
 
 		private:

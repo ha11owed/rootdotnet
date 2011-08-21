@@ -74,7 +74,7 @@ namespace ROOTNET
 		ROOTObjectManager::ROOTObjectManager(void)
 		{
 			_root_mapping = gcnew Dictionary<int, ROOTObjectInfo^>();
-			_reader_writer_root_map_lock = gcnew ReaderWriterLock();
+			_reader_writer_root_map_lock = gcnew ReaderWriterLockSlim();
 			_callback = new ROOTCleanupCallback();
 			gROOT->GetListOfCleanups()->Add(_callback);
 		}
@@ -99,31 +99,32 @@ namespace ROOTNET
 			/// Is this object already in the table? If not, then we should put it in!
 			///
 
-			if (!KnowAboutROOTObject(obj)) {
-				obj->SetBit(kMustCleanup);
-				int myptr = reinterpret_cast<int>(obj);
-				try {
-					_reader_writer_root_map_lock->AcquireWriterLock(Timeout::Infinite);
-					_root_mapping[myptr] = gcnew ROOTObjectInfo (obj, root_obj);
-				} finally {
-					_reader_writer_root_map_lock->ReleaseWriterLock();
+			_reader_writer_root_map_lock->EnterUpgradeableReadLock();
+			try {
+				if (!InternalKnowAboutROOTObject(obj)) {
+					obj->SetBit(kMustCleanup);
+					int myptr = reinterpret_cast<int>(obj);
+					_reader_writer_root_map_lock->EnterWriteLock();
+					try {
+						_root_mapping[myptr] = gcnew ROOTObjectInfo (obj, root_obj);
+					} finally {
+						_reader_writer_root_map_lock->ExitWriteLock();
+					}
 				}
+			} finally {
+				_reader_writer_root_map_lock->ExitUpgradeableReadLock();
 			}
 		}
 
 		///
 		/// See if we can find the object. Return it if we can.
+		/// Requires reader lock
 		///
-		ROOTObjectInfo ^ROOTObjectManager::FindROOTObject (const ::TObject *obj)
+		ROOTObjectInfo ^ROOTObjectManager::InternalFindROOTObject (const ::TObject *obj)
 		{
-			try {
-				_reader_writer_root_map_lock->AcquireReaderLock(Timeout::Infinite);
-				if (KnowAboutROOTObject(obj)) {
-					int myptr = reinterpret_cast<int>(obj);
-					return _root_mapping[myptr];
-				}
-			} finally {
-				_reader_writer_root_map_lock->ReleaseReaderLock();
+			if (InternalKnowAboutROOTObject(obj)) {
+				int myptr = reinterpret_cast<int>(obj);
+				return _root_mapping[myptr];
 			}
 
 			return nullptr;
@@ -131,24 +132,21 @@ namespace ROOTNET
 
 		///
 		/// Do it from the point of view of an integer pointer.
+		/// Lock: Reader
 		///
-		ROOTObjectInfo ^ROOTObjectManager::FindROOTObject (int obj_prj)
+		ROOTObjectInfo ^ROOTObjectManager::InternalFindROOTObject (int obj_prj)
 		{
-			return FindROOTObject (reinterpret_cast<::TObject*>(obj_prj));
+			return InternalFindROOTObject (reinterpret_cast<::TObject*>(obj_prj));
 		}
 
 		///
 		/// Do we know about this particular object?
+		/// Lock: Reader
 		///
-		bool ROOTObjectManager::KnowAboutROOTObject (const ::TObject *obj)
+		bool ROOTObjectManager::InternalKnowAboutROOTObject (const ::TObject *obj)
 		{
 			int myptr = reinterpret_cast<int>(obj);
-			try {
-				_reader_writer_root_map_lock->AcquireReaderLock(Timeout::Infinite);
-				return _root_mapping->ContainsKey(myptr);
-			} finally {
-				_reader_writer_root_map_lock->ReleaseReaderLock();
-			}
+			return _root_mapping->ContainsKey(myptr);
 		}
 
 		///
@@ -158,29 +156,48 @@ namespace ROOTNET
 		///
 		void ROOTObjectManager::ROOTObjectRemoval(::TObject *obj)
 		{
-			/// Deal with trival things. We aren't the only ones that are doing cleanups...
-			ROOTObjectInfo ^info = FindROOTObject (obj);
-			if (info == nullptr) {
-				return;
+			_reader_writer_root_map_lock->EnterUpgradeableReadLock();
+			try {
+				/// Deal with trival things. We aren't the only ones that are doing cleanups...
+				ROOTObjectInfo ^info = InternalFindROOTObject (obj);
+				if (info == nullptr) {
+					return;
+				}
+
+				///
+				/// We know about it.
+				/// - Be careful that the object hasn't already been GC'd (the GC runs in a seperate thread).
+				/// - Remove the linkage between the object -- so make it forget.
+				///
+
+				const ROOTDOTNETBaseTObject ^netobj = info->GetNETObject();
+				if (netobj != nullptr) {
+					ROOTDOTNETBaseTObject ^non_const_obj = const_cast<ROOTDOTNETBaseTObject^>(netobj);
+					non_const_obj->SetNull();
+				}
+
+				///
+				/// And drop the object from our internal table.
+				///
+
+				_reader_writer_root_map_lock->EnterWriteLock();
+				try {
+					InternalForgetAboutObject(obj);
+				} finally {
+					_reader_writer_root_map_lock->ExitWriteLock();
+				}
+			} finally {
+				_reader_writer_root_map_lock->ExitUpgradeableReadLock();
 			}
+		}
 
-			///
-			/// We know about it.
-			/// - Be careful that the object hasn't already been GC'd (the GC runs in a seperate thread).
-			/// - Remove the linkage between the object -- so make it forget.
-			///
-
-			const ROOTDOTNETBaseTObject ^netobj = info->GetNETObject();
-			if (netobj != nullptr) {
-				ROOTDOTNETBaseTObject ^non_const_obj = const_cast<ROOTDOTNETBaseTObject^>(netobj);
-				non_const_obj->SetNull();
-			}
-
-			///
-			/// And drop the object from our internal table.
-			///
-
-			ForgetAboutObject(obj);
+		///
+		/// Drop an object from our intenral table.
+		/// Lock: Writer
+		///
+		void ROOTObjectManager::InternalForgetAboutObject (::TObject *obj)
+		{
+			_root_mapping->Remove(reinterpret_cast<int>(obj));
 		}
 
 		///
@@ -188,11 +205,11 @@ namespace ROOTNET
 		///
 		void ROOTObjectManager::ForgetAboutObject (::TObject *obj)
 		{
+			_reader_writer_root_map_lock->EnterWriteLock();
 			try {
-				_reader_writer_root_map_lock->AcquireWriterLock(Timeout::Infinite);
-				_root_mapping->Remove(reinterpret_cast<int>(obj));
+				InternalForgetAboutObject(obj);
 			} finally {
-				_reader_writer_root_map_lock->ReleaseWriterLock();
+				_reader_writer_root_map_lock->ExitWriteLock();
 			}
 		}
 	}
