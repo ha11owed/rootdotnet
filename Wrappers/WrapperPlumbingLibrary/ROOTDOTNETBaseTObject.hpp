@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 class TObject;
 
 namespace ROOTNET
@@ -60,6 +61,11 @@ namespace ROOTNET
 			/// tracking down bombs and crashes.
 			ReasonPointerNullEnum _whyNull;
 
+			virtual ::TObject *GetTObjectPointer(void) = 0;
+
+		private:
+			std::string GeneratePrototype(array<Object^> ^args);
+			std::string resolveTypedefs(const std::string &name);
 		};
 	}
 }

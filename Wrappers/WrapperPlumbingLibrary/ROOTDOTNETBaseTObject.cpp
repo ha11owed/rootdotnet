@@ -1,6 +1,16 @@
 
 #include "ROOTDOTNETBaseTObject.hpp"
 #include "ROOTObjectManager.h"
+#include "NetStringToConstCPP.hpp"
+
+#include <TObject.h>
+#include <TClass.h>
+#include <TMethodCall.h>
+#include <TFunction.h>
+
+#include <string>
+
+using std::string;
 
 namespace ROOTNET
 {
@@ -42,13 +52,107 @@ namespace ROOTNET
 		}
 
 		///
-		/// Do a dynamic lookup of a method and see if we can't invoke it.
+		/// Do a dynamic lookup of a method and see if we can't invoke it, and then use CINT to do the invokation.
+		/// This is a fairly expensive operation, but on the other hand, it means not having to link against
+		/// anything.
 		///
-		/// There are lots of limitations to this:
+		/// This version has lots of limitations which will chagne over time
+		///  - Only basic types are supported (int, float, short, etc.).
 		///
 		bool ROOTDOTNETBaseTObject::TryInvokeMember (System::Dynamic::InvokeMemberBinder ^binder, array<Object^> ^args, Object^% result)
 		{
+			//
+			// Get the TClass for our class pointer
+			//
+
+			if (GetTObjectPointer() == nullptr)
+				return false;
+			auto classSpec = GetTObjectPointer()->IsA();
+			if (classSpec == nullptr)
+				return false;
+
+			//
+			// Do the method lookup next. We have copied some of the code we are dealing with from
+			// the SFRame project.
+			// http://sframe.svn.sourceforge.net/viewvc/sframe/SFrame/trunk/core/src/SCycleOutput.cxx
+			//
+
+			auto prototype = GeneratePrototype(args);
+			if (prototype == "<>")
+				return false;
+
+		    ROOTNET::Utility::NetStringToConstCPP method_name(binder->Name);
+			TMethodCall method;
+			method.InitWithPrototype(classSpec, method_name, prototype.c_str());
+			if (!method.IsValid())
+				return false;
+
+			//
+			// Now build up the argument list for CINT
+			//
+
+			//
+			// Do the invocation. How we do this depends on the return type, unfortunately!
+			//
+
+			string return_type_name (resolveTypedefs(method.GetMethod()->GetReturnTypeName()));
+			if (return_type_name == "double" || return_type_name == "float")
+			{
+				double val = 0;
+				method.Execute(GetTObjectPointer(), val);
+				if (return_type_name == "double") {
+					result = val;
+				} else {
+					result = (float) val;
+				}
+				return true;
+			} if (return_type_name == "int" || return_type_name == "long")
+			{
+				long val = 0;
+				method.Execute(GetTObjectPointer(), val);
+				if (return_type_name == "int") {
+					result = (int) val;
+				} else {
+					result = val;
+				}
+				return true;
+			} else {
+				return false;
+			}
+
+			//
+			// Translate the result back into something we know about!
+			//
+
 			return false;
+		}
+
+		//
+		// Make sure all type-defs are taken care of.
+		//
+		string ROOTDOTNETBaseTObject::resolveTypedefs(const std::string &type)
+		{
+			if (type == "Int_t")
+				return "int";
+			if (type == "Double_t")
+				return "double";
+			if (type == "Float_t")
+				return "float";
+			if (type == "Long_t")
+				return "long";
+			return type;
+		}
+
+		//
+		// Given the list of arguments, generate a prototype string
+		// that CINT can understand for argument lookup.
+		//
+		std::string ROOTDOTNETBaseTObject::GeneratePrototype(array<Object^> ^args)
+		{
+			if (args.Length > 0)
+				return "<>";
+
+			return "";
 		}
 	}
 }
