@@ -91,6 +91,19 @@ namespace ROOTNET
 			// Now build up the argument list for CINT
 			//
 
+			for each (auto arg in args)
+			{
+				if (arg->GetType() == int::typeid || arg->GetType() == long::typeid)
+				{
+					long i = (long) arg;
+					method.SetParam(i);
+				} else if (arg->GetType() == float::typeid || arg->GetType() == double::typeid)
+				{
+					double d = (double) arg;
+					method.SetParam(d);
+				}
+			}
+
 			//
 			// Do the invocation. How we do this depends on the return type, unfortunately!
 			//
@@ -147,12 +160,37 @@ namespace ROOTNET
 		// Given the list of arguments, generate a prototype string
 		// that CINT can understand for argument lookup.
 		//
-		std::string ROOTDOTNETBaseTObject::GeneratePrototype(array<Object^> ^args)
+		string ROOTDOTNETBaseTObject::GeneratePrototype(array<Object^> ^args)
 		{
-			if (args.Length > 0)
-				return "<>";
+			string result = "";
 
-			return "";
+			for each (auto arg in args)
+			{
+				string thisType = "";
+				if (arg->GetType() == int::typeid)
+				{
+					thisType = "int";
+				} else if (arg->GetType() == long::typeid)
+				{
+					thisType = "long";
+				} else if (arg->GetType() == float::typeid)
+				{
+					thisType = "float";
+				} else if (arg->GetType() == double::typeid)
+				{
+					thisType = "double";
+				} else {
+					return "<>"; // Can't do it!
+				}
+
+				if (result.size() == 0) {
+					result = thisType;
+				} else {
+					result += "," + thisType;
+				}
+			}
+
+			return result;
 		}
 	}
 }
