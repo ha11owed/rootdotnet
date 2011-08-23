@@ -113,6 +113,13 @@ int main()
 	}
 
 	///
+	/// Make sure to re-load the typedefs if not already done. This is because loading up the
+	/// libraries above will have altered the typedef list!
+	///
+
+	WrapperConfigurationInfo::InitTypeDefs();
+
+	///
 	/// Now, in order to convert these reqeusted classes, we need to scan back up the class inheritance list
 	/// and add in any missing classes.
 	///

@@ -23,7 +23,10 @@ public:
 	static std::set<std::string> GetListOfBadMethods (void);
 
 	/// Init the type translation system....
-	static void InitTypeTranslators();
+	static void InitTypeTranslators(void);
+
+	/// Init the list of type defs
+	static void InitTypeDefs(void);
 
 	/// List of libraries that are no good - this is if you scan a complete list of the root libraries.
 	static std::vector<std::string> RemoveBadLibraries (const std::vector<std::string> &library_list);

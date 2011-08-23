@@ -366,9 +366,12 @@ void DefineTypeDef (const string &typedef_name, const string &base_name)
 ///
 /// Look through ROOT's typedefs and put translations into our library
 ///
-void InitTypeDefs (void)
+void WrapperConfigurationInfo::InitTypeDefs (void)
 {
-	TIter i_typedef (gROOT->GetListOfTypes());
+	// When we get the list of types in ROOT to look for typedefs, make sure to tell it to go back to CINT
+	// and RE-init the list (the "true").
+	TIter i_typedef (gROOT->GetListOfTypes(true));
+	int junk = gROOT->GetListOfTypes()->GetEntries();
 	TDataType *typedef_spec;
 	while ((typedef_spec = static_cast<TDataType*>(i_typedef.Next())) != 0)
 	{

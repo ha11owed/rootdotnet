@@ -440,6 +440,12 @@ void LibraryConverterDriver::translate(void)
 	vector<string> all_classes = ROOTHelpers::GetAllClassesInLibraries (_libs_to_translate);
 
 	///
+	/// With all the libraries loaded up, we need to pull in the type-defs.
+	///
+
+	WrapperConfigurationInfo::InitTypeDefs();
+
+	///
 	/// Get all the enums that we are going to do as well
 	///
 
