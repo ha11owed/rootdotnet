@@ -7,7 +7,29 @@ REM
 REM Expect to be run from the Wrapper Generators directory
 REM
 
+REM
+REM Check arguments
+REM
+
+if "%1EMPTY" == "EMPTY" (
+  echo The first argument must be the ROOTSYS value.
+  goto :EOF
+)
+
+if "%2EMPTY" == "EMPTY" (
+  echo The second argument must the name of the output directory
+  goto :EOF
+)
+
+set "RdNVersion= "
+if not "%4EMPTY" == "EMPTY" (
+  set "RdNVersion=-v %4"
+)
+
+REM
 REM Setup the environment
+REM
+
 set "ROOTSYS=%1"
 set "PATH=%1\bin;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE;%PATH%"
 
@@ -33,7 +55,7 @@ copy release\solution_template.sln .
 
 REM Next, build the wrapers!
 echo Building the wrappers
-"release\ROOT.NET Library Converter" -d ..\Wrappers\%2
+"release\ROOT.NET Library Converter" -d ..\Wrappers\%2 %RdNVersion%
 
 REM Copy over the property sheet...
 copy "ROOT Directories.props" ..\Wrappers\%2\

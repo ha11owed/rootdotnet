@@ -119,7 +119,7 @@ void SourceEmitter::indent_decrease(void)
 ///
 void SourceEmitter::start_namespace(const std::string &namespace_name)
 {
-	start_line() << "namespace " << namespace_name << "{" << endl;
+	start_line() << "namespace " << namespace_name << " {" << endl;
 	indent_increase();
 }
 

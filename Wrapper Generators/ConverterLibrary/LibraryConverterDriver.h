@@ -44,6 +44,10 @@ public:
 	/// Print out the error report?
 	void print_error_report (bool printit);
 
+	/// Set the version number. defaults to 0.0
+	void set_version (int major, int minor);
+	void set_version (const std::string &version);
+
 	//// Run
 
 	void translate();
@@ -59,5 +63,6 @@ private:
 	std::set<std::string> _library_dirs;
 	std::string _output_dir;
 	std::string _single_library_name;
+	std::string _wrapper_version;
 };
 

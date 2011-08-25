@@ -118,6 +118,7 @@
     <ClCompile Include="NetArrayTranslator.cpp" />
     <ClCompile Include="NetStringArrayTranslator.cpp" />
     <ClCompile Include="NetStringToConstCPP.cpp" />
+    <ClCompile Include="ROOTVersionAttribute.cpp" />
     <ClCompile Include="root_type_holder.cpp" />
     <ClCompile Include="ROOTDotNet.cpp" />
     <ClCompile Include="ROOTDOTNETBaseTObject.cpp" />
@@ -130,6 +131,7 @@
     <ClInclude Include="NetStringArrayTranslator.hpp" />
     <ClInclude Include="NetStringToConstCPP.hpp" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ROOTVersionAttribute.h" />
     <ClInclude Include="root_type_holder.hpp" />
     <ClInclude Include="ROOTDotNet.h" />
     <ClInclude Include="ROOTDOTNETBaseTObject.hpp" />

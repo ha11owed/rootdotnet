@@ -31,15 +31,6 @@ using std::endl;
 using std::copy;
 using std::ostream_iterator;
 
-class get_set_of_class_headers
-{
-public:
-	void operator() (const string &class_name);
-	const set<string> &Headers (void) const {return _headers;}
-private:
-	set<string> _headers;
-};
-
 class find_bad_headers
 {
 public:
@@ -62,24 +53,11 @@ int main(int argc, char* argv[])
 	myargv[1] = "-b";
 	TApplication *app = new TApplication ("ROOT.NET Library Converter", &nargs, myargv);
 
-	///
-	/// Get a list of libraries to load
-	///
+	//
+	// Get all headers...
+	//
 
-	vector<string> libraries = WrapperConfigurationInfo::GetAllRootDLLS();
-	libraries = WrapperConfigurationInfo::RemoveBadLibraries(libraries);
-
-	///
-	/// Now, get all the classes that we are suppose to work with!
-	///
-
-	vector<string> all_classes = ROOTHelpers::GetAllClassesInLibraries (libraries);
-
-	///
-	/// Now, set the list of headers for each of those -- no need to do them more than once!
-	///
-
-	set<string> headers = for_each(all_classes.begin(), all_classes.end(), get_set_of_class_headers()).Headers();
+	auto headers = ROOTHelpers::GetAllHeaders();
 
 	///
 	/// Now, for each header, try it out. When we are done we'll have a list of bad ones! :-)
@@ -97,13 +75,6 @@ int main(int argc, char* argv[])
 
 	/// Done!
 	return 0;
-}
-
-/// Accumulate the set of headers we need to know about!
-void get_set_of_class_headers::operator ()(const std::string &class_name)
-{
-	RootClassInfo &class_info (RootClassInfoCollection::GetRootClassInfo(class_name));
-	_headers.insert(class_info.include_filename());
 }
 
 void delete_file (const string &filename);

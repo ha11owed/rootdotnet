@@ -16,6 +16,7 @@
 
 #include <TApplication.h>
 #include <TSystem.h>
+#include <TROOT.h>
 
 #include <vector>
 #include <string>
@@ -24,6 +25,7 @@
 #include <map>
 #include <stdexcept>
 #include <fstream>
+#include <sstream>
 #include <iterator>
 #include <set>
 
@@ -43,9 +45,10 @@ using std::inserter;
 using std::set;
 using std::make_pair;
 using std::getline;
+using std::ostringstream;
 
 LibraryConverterDriver::LibraryConverterDriver(void)
-	: _write_solution(true), _use_class_header_locations(false), _print_error_report(true)
+	: _write_solution(true), _use_class_header_locations(false), _print_error_report(true), _wrapper_version("0.0")
 {
 }
 
@@ -410,6 +413,40 @@ namespace {
 		output.close();
 		input.close();
 	}
+
+	///
+	/// Write out the AssemblyInfo file, which contains all the versioning...
+	///
+	void write_assembly_info (const string &output_dir, const string &libName, const string &version_spec)
+	{
+		SourceEmitter ass (output_dir + "\\AssemblyInfo.cpp");
+		ass.start_line() << "// Auto generated versioning info for the ROOT.NET wrapper library" << endl;
+
+		ass.start_line() << "using namespace System;" << endl;
+		ass.start_line() << "using namespace System::Reflection;" << endl;
+		ass.start_line() << "using namespace System::Runtime::CompilerServices;" << endl;
+		ass.start_line() << "using namespace System::Runtime::InteropServices;" << endl;
+		ass.start_line() << "using namespace System::Security::Permissions;" << endl;
+
+		ass.start_line() << "[assembly:AssemblyTitleAttribute(\"" << libName << "\")];" << endl;
+		ass.start_line() << "[assembly:AssemblyDescriptionAttribute(\"ROOT.NET Wrapper library " << libName << "\")];" << endl;
+		ass.start_line() << "[assembly:AssemblyCompanyAttribute(\"G. Watts/University of Washington - Auto Generated\")];" << endl;
+		ass.start_line() << "[assembly:AssemblyProductAttribute(\"ROOT.NET\")];" << endl;
+
+		ass.start_line() << "[assembly:AssemblyVersionAttribute(\"" << version_spec << ".*\")];" << endl;
+
+		ass.start_line() << "[assembly:ComVisible(false)];" << endl;
+		ass.start_line() << "[assembly:CLSCompliantAttribute(true)];" << endl;
+		ass.start_line() << "[assembly:SecurityPermission(SecurityAction::RequestMinimum, UnmanagedCode = true)];" << endl;
+
+		ass.start_line() << "[assembly:ROOTVersionAttribute("
+			<< gROOT->GetSvnRevision()
+			<< ", \"" << gROOT->GetSvnBranch() << "\""
+			<< ", \"" << gROOT->GetSvnDate() << "\""
+			<< ", \"" << gROOT->GetVersion() << "\" )];" << endl;
+
+		ass.close();
+	}
 }
 
 void LibraryConverterDriver::translate(void)
@@ -624,6 +661,30 @@ void LibraryConverterDriver::translate(void)
 	}
 
 	///
+	/// Global variables are tracked by library
+	///
+
+	for_each(files_by_library.begin(), files_by_library.end(), [&] (const pair<string, vector<string> > &info)
+	{
+		auto output_dir = _output_dir + "\\" + info.first + "\\Source";
+		translator.SetOutputDir(output_dir);
+		translator.translate_global_variables(info.first.substr(3)); // Get rid of the lib in front of the library name.
+		files_by_library[info.first].push_back("Globals");
+	});
+
+	///
+	/// Add some assembly info (version numbers, etc.) in an AssemblyInfo file for every library.
+	///
+
+	for_each(files_by_library.begin(), files_by_library.end(), [&] (const pair<string, vector<string> > &info)
+	{
+		auto output_dir = _output_dir + "\\" + info.first + "\\Source";
+		write_assembly_info (output_dir, info.first, _wrapper_version);
+		files_by_library[info.first].push_back("AssemblyInfo");
+	});
+
+
+	///
 	/// Write out everything that is translated into the base directory so
 	/// that if anyone wants to follow on with further translations they know
 	/// what already exists.
@@ -734,3 +795,18 @@ void LibraryConverterDriver::translate(void)
 	errors_out.close();
 
 }
+
+///
+/// Set the major and minor version numbers.
+///
+void LibraryConverterDriver::set_version (int major, int minor)
+{
+	ostringstream mj;
+	mj << major << "." << minor;
+	_wrapper_version = mj.str();
+}
+void LibraryConverterDriver::set_version (const string &v)
+{
+	_wrapper_version = v;
+}
+

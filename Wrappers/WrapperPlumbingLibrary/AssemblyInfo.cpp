@@ -10,11 +10,11 @@ using namespace System::Security::Permissions;
 // associated with an assembly.
 //
 [assembly:AssemblyTitleAttribute("WrapperPlumbingLibrary")];
-[assembly:AssemblyDescriptionAttribute("")];
+[assembly:AssemblyDescriptionAttribute("Base ROOT.NET library - common utilities for all the ROOT wrappers")];
 [assembly:AssemblyConfigurationAttribute("")];
-[assembly:AssemblyCompanyAttribute("")];
+[assembly:AssemblyCompanyAttribute("G. Watts/University of Washington")];
 [assembly:AssemblyProductAttribute("WrapperPlumbingLibrary")];
-[assembly:AssemblyCopyrightAttribute("Copyright (c)  2007")];
+[assembly:AssemblyCopyrightAttribute("Copyright (c)  2010")];
 [assembly:AssemblyTrademarkAttribute("")];
 [assembly:AssemblyCultureAttribute("")];
 
@@ -29,7 +29,7 @@ using namespace System::Security::Permissions;
 // You can specify all the value or you can default the Revision and Build Numbers
 // by using the '*' as shown below:
 
-[assembly:AssemblyVersionAttribute("2.1.*")];
+[assembly:AssemblyVersionAttribute("2.2.*")];
 
 [assembly:ComVisible(false)];
 

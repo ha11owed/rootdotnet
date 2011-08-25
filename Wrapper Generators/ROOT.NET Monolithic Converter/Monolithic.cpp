@@ -42,7 +42,6 @@
 
 using std::vector;
 using std::string;
-using std::for_each;
 using std::cout;
 using std::endl;
 using std::copy;
@@ -72,13 +71,11 @@ int main()
 
 	/// The below lines are used during debugging in order to build a single (problem) class.
 	/// The below lines are used during debugging in order to build a single (problem) class.
-	asked_for_class_list.push_back ("TFile");
 	asked_for_class_list.push_back ("TObject");
 	asked_for_class_list.push_back("TSystem");
 
 	/// Make sure the libraries that are going to be needed are loaded!
 	libraries_to_load.push_back ("libCore");
-	libraries_to_load.push_back ("libRIO");
 
 	output_dir = "..\\..\\Wrappers\\MonolithicROOTWrapper\\ROOTSource";
 
@@ -188,9 +185,17 @@ int main()
 	}
 
 	///
+	/// Now transltae the global variables that we know about
+	///
+
+	cout << "Processing Global Variables" << endl;
+	translator.translate_global_variables();
+
+	///
 	/// Write out any .hpp files that are going to get required...
 	///
 
+	cout << "Writing out final files" << endl;
 	SourceEmitter helper_output_hpp (output_dir + "/root_type_helpers.hpp");
 	SourceEmitter helper_output_cpp (output_dir + "/root_type_helpers.cpp");
 

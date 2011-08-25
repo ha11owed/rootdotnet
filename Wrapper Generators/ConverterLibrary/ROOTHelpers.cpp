@@ -1,5 +1,8 @@
 #include "ROOTHelpers.h"
 #include "ConverterErrorLog.hpp"
+#include "RootGlobalVariable.hpp"
+#include "WrapperConfigurationInfo.hpp"
+#include "RootClassInfoCollection.hpp"
 
 #include <iostream>
 #include <algorithm>
@@ -11,6 +14,7 @@
 #include "TClassTable.h"
 #include "TSystem.h"
 #include "TGlobal.h"
+#include "TSystemDirectory.h"
 
 #include "Api.h"
 
@@ -18,6 +22,7 @@ using std::string;
 using std::vector;
 using std::map;
 using std::find;
+using std::set;
 using std::for_each;
 using std::pair;
 using std::make_pair;
@@ -29,6 +34,8 @@ using std::endl;
 using std::exception;
 
 std::map<std::string, std::vector<std::pair<std::string, unsigned int> > > ROOTHelpers::_all_enums;
+vector<string> ROOTHelpers::_all_headers;
+vector<string> ROOTHelpers::_all_existing_headers;
 
 
 class load_library
@@ -193,17 +200,77 @@ bool ROOTHelpers::IsEnum (const std::string &enum_name)
 	return is_enum;
 }
 
-	/// Return all globalls we can find
-map<string, vector<string> > ROOTHelpers::GetAllGlobals()
+namespace
 {
+	string CleanCINTCharReturn(const char *s, const string def = "")
+	{
+		if (s == nullptr)
+			return def;
+		return string(s);
+	}
+}
+	/// Return all globalls we can find
+map<string, vector<RootGlobalVariable> > ROOTHelpers::GetAllGlobals()
+{
+	G__DataMemberInfo dataMember;
+
+	auto junk = dataMember.IsValid();
+	map<string, vector<RootGlobalVariable> > result;
+
+	long stuffWeDontWant = kIsEnum | kIsConstant;
+	auto badGlobals = WrapperConfigurationInfo::GetListOfBadGlobalVariables();
+
+	while (dataMember.Next() != 0)
+	{
+		auto p = dataMember.Property();
+		if ((p & stuffWeDontWant) == 0) {
+			auto typeinfo = dataMember.Type();
+			if (typeinfo != nullptr) {
+				string typeName = CleanCINTCharReturn(typeinfo->Name());
+				string dataName = CleanCINTCharReturn(dataMember.Name());
+				if (typeName != "#define" && find(badGlobals.begin(), badGlobals.end(), dataName) == badGlobals.end()) {
+					string filename = CleanCINTCharReturn(dataMember.FileName());
+					// By default the library is the core library... otherwise we will extract
+					// the proper thing.
+					string lib = "Core";
+					auto libStarts = filename.find("\\lib");
+					auto libEnds = filename.find(".dll");
+					if (libStarts != string::npos && libEnds != string::npos)
+					{
+						libStarts += 4;
+						lib = filename.substr(libStarts, libEnds - libStarts);
+					}
+			
+					//
+					// We need to keep the full type name for later processing. However, for
+					// cataloging we need to strip out all the extra stuff (like pointers, etc.).
+					//
+
+					auto ptrLoc = typeName.find("*");
+					auto rawTypeName (typeName);
+					if (ptrLoc != string::npos)
+						rawTypeName = typeName.substr(0, ptrLoc);
+
+					//
+					// Ok, now we can save this.
+					//
+
+					result[rawTypeName].push_back(RootGlobalVariable(dataName, typeName, lib));
+				}
+			}
+		}
+	}
+
+#if old
 	TIter iterator (gROOT->GetListOfGlobals());
 	TGlobal *g;
 	map<string, vector<string> > result;
 	while ((g = static_cast<TGlobal*>(iterator.Next())) != 0) {
-		if ((g->Property() & kIsEnum) == 0) {
+		if ((g->Property() & kIsEnum) == 0 && (g->Property() & kIsConstant) == 0) {
 			result[g->GetTypeName()].push_back(g->GetName());
 		}
 	}
+#endif
 	return result;
 }
 
@@ -277,4 +344,76 @@ vector<string> ROOTHelpers::GetTemplateArguments (const string &template_name)
 	}
 	result.push_back(arg);
 	return result;
+}
+
+//
+// Get a list of all headers that we are dealing with currently.
+//
+const vector<string> &ROOTHelpers::GetAllHeaders()
+{
+	if (_all_headers.size() > 0)
+		return _all_headers;
+
+	//
+	// Extract from the list of classes we are looking at.
+	//
+
+	auto libraries = WrapperConfigurationInfo::GetAllRootDLLS();
+	libraries = WrapperConfigurationInfo::RemoveBadLibraries(libraries);
+	auto all_classes = ROOTHelpers::GetAllClassesInLibraries (libraries);
+
+	set<string> headers;
+	for_each(all_classes.begin(), all_classes.end(), [&headers] (const string &class_name)
+	{
+		RootClassInfo &class_info (RootClassInfoCollection::GetRootClassInfo(class_name));
+		headers.insert(class_info.include_filename());
+	});
+
+	_all_headers.assign(headers.begin(), headers.end());
+
+	return _all_headers;
+}
+
+namespace
+{
+	set<string> FindHeaders(TSystemDirectory *dir)
+	{
+		set<string> results;
+		TIter next(dir->GetListOfFiles());
+		while (TSystemFile *f = static_cast<TSystemFile*>(next()))
+		{
+			if (f->GetName() != string(".") && string(f->GetName()) != "..")
+			{
+				if (f->IsDirectory())
+				{
+					auto deeper = FindHeaders(static_cast<TSystemDirectory*>(f));
+					for_each(deeper.begin(), deeper.end(), [&] (const string &name)
+					{
+						results.insert(string(f->GetName()) + "/" + name);
+					});
+				} else {
+					results.insert(f->GetName());
+				}
+			}
+		}
+		return results;
+	}
+}
+
+//
+// Look in ROOTSYS for all include files around!
+//
+const vector<string> &ROOTHelpers::GetAllExistingHeaders()
+{
+	if (_all_existing_headers.size() > 0)
+		return _all_existing_headers;
+
+	auto fullpath = gSystem->ExpandPathName("$ROOTSYS/include");
+	auto includeDir = new TSystemDirectory("include", fullpath);
+	
+	auto found_headers = FindHeaders(includeDir);
+	_all_existing_headers.assign(found_headers.begin(), found_headers.end());
+	delete includeDir;
+
+	return _all_existing_headers;
 }

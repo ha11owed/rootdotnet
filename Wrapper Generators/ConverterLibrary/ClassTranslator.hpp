@@ -2,6 +2,8 @@
 ///
 /// Translate a root class into a managed wrapper
 ///
+#include "RootGlobalVariable.hpp"
+
 #include <string>
 #include <vector>
 #include <set>
@@ -31,6 +33,8 @@ public:
 	void translate (RootClassInfo &class_info);
 	/// Translate an enum
 	void translate (RootEnum &enum_info);
+	/// Translate all global variables
+	void translate_global_variables(const std::string &libname = "*");
 
 	std::vector<std::string> get_dependent_libraries (const std::string &library_name) const;
 
@@ -79,9 +83,9 @@ private:
 	/// Load up globals that we (might or might not) translate.
 	void load_globals(void);
 	/// Keep a list of the globals, indexed by the type of the global.
-	std::map<std::string, std::vector<std::string> > _globals_by_type;
+	std::map<std::string, std::vector<RootGlobalVariable> > _globals_by_type;
 	/// Does this type have any globals?
 	bool type_has_globals (const std::string &type_name) const;
 	/// Return all the names of the globals that have a particular type
-	const std::vector<std::string> &list_of_globals_of_type (const std::string &type_name) const;
+	const std::vector<RootGlobalVariable> &list_of_globals_of_type (const std::string &type_name) const;
 };

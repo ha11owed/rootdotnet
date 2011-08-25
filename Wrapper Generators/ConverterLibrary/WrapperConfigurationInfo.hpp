@@ -68,6 +68,9 @@ public:
 	/// Given the name of a template, return the path to it that can be opened.
 	static std::string TemplatePath (const std::string &template_name);
 
+	/// Give back a list of bad global variables
+	static std::vector<std::string> GetListOfBadGlobalVariables();
+
 private:
 	static std::map<std::string, std::vector<std::string> > _allowed_library_links;
 	static std::map<std::string, std::vector<std::string> > _disallowed_library_links;

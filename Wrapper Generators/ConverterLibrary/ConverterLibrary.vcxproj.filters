@@ -149,6 +149,9 @@
     <ClCompile Include="FeatureTCollectionEnumerable.cpp">
       <Filter>Source Files\Features</Filter>
     </ClCompile>
+    <ClCompile Include="RootGlobalVariable.cpp">
+      <Filter>Source Files\ROOTClassWrappers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassInterfaceRepositoryState.hpp">
@@ -255,6 +258,9 @@
     </ClInclude>
     <ClInclude Include="FeatureTCollectionEnumerable.hpp">
       <Filter>Header Files\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="RootGlobalVariable.hpp">
+      <Filter>Header Files\ROOTClassWrappers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

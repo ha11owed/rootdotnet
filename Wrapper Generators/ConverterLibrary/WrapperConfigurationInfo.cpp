@@ -146,6 +146,13 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 	// TFileCacheRead - used in libRIO, but depends on libTreeWrapper, which depends on libNet, which depends on libRIO.
 	methods_to_skip.insert("TFileCacheRead::AddBranch");
 
+	// Marker_t is both an inner class and a typedef. As a result it currently gets converted to short*,
+	// rather than its inner object (which is not something we support yet). This will go away when we
+	// add the support for nested classes.
+	methods_to_skip.insert("TEveScalableStraightLineSet::AddMarker");
+	methods_to_skip.insert("TEveStraightLineSetProjected::AddMarker");
+	methods_to_skip.insert("TEveStraightLineSet::AddMarker");
+
 	///
 	/// Next are version specific things that have to be not-translated.
 	/// Most of the time these are due to bad linkages in ROOT - that Windows
@@ -761,4 +768,18 @@ string WrapperConfigurationInfo::TemplatePath (const string &name)
 		return _template_directory + "\\" + name;
 	}
 	return name;
+}
+
+///
+/// Return a list of global variables that should not be
+/// sent out for the .NET world.
+///
+vector<string> WrapperConfigurationInfo::GetListOfBadGlobalVariables()
+{
+	vector<string> result;
+
+	// There is no include file that will allow of this guy!
+	result.push_back("G__cintv6");
+
+	return result;
 }

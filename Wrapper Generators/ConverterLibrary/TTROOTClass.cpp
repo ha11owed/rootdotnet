@@ -56,9 +56,11 @@ void TTROOTClass::translate_to_cpp (const std::string &net_name, const std::stri
 	/// a beast.
 	///
 
+	bool isSafe = false; // Do we need to check for an incomming null?
 	if (_modifiers == "") {
 		emitter.start_line() << "if (" << net_name << " == nullptr) "
 			<< "throw gcnew System::ArgumentNullException(\"Argument " << net_name << " cannot be null.\");" << endl;
+		isSafe = true;
 	}
 
 	///
@@ -85,7 +87,17 @@ void TTROOTClass::translate_to_cpp (const std::string &net_name, const std::stri
 	} else {
 		throw runtime_error ("Unknown set of modifiers - " + _modifiers);
 	}
-	emitter() << "(" << net_name << " == nullptr ? 0 : " << net_name << "->CPP_Instance_" << _class_name << "());" << endl;
+
+	//
+	// Emit the final reference. If we are 100% sure this guy isn't going to be null, don't waste anytime
+	// or space checking for that.
+	//
+
+	if (!isSafe) {
+		emitter() << "(" << net_name << " == nullptr ? 0 : " << net_name << "->CPP_Instance_" << _class_name << "());" << endl;
+	} else {
+		emitter() << net_name << "->CPP_Instance_" << _class_name << "();" << endl;
+	}
 }
 
 ///

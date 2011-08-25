@@ -11,10 +11,15 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <iostream>
+#include <sstream>
 
 using std::string;
 using std::vector;
 using std::for_each;
+using std::cout;
+using std::endl;
+using std::istringstream;
 
 int main(int argc, char* argv[])
 {
@@ -24,6 +29,7 @@ int main(int argc, char* argv[])
 
 	string ouput_base_directory;	// Where the solution and sub-projects will be written.
 	vector<string> libraries;		// List of libraries we will convert.
+	int v_maj = 0, v_min = 0;		// What is the major version and minor version?
 
 	///
 	/// Command line parsing
@@ -37,6 +43,22 @@ int main(int argc, char* argv[])
 	    i++;
 	    ouput_base_directory = argv[i];
 	  }
+	  if (arg == "-v") { // Version number (x.y)
+		  i++;
+		  string temp = argv[i];
+		  auto index = temp.find(".");
+		  if (index == string::npos)
+		  {
+			  cout << "Version number must be <int>.<int> for major and minor versions" << endl;
+			  return 1;
+		  }
+		  string major = temp.substr(0, index);
+		  string minor = temp.substr(index+1);
+
+		  istringstream s_major(major), s_minor(minor);
+		  s_major >> v_maj;
+		  s_minor >> v_min;
+	  }
 	}
 
 	///
@@ -44,6 +66,7 @@ int main(int argc, char* argv[])
 	///
 
 	LibraryConverterDriver driver;
+	driver.set_version(v_maj, v_min);
 
 	vector<string> base_root_libs (WrapperConfigurationInfo::GetAllRootDLLS());
 	for_each(base_root_libs.begin(), base_root_libs.end(), [&driver] (string &s) { driver.translate_classes_in_library(s); });
