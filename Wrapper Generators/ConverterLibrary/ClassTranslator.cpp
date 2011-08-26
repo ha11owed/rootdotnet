@@ -916,13 +916,7 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 		for (unsigned int i = 0; i < globals.size(); i++) {
 			string loadCall;
 			if (info.InheritsFromTObject()) {
-				emitter.start_line() << "private:" << endl;
-				emitter.start_line() << "static Interface::" << info.NETName() << " ^Loader" << globals[i].Name() << "()" << endl;
-				emitter.brace_open();
-				emitter.start_line() << "return ROOTNET::Utility::ROOTObjectServices::GetBestObject<Interface::" << info.NETName() << "^>(::" << globals[i].Name() << ");" << endl;
-				emitter.brace_close();
-				emitter.start_line() << "public:" << endl;
-				loadCall = "Loader" + globals[i].Name() + "()";
+				loadCall = "ROOTNET::Utility::ROOTObjectServices::GetBestObject<Interface::" + info.NETName() + "^>(::" + globals[i].Name() + ")";
 			} else {
 				loadCall = "gcnew " + info.NETName() + "(::" + globals[i].Name() + ")";
 			}
@@ -936,15 +930,6 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 			emitter.brace_open();
 			emitter.start_line() << interfaceName << " get() { return " << loadCall << "; }" << endl;
 			emitter.brace_close();
-
-#ifdef junker
-			property ::System::String ^ DrawOption {
-				::System::String ^ get ();
-				void set (::System::String ^ value);
-			}
-			emitter.start_line() << "static Interface::" << info.NETName() << " ^" << globals[i] << " = gcnew " << info.NETName() << "(::" << globals[i] << ");" << endl;
-			emitter.start_line() << "static Interface::" << info.NETName() << " ^" << globals[i] << " = Loader" << globals[i] << "();" << endl;
-#endif
 		}
 	}
 
