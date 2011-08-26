@@ -238,43 +238,50 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 	else if (svn_id < 37603)
 	{
 		/// 5.28 and friends
-	} else
+	} 
+	else if (svn_id < 40633)
 	{
-			/// 5.30 and friends
+		/// 5.30 and friends
+		//
+		// Things that exist in the head. These are mostly global variables that aren't referenced in anything
+		// but the header files.
+		//
+
+		// RooAbsReal::_evalErrorList
+		methods_to_skip.insert("RooAbsReal::numEvalErrorItems");
+		methods_to_skip.insert("RooAbsReal::evalErrorIter");
+
+		// RooFactorWSTool::_of
+		methods_to_skip.insert("RooFactoryWSTool::as_ARG");
+		methods_to_skip.insert("RooFactoryWSTool::as_PDF");
+		methods_to_skip.insert("RooFactoryWSTool::as_FUNC");
+		methods_to_skip.insert("RooFactoryWSTool::as_VAR");
+		methods_to_skip.insert("RooFactoryWSTool::as_VARLV");
+		methods_to_skip.insert("RooFactoryWSTool::as_RMODEL");
+		methods_to_skip.insert("RooFactoryWSTool::as_CAT");
+		methods_to_skip.insert("RooFactoryWSTool::as_CATLV");
+		methods_to_skip.insert("RooFactoryWSTool::as_CATFUNC");
+		methods_to_skip.insert("RooFactoryWSTool::as_SET");
+		methods_to_skip.insert("RooFactoryWSTool::as_LIST");
+		methods_to_skip.insert("RooFactoryWSTool::as_DATA");
+		methods_to_skip.insert("RooFactoryWSTool::as_DHIST");
+		methods_to_skip.insert("RooFactoryWSTool::as_DSET");
+		methods_to_skip.insert("RooFactoryWSTool::as_OBJ");
+		methods_to_skip.insert("RooFactoryWSTool::as_STRING");
+		methods_to_skip.insert("RooFactoryWSTool::as_INT");
+		methods_to_skip.insert("RooFactoryWSTool::as_DOUBLE");
+
+		// RooRealIntegral::_cacheAllNDim
+		methods_to_skip.insert("RooRealIntegral::setCacheAllNumeric");
+		methods_to_skip.insert("RooRealIntegral::getCacheAllNumeric");
+	}
+	else
+	{
+		/// 5.30/1 and friends
+		methods_to_skip.insert("RooObjCacheManager::doClearObsList");
+		methods_to_skip.insert("RooObjCacheManager::clearObsList");
 	}
 
-	//
-	// Things that exist in the head. These are mostly global variables that aren't referenced in anything
-	// but the header files.
-	//
-
-	// RooAbsReal::_evalErrorList
-	methods_to_skip.insert("RooAbsReal::numEvalErrorItems");
-	methods_to_skip.insert("RooAbsReal::evalErrorIter");
-
-	// RooFactorWSTool::_of
-	methods_to_skip.insert("RooFactoryWSTool::as_ARG");
-	methods_to_skip.insert("RooFactoryWSTool::as_PDF");
-	methods_to_skip.insert("RooFactoryWSTool::as_FUNC");
-	methods_to_skip.insert("RooFactoryWSTool::as_VAR");
-	methods_to_skip.insert("RooFactoryWSTool::as_VARLV");
-	methods_to_skip.insert("RooFactoryWSTool::as_RMODEL");
-	methods_to_skip.insert("RooFactoryWSTool::as_CAT");
-	methods_to_skip.insert("RooFactoryWSTool::as_CATLV");
-	methods_to_skip.insert("RooFactoryWSTool::as_CATFUNC");
-	methods_to_skip.insert("RooFactoryWSTool::as_SET");
-	methods_to_skip.insert("RooFactoryWSTool::as_LIST");
-	methods_to_skip.insert("RooFactoryWSTool::as_DATA");
-	methods_to_skip.insert("RooFactoryWSTool::as_DHIST");
-	methods_to_skip.insert("RooFactoryWSTool::as_DSET");
-	methods_to_skip.insert("RooFactoryWSTool::as_OBJ");
-	methods_to_skip.insert("RooFactoryWSTool::as_STRING");
-	methods_to_skip.insert("RooFactoryWSTool::as_INT");
-	methods_to_skip.insert("RooFactoryWSTool::as_DOUBLE");
-
-	// RooRealIntegral::_cacheAllNDim
-	methods_to_skip.insert("RooRealIntegral::setCacheAllNumeric");
-	methods_to_skip.insert("RooRealIntegral::getCacheAllNumeric");
 
 	//
 	// Return the list
