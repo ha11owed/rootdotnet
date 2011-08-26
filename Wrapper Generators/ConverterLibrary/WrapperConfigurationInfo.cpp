@@ -235,11 +235,11 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 		methods_to_skip.insert("TFitEditor::GetFP");
 
 	}
-	else if (svn_id < 37603)
+	if (svn_id < 37603)
 	{
 		/// 5.28 and friends
 	} 
-	else if (svn_id < 40633)
+	if (svn_id < 40633)
 	{
 		/// 5.30 and friends
 		//
@@ -275,12 +275,10 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 		methods_to_skip.insert("RooRealIntegral::setCacheAllNumeric");
 		methods_to_skip.insert("RooRealIntegral::getCacheAllNumeric");
 	}
-	else
-	{
-		/// 5.30/1 and friends
-		methods_to_skip.insert("RooObjCacheManager::doClearObsList");
-		methods_to_skip.insert("RooObjCacheManager::clearObsList");
-	}
+
+	/// 5.30/1 and friends
+	methods_to_skip.insert("RooObjCacheManager::doClearObsList");
+	methods_to_skip.insert("RooObjCacheManager::clearObsList");
 
 
 	//
