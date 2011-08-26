@@ -31,6 +31,9 @@ public:
 	/// List of libraries that are no good - this is if you scan a complete list of the root libraries.
 	static std::vector<std::string> RemoveBadLibraries (const std::vector<std::string> &library_list);
 
+	/// Return the libraries that are bad.
+	static std::vector<std::string> GetListOfBadLibraries(void);
+
 	/// Is this library restricted to what it is allowed to link to?
 	static bool IsLibraryLinkRestricted(const std::string &library_name);
 

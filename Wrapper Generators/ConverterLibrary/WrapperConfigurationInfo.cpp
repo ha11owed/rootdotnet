@@ -518,10 +518,10 @@ void WrapperConfigurationInfo::init_allowed_library_links()
 	_disallowed_library_links["libProof"].push_back("libProofPlayer");
 }
 
-///
-/// Remove libraries we know we can't translate from the list!
-///
-vector<string> WrapperConfigurationInfo::RemoveBadLibraries(const std::vector<std::string> &library_list)
+//
+// List of libraries we shouldn't try to translate!
+//
+vector<string> WrapperConfigurationInfo::GetListOfBadLibraries(void)
 {
 	vector<string> bad_libs;
 	bad_libs.push_back("gdk-1.3");
@@ -539,6 +539,15 @@ vector<string> WrapperConfigurationInfo::RemoveBadLibraries(const std::vector<st
 	bad_libs.push_back("libGviz");
 	bad_libs.push_back("libRCastor");
 	bad_libs.push_back("libRFIO");
+	return bad_libs;
+}
+
+///
+/// Remove libraries we know we can't translate from the list!
+///
+vector<string> WrapperConfigurationInfo::RemoveBadLibraries(const std::vector<std::string> &library_list)
+{
+	auto bad_libs (GetListOfBadLibraries());
 	vector<string> libraries(library_list);
 	for (unsigned int i = 0; i < bad_libs.size(); i++) {
 		vector<string>::iterator itr;

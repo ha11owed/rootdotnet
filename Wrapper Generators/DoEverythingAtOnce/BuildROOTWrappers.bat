@@ -38,6 +38,7 @@ echo Building code to do the translation...
 devenv /nologo "Wrapper Generators.sln" /project "FindBadRootHeaders" /build "Release|Win32"
 devenv /nologo "Wrapper Generators.sln" /project "ROOT.NET Library Converter" /build "Release|Win32"
 devenv /nologo "Wrapper Generators.sln" /project "ROOT.NET Addon Library Converter" /build "Release|Win32"
+devenv /nologo "Wrapper Generators.sln" /project "DumpConfigInfo" /build "Release|Win32"
 
 REM Find all bad headers in this distro of ROOT.
 
