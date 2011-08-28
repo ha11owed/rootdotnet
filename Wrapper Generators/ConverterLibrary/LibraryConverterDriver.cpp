@@ -28,6 +28,7 @@
 #include <sstream>
 #include <iterator>
 #include <set>
+#include <iterator>
 
 #include "shlobj.h"
 
@@ -46,6 +47,7 @@ using std::set;
 using std::make_pair;
 using std::getline;
 using std::ostringstream;
+using std::ostream_iterator;
 
 LibraryConverterDriver::LibraryConverterDriver(void)
 	: _write_solution(true), _use_class_header_locations(false), _print_error_report(true), _wrapper_version("0.0")
@@ -447,6 +449,26 @@ namespace {
 
 		ass.close();
 	}
+
+	//
+	// Write out the library dependencies for later package-building reference.
+	//
+
+	void write_library_dependencies (const string &dir, const ClassTranslator &translator)
+	{
+		ofstream output (dir + "/library_dependencies.txt");
+
+		auto libs = translator.get_all_library_names();
+		for_each (libs.begin(), libs.end(), [&output, &translator] (const string &libname)
+		{
+			output << libname << ": ";
+			auto dep = translator.get_dependent_libraries(libname);
+			copy(dep.begin(), dep.end(), std::ostream_iterator<string> (output, " "));
+			output << endl;
+		});
+
+		output.close();
+	}
 }
 
 void LibraryConverterDriver::translate(void)
@@ -691,6 +713,13 @@ void LibraryConverterDriver::translate(void)
 	///
 
 	history.save_history(_output_dir, all_classes, all_enums, files_by_library);
+
+	//
+	// Next we will need to understand the dependent libraries when we do the packaging. So write out
+	// a file with that info in it.
+	//
+
+	write_library_dependencies (_output_dir, translator);
 
 	///
 	/// One trick is that we have to make sure that everyone is sharing the same

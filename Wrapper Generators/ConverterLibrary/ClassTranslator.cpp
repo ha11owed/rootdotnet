@@ -37,6 +37,7 @@ using std::pair;
 using std::string;
 using std::getline;
 using std::transform;
+using std::back_inserter;
 using std::inserter;
 
 ClassTranslator::ClassTranslator(const std::string &base_dir)
@@ -1379,6 +1380,19 @@ vector<string> ClassTranslator::get_dependent_libraries(const std::string &libra
 	set<string> set_of_libs(lib_info->second);
 	vector<string> result (set_of_libs.begin(), set_of_libs.end());
 	return result;
+}
+
+///
+/// Return a list of library names
+///
+vector<string> ClassTranslator::get_all_library_names() const
+{
+	vector<string> result;
+	transform(_library_dependencies.begin(), _library_dependencies.end(), back_inserter(result),
+		[] (const pair<string, set<string> > &item) {return item.first;});
+
+	return result;
+
 }
 
 ///

@@ -36,7 +36,11 @@ public:
 	/// Translate all global variables
 	void translate_global_variables(const std::string &libname = "*");
 
+	// How does one library depend on the rest?
 	std::vector<std::string> get_dependent_libraries (const std::string &library_name) const;
+
+	// Get a list of libraries
+	std::vector<std::string> get_all_library_names() const;
 
 	/// Write out all the make_public guys required for inter-library linking. You _have_ to do this before you shut down!
 	void finalize_make_publics();
