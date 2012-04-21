@@ -186,10 +186,11 @@ function Build-ROOT-Dot-Net($Version, $BuildLocation, $ROOTURL)
 {
     $baseDirName = ($ROOTURL -split {$_ -eq "/" -or $_ -eq "\"})[-1]
     $baseDir = "$BuildLocation\RDN-$Version-$baseDirName"
+	Import-Module -DisableNameChecking -Force ./GenerateReport
     
     ReleaseBuild $baseDir $ROOTURL $Version
     Write-Host "Generating build report..."
-    GenerateReport "$BuildLocation\logs"
+    Generate-Report "$baseDir\logs"
     Write-Host "Generating nuget packages..."
     #$isDebug = $baseDirName.Contains(".debug.")
     #BuildNuGetPacakges $baseDir $Version -currentBuildRevision $lastRevBuilt -KeepPDB:$isDebug
