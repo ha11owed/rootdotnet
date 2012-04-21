@@ -159,7 +159,7 @@ function Get-All-ROOT-Downloads ($htmlPath = "ftp://root.cern.ch/root")
 	$list = $links -split "\r\n" | parse-ftp-dirlisting $htmlPath
 	Write-Host "And the list is now"
 	Write-Host $list
-	return $list | parse-root-filename
+	return $list | ? {$_} | parse-root-filename
 }
 
 Export-ModuleMember -Function Get-All-ROOT-Downloads
