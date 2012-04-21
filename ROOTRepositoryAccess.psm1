@@ -130,7 +130,7 @@ filter parse-html-for-links ($hpath)
 filter parse-ftp-dirlisting ($rootPath)
 {
 	$info = $_ -split " +"
-	return $info[8]
+	return "$rootPath/$($info[8])"
 }
 
 #
@@ -155,10 +155,7 @@ function Get-All-ROOT-Downloads ($htmlPath = "ftp://root.cern.ch/root")
 	# Pull it into seperate objects that should allow us to easily go after things.
 	#
 	
-	Write-Host $links
 	$list = $links -split "\r\n" | parse-ftp-dirlisting $htmlPath
-	Write-Host "And the list is now"
-	Write-Host $list
 	return $list | ? {$_} | parse-root-filename
 }
 
