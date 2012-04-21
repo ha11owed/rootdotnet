@@ -134,7 +134,7 @@ function Get-All-ROOT-Downloads ($htmlPath = "ftp://root.cern.ch/root")
 	
 	$ie = New-Object -ComObject "InternetExplorer.Application"
 	$ie.Navigate("ftp://root.cern.ch/root")
-	Start-Sleep -Milliseconds 100
+	Start-Sleep -Milliseconds 1000
 	$links = $ie.Document.body.InnerHTML | parse-html-for-links $htmlPath | % {$_}
 	
 	$ie.Quit()
