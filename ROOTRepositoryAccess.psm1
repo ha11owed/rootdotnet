@@ -10,6 +10,29 @@ filter extract-root-link
 	return $_.href
 }
 
+#
+# Parse a root version number and return the bits
+#
+function Parse-ROOT-Version ($rootVersion)
+{
+	$vinfo = $rootVersion.Split(".")
+	if ($vinfo.length -ne 3)
+	{
+		throw New-Object System.ArgumentException "Root version $rootVersion is not a legal version number like 5.33.02-rc1"
+	}
+	
+	$r = New-Object System.Object
+	$r | Add-Member -type NoteProperty -Name "VersionMajor" -Value $vinfo[0]
+	$r | Add-Member -type NoteProperty -Name "VersionMinor" -Value $vinfo[1]
+	
+	$v3Extra = $vinfo[2].SubString(2)
+	$v3 = $vinfo[2].SubString(0,2)
+	$r | Add-Member -type NoteProperty -Name "VersionSubMinor" -Value $v3
+	$r | Add-Member -type NoteProperty -Name "VersionExtraInfo" -Value $v3Extra
+
+	return $r
+}
+
 # Given a ftp to a root file, parse out version, etc. numbers
 # from it, and turn it into an object we can use further on down the pipe-line.
 filter parse-root-filename
@@ -26,12 +49,15 @@ filter parse-root-filename
 		$v3Extra = $v3.SubString(2)
 		$v3 = $v3.SubString(0,2)
 		
-		# Next, figure out how many items are the file type (tar.gz, or msi...)
+		# Next, figure out how many items are the file type (tar.gz, or msi...)		
 		$lastindex = $mainInfo.length-1
-		if ($mainInfo[$lastindex] = ".gz")
+		$ftype = $mainInfo[$lastindex]
+		if ($mainInfo[$lastindex] -eq "gz")
 		{
 			$lastindex = $lastindex - 2
+			$ftype = "tar.gz"
 		}
+
 		$downloadType = [string]::Join(".", $mainInfo[3..$lastindex])
 		
 		$r = New-Object System.Object
@@ -40,6 +66,7 @@ filter parse-root-filename
 		$r | Add-Member -type NoteProperty -Name "VersionSubMinor" -Value $v3
 		$r | Add-Member -type NoteProperty -Name "VersionExtraInfo" -Value $v3Extra
 		$r | Add-Member -type NoteProperty -Name "DownloadType" -Value $downloadType
+		$r | Add-Member -type NoteProperty -Name "FileType" -Value $ftype
 		$r | Add-Member -type NoteProperty -Name "url" -Value $_
 	
 		
@@ -114,6 +141,7 @@ function Get-All-ROOT-Downloads ($htmlPath = "ftp://root.cern.ch/root")
 }
 
 Export-ModuleMember -Function Get-All-ROOT-Downloads
+Export-ModuleMember -Function Parse-ROOT-Version
 
 #getAllROOTVersions | Format-Table
 #"ftp://root.cern.ch/root/root_v5.33.02.win32.vc10.debug.msi" | parse-root-filename | Format-Table
