@@ -67,7 +67,7 @@ filter parse-root-filename
 		$r | Add-Member -type NoteProperty -Name "VersionExtraInfo" -Value $v3Extra
 		$r | Add-Member -type NoteProperty -Name "DownloadType" -Value $downloadType
 		$r | Add-Member -type NoteProperty -Name "FileType" -Value $ftype
-		$r | Add-Member -type NoteProperty -Name "url" -Value $_
+		$r | Add-Member -type NoteProperty -Name "URL" -Value $_
 	
 		
 		return $r
@@ -136,6 +136,8 @@ function Get-All-ROOT-Downloads ($htmlPath = "ftp://root.cern.ch/root")
 	$ie.Navigate("ftp://root.cern.ch/root")
 	Start-Sleep -Milliseconds 100
 	$links = $ie.Document.body.InnerHTML | parse-html-for-links $htmlPath | % {$_}
+	
+	$ie.Quit()
 	
 	return $links | parse-root-filename
 }
