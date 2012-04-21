@@ -124,22 +124,39 @@ filter parse-html-for-links ($hpath)
 }
 
 #
+# Given a ftp listing, grab all the links and
+# build soemthing nice out of them.
+#
+filter parse-ftp-dirlisting ($rootPath)
+{
+	$info = $_ -split " +"
+	return $info[8]
+}
+
+#
 # Returns all versions of root that are on the server currently.
 #
 function Get-All-ROOT-Downloads ($htmlPath = "ftp://root.cern.ch/root")
 {
 	#
-	# Use IE to fetch the main download page, and get all the references.
+	# Use ftp in .NET to download the listing.
 	#
 	
-	$ie = New-Object -ComObject "InternetExplorer.Application"
-	$ie.Navigate("ftp://root.cern.ch/root")
-	Start-Sleep -Milliseconds 1000
-	$links = $ie.Document.body.InnerHTML | parse-html-for-links $htmlPath | % {$_}
+	$ftp = [Net.WebRequest]::Create($htmlPath)
+	$ftp.Method = [Net.WebRequestMethods+Ftp]::ListDirectoryDetails
+	$response = $ftp.GetResponse()
+	$stream = $response.GetResponseStream()
+	$reader = New-Object IO.StreamReader $stream
+	$links = $reader.ReadToEnd()
+	$reader.Close()
+	$response.Close()
+
+	#
+	# Pull it into seperate objects that should allow us to easily go after things.
+	#
 	
-	$ie.Quit()
-	
-	return $links | parse-root-filename
+	$list = $links -split "\r\n" | parse-ftp-dirlisting $htmlPath
+	return $list | parse-root-filename
 }
 
 Export-ModuleMember -Function Get-All-ROOT-Downloads
