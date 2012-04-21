@@ -99,7 +99,7 @@ filter parse-html-for-links ($hpath)
 #
 # Returns all versions of root that are on the server currently.
 #
-function getAllROOTVersions ($htmlPath = "ftp://root.cern.ch/root")
+function Get-All-ROOT-Downloads ($htmlPath = "ftp://root.cern.ch/root")
 {
 	#
 	# Use IE to fetch the main download page, and get all the references.
@@ -113,7 +113,9 @@ function getAllROOTVersions ($htmlPath = "ftp://root.cern.ch/root")
 	return $links | parse-root-filename
 }
 
-getAllROOTVersions | Format-Table
+Export-ModuleMember -Function Get-All-ROOT-Downloads
+
+#getAllROOTVersions | Format-Table
 #"ftp://root.cern.ch/root/root_v5.33.02.win32.vc10.debug.msi" | parse-root-filename | Format-Table
 #"ftp://root.cern.ch/root/root_v5.32.00-rc2.source.tar.gz" | parse-root-filename | Format-Table
 #"ftp://root.cern.ch/root/root_v5.28.00g.win32.vc90.tar.gz" | parse-root-filename | Format-Table
