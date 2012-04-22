@@ -182,7 +182,7 @@ function ReleaseBuild($buildDir, $ROOTURL, $version)
 #
 # Version is the version of the wrappers we are building against.
 #
-function Build-ROOT-Dot-Net($Version, $BuildLocation, $ROOTURL)
+function Build-ROOT-Dot-Net($Version, $BuildLocation, $ROOTURL, $showLog = $false)
 {
     $baseDirName = ($ROOTURL -split {$_ -eq "/" -or $_ -eq "\"})[-1]
     $baseDir = "$BuildLocation\RDN-$Version-$baseDirName"
@@ -197,6 +197,14 @@ function Build-ROOT-Dot-Net($Version, $BuildLocation, $ROOTURL)
 	Write-Host "Generating nuget packages..."
     $isDebug = $baseDirName.Contains(".debug.")
     Build-NuGet-Pacakges $BuildLocation "$baseDir\logs" $Version -KeepPDB:$isDebug
+	
+	if ($showLog)
+	{
+		foreach($l in $(Get-Content $baseDir\logs\buildreport.txt))
+		{
+			Write-Host $l
+		}
+	}
 }
 
 Export-ModuleMember -Function Build-ROOT-Dot-Net
