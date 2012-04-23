@@ -283,6 +283,7 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 	// 5.32.02 and friends
 	methods_to_skip.insert("TGeoManager::SetNavigatorsLock");
 	methods_to_skip.insert("TGeoManager::GetNumThreads");
+	methods_to_skip.insert("TGeoGlobalMagField::GetInstance");
 	if (svn_id <= 43250)
 	{
 		//methods_to_skip.insert("TGeoManager::SetNavigatorsLock");
