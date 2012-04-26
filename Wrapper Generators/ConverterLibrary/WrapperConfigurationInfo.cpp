@@ -105,7 +105,12 @@ vector<string> WrapperConfigurationInfo::RemoveBrokenClasses (const vector<strin
 ///
 set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 {
+	//
+	// Some of these methods refer to things that depend on the release.
+	//
+
 	auto svn_id = gROOT->GetSvnRevision();
+	cout << "SVN Revision Number for ROOT is " << svn_id << endl;
 
 	set<string> methods_to_skip;
 
