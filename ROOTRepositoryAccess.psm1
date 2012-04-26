@@ -159,8 +159,124 @@ function Get-All-ROOT-Downloads ($htmlPath = "ftp://root.cern.ch/root")
 	return $list | ? {$_} | parse-root-filename
 }
 
+function Version-Not-In-Group ($rVersion, $groupVersions)
+{
+    $found = $groupVersions | ? { $_.Name -eq "$($rVersion.VersionMajor), $($rVersion.VersionMinor), $($rVersion.VersionSubMinor)" }
+
+    return $found
+}
+
+#
+# Return $v1 >= $v2
+#
+function Greater-Than-Equal-Version ($v1, $v2)
+{
+    if ($v1.VersionMajor -gt $v2.VersionMajor)
+    {
+        return $True
+    }
+    if ($v1.VersionMajor -ne $v2.VersionMajor)
+    {
+        return $False
+    }
+
+    if ($v1.VersionMinor -gt $v2.VersionMinor)
+    {
+        return $True
+    }
+    if ($v1.VersionMinor -ne $v2.VersionMinor)
+    {
+        return $False
+    }
+
+    if ($v1.VersionSubMinor -gt $v2.VersionSubMinor)
+    {
+        return $True
+    }
+    if ($v1.VersionSubMinor -ne $v2.VersionSubMinor)
+    {
+        return $False
+    }
+
+    return $True
+}
+
+function Get-Version-As-Int ($v)
+{
+    return $v.VersionMajor*10000 + $v.VersionMinor*100 + $v.VersionSubMinor
+}
+
+#
+# Keep the best in the list (highest)
+#
+function Keep-Best-Version ($vList)
+{
+    $s = $vList | Sort-Object VersionSubMinor
+    $last = 0
+    foreach($i in $s)
+    {
+        $last = $i.VersionSubMinor
+    }
+    return $last
+}
+
+#
+# Get the list of versions that are the same or
+# larger than the version passed in.
+#
+# For even releases: do everything
+# For odd releases: do only the latest
+# For a "-rc" release, only do the most recent if there
+#  is no non-rc release.
+#
+function Get-Subsequent-Releases ($minROOTVersion)
+{
+    $minVersion = Parse-ROOT-Version($minROOTVersion)
+    $allVersions = Get-All-ROOT-Downloads
+
+    #
+    # Only look at versions that are better or equal to what we care about.
+    #
+
+    $onlyGoodVersions = $allVersions | ? {Greater-Than-Equal-Version $_ $minVersion}
+
+    #
+    # Next, we need a list of all versions that don't have a -rc component.
+    #
+
+    $nonExtraVersions = $onlyGoodVersions | ? {-not $_.VersionExtraInfo}
+    $nonExtraVersionsGroup = $nonExtraVersions | Group-Object Get-Version-As-Int
+
+    $extraVersions = $onlyGoodVersions | ? {$_.VersionExtraInfo}
+
+    $okExtraVersions = $extraVersions | ? {Version-Not-In-Group $_ $nonExtraVersionsGroup}
+
+    #
+    # Now, in the non-extension versions, find the odd ones, and grab the most recent
+    # guys only
+    #
+
+    $nonOddVersions = $nonExtraVersions | ? {$_.VersionMinor % 2 -eq 0}
+    $oddVersions = $nonExtraVersions | ? {$_.VersionMinor % 2 -eq 1}
+
+    $oodVersionsGrouped = $oddVersions | Group-Object VersionMajor,VersionMinor
+
+    $okOddVersions = @()
+    foreach ($odd in $oodVersionsGrouped)
+    {
+        $last = Keep-Best-Version $odd
+
+        $arrs = $odd | ? {$_.VersionSubMajor -eq $last}
+        Write-Host "Found $arrs items found with last id of $last"
+        $okOddVersions = $okOddVersions + $arrs
+    }
+
+    return $nonOddVersions + $okOddVersions + $okExtraVersions
+}
+
 Export-ModuleMember -Function Get-All-ROOT-Downloads
 Export-ModuleMember -Function Parse-ROOT-Version
+Export-ModuleMember -Function Get-Subsequent-Releases
 
 #getAllROOTVersions | Format-Table
 #"ftp://root.cern.ch/root/root_v5.33.02.win32.vc10.debug.msi" | parse-root-filename | Format-Table
