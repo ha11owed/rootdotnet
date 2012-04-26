@@ -288,6 +288,7 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 	// 5.32.02 and friends
 	if (svn_id < 43515)
 	{
+		cout << "Killing off stuff for 5.32.02" << endl;
 		methods_to_skip.insert("TGeoManager::SetNavigatorsLock");
 		methods_to_skip.insert("TGeoManager::GetNumThreads");
 		methods_to_skip.insert("TGeoGlobalMagField::GetInstance");
