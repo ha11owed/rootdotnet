@@ -157,15 +157,15 @@ function ReleaseBuild($buildDir, $ROOTURL, $version)
 
     $finalLibraryBuild = "$buildDir/build"
 	Set-Location $buildDir
-    Write-Host "Starting the build now! $buildDir"
     BuildROOTNET "$buildDir/root" $rootdotnetloc $finalLibraryBuild $version $logDir
-    Write-Host "Done with the buld... onto the next step"
 
     #
     # Generate a log report of some of the stuff we disabled for later use
     #
     
     $disabledItems = & "$rootdotnetloc\Wrapper Generators\Release\DumpConfigInfo"
+    Write-Host $disabledItems
+    Write-Host "$logDir\disabled_items.txt"
     $disabledItems | out-file -filepath "$logDir\disabled_items.txt"
     
     #
