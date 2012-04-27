@@ -163,24 +163,7 @@ function ReleaseBuild($buildDir, $ROOTURL, $version)
     # Generate a log report of some of the stuff we disabled for later use
     #
     
-    Write-Host "$rootdotnetloc\Wrapper Generators\Release\DumpConfigInfo.exe"
-    Write-Host "test run"
-    $dumpConfig = "$rootdotnetloc\Wrapper Generators\Release\DumpConfigInfo.exe"
-    if (Test-Path $dumpConfig)
-    {
-        Write-Host "there!"
-        & "$dumpConfig"
-        Wriet-Host "and done"
-    } else {
-        Write-Host "Not there!"
-        Write-Host $PWD
-    }
-    & "$rootdotnetloc\Wrapper Generators\Release\DumpConfigInfo.exe"
-    Write-Host "test run done"
-    $disabledItems = & "$rootdotnetloc\Wrapper Generators\Release\DumpConfigInfo.exe"
-    Write-Host $disabledItems
-    Write-Host "$logDir\disabled_items.txt"
-    $disabledItems | out-file -filepath "$logDir\disabled_items.txt"
+    & "$rootdotnetloc\Wrapper Generators\Release\DumpConfigInfo.exe" > "$logDir\disabled_items.txt"
     
     #
     # Remember we did the build
