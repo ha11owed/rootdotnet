@@ -165,6 +165,15 @@ function ReleaseBuild($buildDir, $ROOTURL, $version)
     
     Write-Host "$rootdotnetloc\Wrapper Generators\Release\DumpConfigInfo.exe"
     Write-Host "test run"
+    $dumpConfig = "$rootdotnetloc\Wrapper Generators\Release\DumpConfigInfo.exe"
+    if (Test-Path $dumpConfig)
+    {
+        Write-Host "there!"
+        & '$dumpConfig'
+    } else {
+        Write-Host "Not there!"
+        Write-Host $PWD
+    }
     & "$rootdotnetloc\Wrapper Generators\Release\DumpConfigInfo.exe"
     Write-Host "test run done"
     $disabledItems = & "$rootdotnetloc\Wrapper Generators\Release\DumpConfigInfo.exe"
