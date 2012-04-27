@@ -286,10 +286,8 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 	methods_to_skip.insert("RooObjCacheManager::clearObsList");
 
 	// 5.32.02 and friends
-	cout << "svn_id < 43515 is " << svn_id << " < 43515: " << (svn_id < 43515) << endl;
 	if (svn_id < 43515)
 	{
-		cout << "Killing off stuff for 5.32.02" << endl;
 		methods_to_skip.insert("TGeoManager::SetNavigatorsLock");
 		methods_to_skip.insert("TGeoManager::GetNumThreads");
 		methods_to_skip.insert("TGeoGlobalMagField::GetInstance");
