@@ -36,4 +36,4 @@ $goodR = $goodRs
 #
 
 Import-Module -DisableNameChecking -Force ./BuildControl
-Build-ROOT-Dot-Net -Version $wrapperVersion -BuildLocation $PWD.Path -ROOTURL $goodR.URL -showLog $true
+Build-ROOT-Dot-Net -Version $wrapperVersion -BuildLocation $PWD.Path -ROOTURL $goodR.URL -showLog $true -nugetDir "\\deeptalk.phys.washington.edu\Packages"

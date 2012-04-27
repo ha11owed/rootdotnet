@@ -184,7 +184,7 @@ function ReleaseBuild($buildDir, $ROOTURL, $version)
 #
 # Version is the version of the wrappers we are building against.
 #
-function Build-ROOT-Dot-Net($Version, $BuildLocation, $ROOTURL, $showLog = $false)
+function Build-ROOT-Dot-Net($Version, $BuildLocation, $ROOTURL, $showLog = $false, $nugetDir = "")
 {
     $baseDirName = ($ROOTURL -split {$_ -eq "/" -or $_ -eq "\"})[-1]
     $baseDir = "$BuildLocation\RDN-$Version-$baseDirName"
@@ -198,7 +198,7 @@ function Build-ROOT-Dot-Net($Version, $BuildLocation, $ROOTURL, $showLog = $fals
 
 	Write-Host "Generating nuget packages..."
     $isDebug = $baseDirName.Contains(".debug.")
-    Build-NuGet-Pacakges $BuildLocation "$baseDir\logs" $Version -KeepPDB:$isDebug
+    Build-NuGet-Pacakges $BuildLocation "$baseDir\logs" $Version -KeepPDB:$isDebug -CopyTo $nugetDir
 	
 	if ($showLog)
 	{
