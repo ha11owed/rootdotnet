@@ -164,7 +164,7 @@ function ReleaseBuild($buildDir, $ROOTURL, $version)
     #
     
     Write-Host "$rootdotnetloc\Wrapper Generators\Release\DumpConfigInfo"
-    $disabledItems = & "$rootdotnetloc\Wrapper Generators\Release\DumpConfigInfo"
+    $disabledItems = & "$rootdotnetloc\Wrapper Generators\Release\DumpConfigInfo.exe"
     Write-Host $disabledItems
     Write-Host "$logDir\disabled_items.txt"
     $disabledItems | out-file -filepath "$logDir\disabled_items.txt"
