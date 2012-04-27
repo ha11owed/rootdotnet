@@ -157,7 +157,9 @@ function ReleaseBuild($buildDir, $ROOTURL, $version)
 
     $finalLibraryBuild = "$buildDir/build"
 	Set-Location $buildDir
+    Write-Host "Starting the build now! $buildDir"
     BuildROOTNET "$buildDir/root" $rootdotnetloc $finalLibraryBuild $version $logDir
+    Write-Host "Done with the buld... onto the next step"
 
     #
     # Generate a log report of some of the stuff we disabled for later use
