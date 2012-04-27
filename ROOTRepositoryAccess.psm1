@@ -225,7 +225,7 @@ function Keep-Best-Version ($vList)
 # larger than the version passed in.
 #
 # For even releases: do everything
-# For odd releases: do only the latest
+# For odd releases: do only the latest in the series
 # For a "-rc" release, only do the most recent if there
 #  is no non-rc release.
 #
@@ -253,21 +253,20 @@ function Get-Subsequent-Releases ($minROOTVersion)
 
     #
     # Now, in the non-extension versions, find the odd ones, and grab the most recent
-    # guys only
+    # guys only for each download.
     #
 
     $nonOddVersions = $nonExtraVersions | ? {$_.VersionMinor % 2 -eq 0}
-    $oddVersions = $nonExtraVersions | ? {$_.VersionMinor % 2 -eq 1}
+    $oddVersions = $nonExtraVersions | ? {($_.VersionMinor % 2) -eq 1}
 
-    $oodVersionsGrouped = $oddVersions | Group-Object VersionMajor,VersionMinor
+    $oodVersionsGrouped = $oddVersions | Group-Object DownloadType,VersionMajor,VersionMinor
 
     $okOddVersions = @()
     foreach ($odd in $oodVersionsGrouped)
     {
-        $last = Keep-Best-Version $odd
+        $last = Keep-Best-Version $odd.Group
 
-        $arrs = $odd | ? {$_.VersionSubMajor -eq $last}
-        Write-Host "Found $arrs items found with last id of $last"
+        $arrs = $odd.Group | ? {$_.VersionSubMinor -eq $last}
         $okOddVersions = $okOddVersions + $arrs
     }
 
