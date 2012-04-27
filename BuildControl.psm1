@@ -169,7 +169,8 @@ function ReleaseBuild($buildDir, $ROOTURL, $version)
     if (Test-Path $dumpConfig)
     {
         Write-Host "there!"
-        & '$dumpConfig'
+        & "$dumpConfig"
+        Wriet-Host "and done"
     } else {
         Write-Host "Not there!"
         Write-Host $PWD
