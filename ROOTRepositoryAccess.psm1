@@ -171,29 +171,29 @@ function Version-Not-In-Group ($rVersion, $groupVersions)
 #
 function Greater-Than-Equal-Version ($v1, $v2)
 {
-    if ($v1.VersionMajor -gt $v2.VersionMajor)
+    if ([int] $v1.VersionMajor -gt [int] $v2.VersionMajor)
     {
         return $True
     }
-    if ($v1.VersionMajor -ne $v2.VersionMajor)
+    if ([int] $v1.VersionMajor -ne [int] $v2.VersionMajor)
     {
         return $False
     }
 
-    if ($v1.VersionMinor -gt $v2.VersionMinor)
+    if ([int] $v1.VersionMinor -gt [int] $v2.VersionMinor)
     {
         return $True
     }
-    if ($v1.VersionMinor -ne $v2.VersionMinor)
+    if ([int] $v1.VersionMinor -ne [int] $v2.VersionMinor)
     {
         return $False
     }
 
-    if ($v1.VersionSubMinor -gt $v2.VersionSubMinor)
+    if ([int] $v1.VersionSubMinor -gt [int] $v2.VersionSubMinor)
     {
         return $True
     }
-    if ($v1.VersionSubMinor -ne $v2.VersionSubMinor)
+    if ([int] $v1.VersionSubMinor -ne [int] $v2.VersionSubMinor)
     {
         return $False
     }
