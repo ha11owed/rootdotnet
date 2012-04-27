@@ -163,6 +163,7 @@ function ReleaseBuild($buildDir, $ROOTURL, $version)
     # Generate a log report of some of the stuff we disabled for later use
     #
     
+    Write-Host "$rootdotnetloc\Wrapper Generators\Release\DumpConfigInfo"
     $disabledItems = & "$rootdotnetloc\Wrapper Generators\Release\DumpConfigInfo"
     Write-Host $disabledItems
     Write-Host "$logDir\disabled_items.txt"
