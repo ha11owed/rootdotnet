@@ -83,6 +83,7 @@ function BuildROOTNET ($rootLoc, $rootdotnetloc, $finalbuild, $fullVersion, $log
     $buildDir = "$rootdotnetloc/Wrapper Generators"
     set-location $buildDir
     Write-Host "Building wrappers..."
+    Wrote-Host "Location is $($PWD.PATH)"
     & DoEverythingAtOnce\BuildROOTWrappers.bat "$rootLoc" AutoBuild "$finalbuild" $version 2>&1 | out-file "$logDir/build.log"
     
     #
