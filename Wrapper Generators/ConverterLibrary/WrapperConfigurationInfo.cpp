@@ -285,8 +285,8 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 	methods_to_skip.insert("RooObjCacheManager::doClearObsList");
 	methods_to_skip.insert("RooObjCacheManager::clearObsList");
 
-	// 5.32.02 and friends
-	if (svn_id < 43515)
+	// 5.32.03 and friends
+	if (svn_id <= 44194)
 	{
 		methods_to_skip.insert("TGeoManager::SetNavigatorsLock");
 		methods_to_skip.insert("TGeoManager::GetNumThreads");
