@@ -125,6 +125,8 @@ vector<string> ROOTHelpers::GetAllClassesInLibraries(const vector<string> &libra
 
 		if (find(shortLibNames.begin(), shortLibNames.end(), shared_library) != shortLibNames.end()) {
 			results.push_back (class_name);
+		} else {
+			cout << "Class '" << class_name << "' can't be translated because it isn't in requested library (it is in '" << shared_library << "')." << endl;
 		}
 	}
 
