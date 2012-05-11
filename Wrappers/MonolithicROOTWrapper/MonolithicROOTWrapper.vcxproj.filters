@@ -24,13 +24,10 @@
     <ClCompile Include="ROOTSource\Globals.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
-    <ClCompile Include="ROOTSource\NTNamed.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
     <ClCompile Include="ROOTSource\NTObject.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
-    <ClCompile Include="ROOTSource\NTSystem.cpp">
+    <ClCompile Include="ROOTSource\NTSelector.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
     <ClCompile Include="ROOTSource\root_type_helpers.cpp">
@@ -47,13 +44,13 @@
     <ClInclude Include="ROOTSource\libCore-make_public.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
-    <ClInclude Include="ROOTSource\NTNamed.hpp">
+    <ClInclude Include="ROOTSource\libTree-make_public.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\NTObject.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
-    <ClInclude Include="ROOTSource\NTSystem.hpp">
+    <ClInclude Include="ROOTSource\NTSelector.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\root_type_helpers.hpp">
