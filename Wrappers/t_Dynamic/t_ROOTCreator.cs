@@ -15,11 +15,18 @@ namespace t_Dynamic
         static ROOTNET.NTObject _obj = null;
 
         [TestMethod]
-        public void TestCreatorCTor()
+        public void CreateTH1FNoArgs()
         {
             dynamic c = new ROOTNET.Utility.ROOTCreator();
             var h = c.TH1F();
-            Assert.Inconclusive();
+            Assert.AreEqual(1, h.GetNbinsX(), "# of bins"); // 1 is the default
+        }
+
+        [TestMethod]
+        public void CreateTH1FNoArgsByName()
+        {
+            dynamic h = ROOTNET.Utility.ROOTCreator.CreateByName("TH1F", new object[0]);
+            Assert.AreEqual(1, h.GetNbinsX(), "# of bins");
         }
 
         [TestMethod]
@@ -31,6 +38,7 @@ namespace t_Dynamic
         }
 
         [TestMethod]
+        [ExpectedException(typeof(RuntimeBinderException))]
         public void NoNonTObjectClasses()
         {
             // We can't deal with non-TObject classes. Make sure we bomb correctly here!

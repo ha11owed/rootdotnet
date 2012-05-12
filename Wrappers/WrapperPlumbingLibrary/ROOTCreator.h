@@ -18,6 +18,8 @@ namespace ROOTNET
 			// Called by doing the object name, and argumets for its ctor
 			virtual bool TryInvokeMember (System::Dynamic::InvokeMemberBinder ^binder, array<Object^> ^args, Object^% result) override;
 
+			// Craete an object given just a name. Should be cast to a dynamic type in C#!
+			static System::Object ^ CreateByName(System::String^ ROOTObjectName, array<Object^> ^args);
 		};
 	}
 }

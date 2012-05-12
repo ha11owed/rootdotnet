@@ -29,13 +29,10 @@ namespace ROOTNET
 		}
 
 		///
-		/// Called to create a new ROOT object. The method name is the name of the object we want to create.
-		/// The args are the ctor arguments.
-		/// And the result will be the new objet!
+		/// Create an object, but do it by name rather than using the DLR... when an object name contains template arguments, etc.
+		/// It should be cast to a dynamic type by the calling guy.
 		///
-		/// Class must come from TObject for now...
-		///
-		bool ROOTCreator::TryInvokeMember (System::Dynamic::InvokeMemberBinder ^binder, array<Object^> ^args, Object^% result)
+		System::Object^ ROOTCreator::CreateByName(System::String^ root_object_name, array<Object^> ^args)
 		{
 			//
 			// Some basic init. Very quick if it has been done already
@@ -47,10 +44,10 @@ namespace ROOTNET
 			// Check out the class that we are going to create. Even possible?
 			//
 
-			ROOTNET::Utility::NetStringToConstCPP class_name(binder->Name);
+			ROOTNET::Utility::NetStringToConstCPP class_name(root_object_name);
 			auto c = TClass::GetClass(class_name);
 			if (c == nullptr)
-				return false;
+				return nullptr;
 
 			//
 			// Next parse through the ctor arguments, and see if we can find the constructor method.
@@ -65,11 +62,10 @@ namespace ROOTNET
 			if (proto.size() == 0)
 			{
 				auto obj = static_cast<::TObject*>(c->New());
-				result = ROOTObjectServices::GetBestObject<ROOTDOTNETBaseTObject^>(obj);
-				return true;
+				return ROOTObjectServices::GetBestObject<ROOTDOTNETBaseTObject^>(obj);
 			}
 
-			return false;
+			return nullptr;
 #ifdef notyet
 			TMethodCall method;
 			method.InitWithPrototype(c, class_name, proto.c_str());
@@ -144,6 +140,19 @@ namespace ROOTNET
 
 			return false;
 #endif
+		}
+
+		///
+		/// Called to create a new ROOT object. The method name is the name of the object we want to create.
+		/// The args are the ctor arguments.
+		/// And the result will be the new objet!
+		///
+		/// Class must come from TObject for now...
+		///
+		bool ROOTCreator::TryInvokeMember (System::Dynamic::InvokeMemberBinder ^binder, array<Object^> ^args, Object^% result)
+		{
+			result = CreateByName(binder->Name, args);
+			return result != nullptr;
 		}
 	}
 }
