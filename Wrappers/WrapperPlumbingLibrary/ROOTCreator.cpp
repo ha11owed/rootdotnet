@@ -54,7 +54,7 @@ namespace ROOTNET
 				throw gcnew ROOTDynamicException("ROOT does not know about the class");
 
 			if (!c->InheritsFrom("TObject"))
-				throw gcnew ROOTDynamicException("The class does not inherrit from TObject and so can't be handled by ROOT.NET");
+				throw gcnew ROOTDynamicException("The class does not inherit from TObject and so can't be handled by ROOT.NET");
 
 			//
 			// Next parse through the ctor arguments, and see if we can find the constructor method.

@@ -59,5 +59,16 @@ namespace t_Dynamic
             c.SetBinLabel(1, "hi");
             Assert.AreEqual("hi", c.GetBinLabel(1), "Bin name");
         }
+
+        [TestMethod]
+        public void TObjectReturnType()
+        {
+            dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TH1F();
+            dynamic a = c.GetXaxis();
+            Assert.IsNotNull(a);
+            a.Set(10, 1.0, 11.0); // Make sure it really is a TAxis
+            a.SetBinLabel(1, "hi");
+            Assert.AreEqual("hi", a.GetBinLabel(1), "Bin name");
+        }
     }
 }

@@ -4,6 +4,7 @@
 #include "NetStringToConstCPP.hpp"
 #include "DynamicHelpers.h"
 #include "ROOTDynamicException.h"
+#include "ROOTDotNet.h"
 
 #include <TObject.h>
 #include <TClass.h>
@@ -16,6 +17,26 @@
 
 using std::string;
 using std::ostringstream;
+
+#ifdef nullptr
+#undef nullptr
+#endif
+
+namespace {
+	//
+	// return the tclass pointer if this is a strict pointer to a root class.
+	//  TAxis* for example, but not TAxis&.
+	//
+	::TClass *ExtractROOTClassInfoPtr (const string &tname)
+	{
+		int ptr = tname.rfind("*");
+		if (ptr == tname.npos)
+			return nullptr;
+
+		auto nameonly = tname.substr(0, ptr);
+		return ::TClass::GetClass(nameonly.c_str());
+	}
+}
 
 namespace ROOTNET
 {
@@ -160,7 +181,19 @@ namespace ROOTNET
 				result = gcnew ::System::String(r);
 				return true;
 			} else {
-				return false;
+				// Check to see if this is a ROOT class pointer
+				auto cls = ExtractROOTClassInfoPtr(return_type_name);
+				if (cls == nullptr)
+					return false;
+				if (!cls->InheritsFrom("TObject"))
+					return false;
+
+				// It is a pointer. Do the work!
+				char *ptr;
+				method.Execute(GetTObjectPointer(), arg_list.c_str(), &ptr);
+				TObject *obj = reinterpret_cast<TObject*>(ptr); // Danger - but this is the way of CINT! :(
+				result = ROOTObjectServices::GetBestObject<ROOTDOTNETBaseTObject^>(obj);
+				return true;
 			}
 
 			//
