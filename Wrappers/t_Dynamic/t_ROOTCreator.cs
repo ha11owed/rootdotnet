@@ -57,5 +57,12 @@ namespace t_Dynamic
             dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TH1F();
             Assert.AreEqual(1, c.GetNbinsX(), "# of bins"); // 1 is the default
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(ROOTNET.Utility.ROOTDynamicException))]
+        public void NoDeafultCTor()
+        {
+            dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TObjString();
+        }
     }
 }
