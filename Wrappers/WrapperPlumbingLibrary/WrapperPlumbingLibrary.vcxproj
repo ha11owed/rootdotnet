@@ -115,6 +115,7 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="CPPStringArray.cpp" />
+    <ClCompile Include="DynamicHelpers.cpp" />
     <ClCompile Include="NetArrayTranslator.cpp" />
     <ClCompile Include="NetStringArrayTranslator.cpp" />
     <ClCompile Include="NetStringToConstCPP.cpp" />
@@ -128,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPPStringArray.hpp" />
+    <ClInclude Include="DynamicHelpers.h" />
     <ClInclude Include="NetArrayTranslator.hpp" />
     <ClInclude Include="NetStringArrayTranslator.hpp" />
     <ClInclude Include="NetStringToConstCPP.hpp" />

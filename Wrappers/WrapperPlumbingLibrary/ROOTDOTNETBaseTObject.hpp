@@ -64,7 +64,6 @@ namespace ROOTNET
 			virtual ::TObject *GetTObjectPointer(void) = 0;
 
 		private:
-			std::string GeneratePrototype(array<Object^> ^args);
 			std::string resolveTypedefs(const std::string &name);
 		};
 	}

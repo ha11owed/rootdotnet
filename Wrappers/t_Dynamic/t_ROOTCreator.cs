@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace t_Dynamic
 {
@@ -16,7 +17,17 @@ namespace t_Dynamic
         [TestMethod]
         public void TestCreatorCTor()
         {
-            var c = new ROOTNET.Utility.ROOTCreator();
+            dynamic c = new ROOTNET.Utility.ROOTCreator();
+            var h = c.TH1F();
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(RuntimeBinderException))]
+        public void TestCreatorCTorBadClass()
+        {
+            dynamic c = new ROOTNET.Utility.ROOTCreator();
+            dynamic h = c.TH1FF();
         }
     }
 }

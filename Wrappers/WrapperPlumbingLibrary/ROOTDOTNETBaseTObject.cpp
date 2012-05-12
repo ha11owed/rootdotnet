@@ -2,6 +2,7 @@
 #include "ROOTDOTNETBaseTObject.hpp"
 #include "ROOTObjectManager.h"
 #include "NetStringToConstCPP.hpp"
+#include "DynamicHelpers.h"
 
 #include <TObject.h>
 #include <TClass.h>
@@ -77,7 +78,7 @@ namespace ROOTNET
 			// http://sframe.svn.sourceforge.net/viewvc/sframe/SFrame/trunk/core/src/SCycleOutput.cxx
 			//
 
-			auto prototype = GeneratePrototype(args);
+			auto prototype = DynamicHelpers::GeneratePrototype(args);
 			if (prototype == "<>")
 				return false;
 
@@ -154,43 +155,6 @@ namespace ROOTNET
 			if (type == "Long_t")
 				return "long";
 			return type;
-		}
-
-		//
-		// Given the list of arguments, generate a prototype string
-		// that CINT can understand for argument lookup.
-		//
-		string ROOTDOTNETBaseTObject::GeneratePrototype(array<Object^> ^args)
-		{
-			string result = "";
-
-			for each (auto arg in args)
-			{
-				string thisType = "";
-				if (arg->GetType() == int::typeid)
-				{
-					thisType = "int";
-				} else if (arg->GetType() == long::typeid)
-				{
-					thisType = "long";
-				} else if (arg->GetType() == float::typeid)
-				{
-					thisType = "float";
-				} else if (arg->GetType() == double::typeid)
-				{
-					thisType = "double";
-				} else {
-					return "<>"; // Can't do it!
-				}
-
-				if (result.size() == 0) {
-					result = thisType;
-				} else {
-					result += "," + thisType;
-				}
-			}
-
-			return result;
 		}
 	}
 }
