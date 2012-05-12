@@ -1,6 +1,15 @@
 #include "DynamicHelpers.h"
+#include "ROOTDOTNETBaseTObject.hpp"
+#include "NetStringToConstCPP.hpp"
+
+#include <TClass.h>
+#pragma make_public(TObject)
 
 using std::string;
+
+#ifdef nullptr
+#undef nullptr
+#endif
 
 namespace ROOTNET
 {
@@ -39,7 +48,16 @@ namespace ROOTNET
 				{
 					thisType = "const char*";
 				} else {
-					return "<>"; // Can't do it!
+					// See if this is a class ptr that is part of the ROOT system.
+					if (gt->IsSubclassOf(ROOTNET::Utility::ROOTDOTNETBaseTObject::typeid))
+					{
+						auto robj = static_cast<ROOTNET::Utility::ROOTDOTNETBaseTObject^>(arg);
+						::TObject *tobj = robj->GetTObjectPointer();
+						string rootname = string(tobj->IsA()->GetName());
+						thisType = rootname + "*";
+					} else {
+						return "<>"; // Can't do it!
+					}
 				}
 
 				if (result.size() == 0) {
@@ -50,6 +68,19 @@ namespace ROOTNET
 			}
 
 			return result;
+		}
+
+		///
+		/// Look for a root pointer
+		///
+		::TClass *DynamicHelpers::ExtractROOTClassInfoPtr (const string &tname)
+		{
+			int ptr = tname.rfind("*");
+			if (ptr == tname.npos)
+				return nullptr;
+
+			auto nameonly = tname.substr(0, ptr);
+			return ::TClass::GetClass(nameonly.c_str());
 		}
 	}
 }

@@ -52,6 +52,12 @@ namespace ROOTNET
 			/// other language besides C++ will ever use the dtor.
 			~ROOTDOTNETBaseTObject(void);
 			!ROOTDOTNETBaseTObject(void);
+
+		// public inside the assembly, protected outside the assembly... weird, but CLI C++ access rules.
+		public protected:
+			/// So we can get at the pointer.
+			virtual ::TObject *GetTObjectPointer(void) = 0;
+
 		protected:
 			/// True if we are the owner and should delete the underlying C++ object
 			/// if this guy gets garbage collected.
@@ -60,8 +66,6 @@ namespace ROOTNET
 			/// Keep track of why our pointer was set to null. Mostly helpful is
 			/// tracking down bombs and crashes.
 			ReasonPointerNullEnum _whyNull;
-
-			virtual ::TObject *GetTObjectPointer(void) = 0;
 
 		private:
 			std::string resolveTypedefs(const std::string &name);

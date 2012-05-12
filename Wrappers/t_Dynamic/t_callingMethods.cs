@@ -70,5 +70,27 @@ namespace t_Dynamic
             a.SetBinLabel(1, "hi");
             Assert.AreEqual("hi", a.GetBinLabel(1), "Bin name");
         }
+
+        [TestMethod]
+        public void IntAsDoubleArg()
+        {
+            dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TH1F();
+            c.SetBins(10, 0.0, 10.0);
+            c.Fill(4);
+            Assert.AreEqual(1.0, c.GetBinContent(4), "Bin #4");
+        }
+
+        [TestMethod]
+        public void TObjectAsArg()
+        {
+            dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TH1F();
+            c.SetBins(1, 0.0, 10.0);
+            c.Fill(4.0);
+
+            dynamic c2 = c.Clone();
+            dynamic r = c.Divide(c2);
+
+            Assert.AreEqual(1.0, r.GetBinContent(1), "Divided bin value");
+        }
     }
 }

@@ -22,22 +22,6 @@ using std::ostringstream;
 #undef nullptr
 #endif
 
-namespace {
-	//
-	// return the tclass pointer if this is a strict pointer to a root class.
-	//  TAxis* for example, but not TAxis&.
-	//
-	::TClass *ExtractROOTClassInfoPtr (const string &tname)
-	{
-		int ptr = tname.rfind("*");
-		if (ptr == tname.npos)
-			return nullptr;
-
-		auto nameonly = tname.substr(0, ptr);
-		return ::TClass::GetClass(nameonly.c_str());
-	}
-}
-
 namespace ROOTNET
 {
 	namespace Utility
@@ -140,7 +124,14 @@ namespace ROOTNET
 					arg_builder << "\"" << carg << "\"";
 				} else
 				{
-					throw gcnew System::InvalidOperationException("Legal prototype on method call, but no converstion - what the heck!");
+					if (gt->IsSubclassOf(ROOTNET::Utility::ROOTDOTNETBaseTObject::typeid))
+					{
+						auto robj = static_cast<ROOTNET::Utility::ROOTDOTNETBaseTObject^>(arg);
+						::TObject *tobj = robj->GetTObjectPointer();
+						arg_builder << tobj; // Just out as a number. :(
+					} else {
+						throw gcnew System::InvalidOperationException("Legal prototype on method call, but no converstion - what the heck!");
+					}
 				}
 			}
 
@@ -182,7 +173,7 @@ namespace ROOTNET
 				return true;
 			} else {
 				// Check to see if this is a ROOT class pointer
-				auto cls = ExtractROOTClassInfoPtr(return_type_name);
+				auto cls = DynamicHelpers::ExtractROOTClassInfoPtr(return_type_name);
 				if (cls == nullptr)
 					return false;
 				if (!cls->InheritsFrom("TObject"))
