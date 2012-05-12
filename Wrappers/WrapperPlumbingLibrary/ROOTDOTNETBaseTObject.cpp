@@ -8,6 +8,8 @@
 #include <TClass.h>
 #include <TMethodCall.h>
 #include <TFunction.h>
+#include <TROOT.h>
+#include <TDataType.h>
 
 #include <string>
 
@@ -92,13 +94,15 @@ namespace ROOTNET
 			// Now build up the argument list for CINT
 			//
 
+			method.ResetParam();
 			for each (auto arg in args)
 			{
-				if (arg->GetType() == int::typeid || arg->GetType() == long::typeid)
+				auto gt = arg->GetType();
+				if (gt == int::typeid || gt == long::typeid || gt == short::typeid)
 				{
 					long i = (long) arg;
 					method.SetParam(i);
-				} else if (arg->GetType() == float::typeid || arg->GetType() == double::typeid)
+				} else if (gt == float::typeid || gt == double::typeid)
 				{
 					double d = (double) arg;
 					method.SetParam(d);
@@ -120,7 +124,7 @@ namespace ROOTNET
 					result = (float) val;
 				}
 				return true;
-			} if (return_type_name == "int" || return_type_name == "long")
+			} if (return_type_name == "int" || return_type_name == "long" || return_type_name == "short")
 			{
 				long val = 0;
 				method.Execute(GetTObjectPointer(), val);
@@ -129,6 +133,10 @@ namespace ROOTNET
 				} else {
 					result = val;
 				}
+				return true;
+			} else if (return_type_name == "void") {
+				method.Execute(GetTObjectPointer());
+				result = nullptr;
 				return true;
 			} else {
 				return false;
@@ -146,15 +154,18 @@ namespace ROOTNET
 		//
 		string ROOTDOTNETBaseTObject::resolveTypedefs(const std::string &type)
 		{
-			if (type == "Int_t")
-				return "int";
-			if (type == "Double_t")
-				return "double";
-			if (type == "Float_t")
-				return "float";
-			if (type == "Long_t")
-				return "long";
-			return type;
+			string current (type);
+			while (true)
+			{
+				auto dtinfo = gROOT->GetType(current.c_str());
+				if (dtinfo == nullptr)
+					return current;
+
+				string newname = dtinfo->GetTypeName();
+				if (newname == current)
+					return current;
+				current = newname;
+			}
 		}
 	}
 }

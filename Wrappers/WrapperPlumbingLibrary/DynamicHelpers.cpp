@@ -18,8 +18,9 @@ namespace ROOTNET
 		{
 			string result = "";
 
-			for each (auto arg in args)
+			for (int index = 0; index < args->Length; index++)
 			{
+				auto arg = args[index];
 				string thisType = "";
 				if (arg->GetType() == int::typeid)
 				{
