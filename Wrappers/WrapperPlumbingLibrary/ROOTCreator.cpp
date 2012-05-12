@@ -28,7 +28,6 @@ namespace ROOTNET
 {
 	namespace Utility
 	{
-
 		ROOTCreator::ROOTCreator(void)
 		{
 		}
@@ -94,6 +93,24 @@ namespace ROOTNET
 		{
 			result = CreateByName(binder->Name, args);
 			return result != nullptr;
+		}
+
+		///
+		/// Return a global creator - this is just something to make it easy to deal with this stuff.
+		///
+		ROOTCreator^ ROOTCreator::ROOT::get ()
+		{
+			if (gCreator == nullptr)
+				gCreator = gcnew ROOTCreator();
+			return gCreator;
+		}
+
+		///
+		/// Rest our held creator... mostly for testing.
+		///
+		void ROOTCreator::ResetROOTCreator()
+		{
+			gCreator = nullptr;
 		}
 	}
 }

@@ -20,6 +20,17 @@ namespace ROOTNET
 
 			// Craete an object given just a name. Should be cast to a dynamic type in C#!
 			static System::Object ^ CreateByName(System::String^ ROOTObjectName, array<Object^> ^args);
+
+			// Keeps track of one global creator for all to use, if they wish.
+			static property ROOTCreator ^ ROOT {
+				ROOTCreator ^ get ();
+			}
+
+			// Mostly for testing - forces the creator object to be released for GC.
+			static void ResetROOTCreator();
+
+		private:
+			static ROOTCreator^ gCreator = nullptr;
 		};
 	}
 }

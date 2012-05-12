@@ -13,6 +13,12 @@ namespace t_Dynamic
         // make sure that the wrappers get loaded into memory.
         static ROOTNET.NTObject _obj = null;
 
+        [TestInitialize]
+        public void TestInit()
+        {
+            ROOTNET.Utility.ROOTCreator.ResetROOTCreator();
+        }
+
         [TestMethod]
         public void CreateTH1FNoArgs()
         {
@@ -43,6 +49,13 @@ namespace t_Dynamic
             dynamic c = new ROOTNET.Utility.ROOTCreator();
             var h = c.TArray();
             Assert.IsNull(h, "no object should have been created");
+        }
+
+        [TestMethod]
+        public void CreateTH1FByProperty()
+        {
+            dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TH1F();
+            Assert.AreEqual(1, c.GetNbinsX(), "# of bins"); // 1 is the default
         }
     }
 }
