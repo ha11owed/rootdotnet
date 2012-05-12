@@ -3,6 +3,7 @@
 #include "ROOTObjectManager.h"
 #include "NetStringToConstCPP.hpp"
 #include "DynamicHelpers.h"
+#include "ROOTDynamicException.h"
 
 #include <TObject.h>
 #include <TClass.h>
@@ -10,10 +11,11 @@
 #include <TFunction.h>
 #include <TROOT.h>
 #include <TDataType.h>
-
+#include <sstream>
 #include <string>
 
 using std::string;
+using std::ostringstream;
 
 namespace ROOTNET
 {
@@ -69,7 +71,7 @@ namespace ROOTNET
 			//
 
 			if (GetTObjectPointer() == nullptr)
-				return false;
+				throw gcnew ROOTDynamicException("Attempt to call method on null ptr object!");
 			auto classSpec = GetTObjectPointer()->IsA();
 			if (classSpec == nullptr)
 				return false;
@@ -94,20 +96,34 @@ namespace ROOTNET
 			// Now build up the argument list for CINT
 			//
 
-			method.ResetParam();
+			ostringstream arg_builder;
+			bool first_arg = true;
 			for each (auto arg in args)
 			{
+				if (!first_arg)
+					arg_builder << ",";
+				first_arg = false;
+
 				auto gt = arg->GetType();
 				if (gt == int::typeid || gt == long::typeid || gt == short::typeid)
 				{
 					long i = (long) arg;
-					method.SetParam(i);
+					arg_builder << i;
 				} else if (gt == float::typeid || gt == double::typeid)
 				{
 					double d = (double) arg;
-					method.SetParam(d);
+					arg_builder << d;
+				} else if (gt == System::String::typeid)
+				{
+					ROOTNET::Utility::NetStringToConstCPP carg((System::String^) arg);
+					arg_builder << "\"" << carg << "\"";
+				} else
+				{
+					throw gcnew System::InvalidOperationException("Legal prototype on method call, but no converstion - what the heck!");
 				}
 			}
+
+			string arg_list = arg_builder.str();
 
 			//
 			// Do the invocation. How we do this depends on the return type, unfortunately!
@@ -117,7 +133,7 @@ namespace ROOTNET
 			if (return_type_name == "double" || return_type_name == "float")
 			{
 				double val = 0;
-				method.Execute(GetTObjectPointer(), val);
+				method.Execute(GetTObjectPointer(), arg_list.c_str(), val);
 				if (return_type_name == "double") {
 					result = val;
 				} else {
@@ -127,7 +143,7 @@ namespace ROOTNET
 			} if (return_type_name == "int" || return_type_name == "long" || return_type_name == "short")
 			{
 				long val = 0;
-				method.Execute(GetTObjectPointer(), val);
+				method.Execute(GetTObjectPointer(), arg_list.c_str(), val);
 				if (return_type_name == "int") {
 					result = (int) val;
 				} else {
@@ -135,8 +151,13 @@ namespace ROOTNET
 				}
 				return true;
 			} else if (return_type_name == "void") {
-				method.Execute(GetTObjectPointer());
+				method.Execute(GetTObjectPointer(), arg_list.c_str());
 				result = nullptr;
+				return true;
+			} else if (return_type_name == "const char*") {
+				char *r;
+				method.Execute(GetTObjectPointer(), arg_list.c_str(), &r);
+				result = gcnew ::System::String(r);
 				return true;
 			} else {
 				return false;

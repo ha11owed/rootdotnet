@@ -42,5 +42,22 @@ namespace t_Dynamic
             dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TH1F();
             c.SetAxisColors(2);
         }
+
+        [TestMethod]
+        public void StringArgument()
+        {
+            dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TH1F();
+            c.SetOption("dude");
+            Assert.AreEqual("dude", c.GetOption(), "object string name");
+        }
+
+        [TestMethod]
+        public void StringArgumentReturn()
+        {
+            dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TAxis();
+            c.Set(10, 1.0, 11.0);
+            c.SetBinLabel(1, "hi");
+            Assert.AreEqual("hi", c.GetBinLabel(1), "Bin name");
+        }
     }
 }

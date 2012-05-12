@@ -22,18 +22,22 @@ namespace ROOTNET
 			{
 				auto arg = args[index];
 				string thisType = "";
-				if (arg->GetType() == int::typeid)
+				auto gt = arg->GetType();
+				if (gt == int::typeid)
 				{
 					thisType = "int";
-				} else if (arg->GetType() == long::typeid)
+				} else if (gt == long::typeid)
 				{
 					thisType = "long";
-				} else if (arg->GetType() == float::typeid)
+				} else if (gt == float::typeid)
 				{
 					thisType = "float";
-				} else if (arg->GetType() == double::typeid)
+				} else if (gt == double::typeid)
 				{
 					thisType = "double";
+				} else if (gt == System::String::typeid)
+				{
+					thisType = "const char*";
 				} else {
 					return "<>"; // Can't do it!
 				}
