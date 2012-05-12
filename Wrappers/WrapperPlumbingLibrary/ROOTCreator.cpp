@@ -7,8 +7,13 @@
 #include "ROOTCreator.h"
 #include "NetStringToConstCPP.hpp"
 #include "DynamicHelpers.h"
+#include "ROOTDotNet.h"
+#include "ROOTDOTNETBaseTObject.hpp"
 
 #include <TClass.h>
+#include <TMethodCall.h>
+#include <TApplication.h>
+
 #pragma make_public(TObject)
 
 #include <string>
@@ -28,8 +33,16 @@ namespace ROOTNET
 		/// The args are the ctor arguments.
 		/// And the result will be the new objet!
 		///
+		/// Class must come from TObject for now...
+		///
 		bool ROOTCreator::TryInvokeMember (System::Dynamic::InvokeMemberBinder ^binder, array<Object^> ^args, Object^% result)
 		{
+			//
+			// Some basic init. Very quick if it has been done already
+			//
+
+			TApplication::CreateApplication();
+
 			//
 			// Check out the class that we are going to create. Even possible?
 			//
@@ -44,7 +57,25 @@ namespace ROOTNET
 			//
 
 			auto proto = DynamicHelpers::GeneratePrototype(args);
+
+			//
+			// If this is the special case of a trivial ctor, then we can use the cls.New call.
+			//
+
+			if (proto.size() == 0)
+			{
+				auto obj = static_cast<::TObject*>(c->New());
+				result = ROOTObjectServices::GetBestObject<ROOTDOTNETBaseTObject^>(obj);
+				return true;
+			}
+
+			return false;
 #ifdef notyet
+			TMethodCall method;
+			method.InitWithPrototype(c, class_name, proto.c_str());
+			if (!method.IsValid())
+				return false;
+
 			//
 			// Do the method lookup next. We have copied some of the code we are dealing with from
 			// the SFRame project.
@@ -110,9 +141,9 @@ namespace ROOTNET
 			//
 			// Translate the result back into something we know about!
 			//
-#endif
 
 			return false;
+#endif
 		}
 	}
 }

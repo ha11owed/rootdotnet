@@ -1,9 +1,5 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.CSharp.RuntimeBinder;
 
 namespace t_Dynamic
 {
@@ -14,6 +10,10 @@ namespace t_Dynamic
     [TestClass]
     public class t_ROOTCreator
     {
+        // Force a reference to the monolithic wrapper guys - so that we can
+        // make sure that the wrappers get loaded into memory.
+        static ROOTNET.NTObject _obj = null;
+
         [TestMethod]
         public void TestCreatorCTor()
         {
@@ -28,6 +28,13 @@ namespace t_Dynamic
         {
             dynamic c = new ROOTNET.Utility.ROOTCreator();
             dynamic h = c.TH1FF();
+        }
+
+        [TestMethod]
+        public void NoNonTObjectClasses()
+        {
+            // We can't deal with non-TObject classes. Make sure we bomb correctly here!
+            Assert.Inconclusive();
         }
     }
 }

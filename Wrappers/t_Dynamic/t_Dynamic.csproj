@@ -50,6 +50,10 @@
     <Compile Include="t_ROOTCreator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MonolithicROOTWrapper\MonolithicROOTWrapper.vcxproj">
+      <Project>{A2BC6278-DB75-4ECB-B593-9760D94A4993}</Project>
+      <Name>MonolithicROOTWrapper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WrapperPlumbingLibrary\WrapperPlumbingLibrary.vcxproj">
       <Project>{620832E1-A628-44F6-B5CE-80C0A86F20A9}</Project>
       <Name>WrapperPlumbingLibrary</Name>
