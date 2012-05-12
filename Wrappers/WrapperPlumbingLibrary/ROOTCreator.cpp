@@ -19,6 +19,10 @@
 #include <string>
 using std::string;
 
+#ifdef nullptr
+#undef nullptr
+#endif
+
 namespace ROOTNET
 {
 	namespace Utility
@@ -47,6 +51,9 @@ namespace ROOTNET
 			ROOTNET::Utility::NetStringToConstCPP class_name(root_object_name);
 			auto c = TClass::GetClass(class_name);
 			if (c == nullptr)
+				return nullptr;
+
+			if (!c->InheritsFrom("TObject"))
 				return nullptr;
 
 			//

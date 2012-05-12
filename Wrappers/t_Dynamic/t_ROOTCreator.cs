@@ -41,8 +41,16 @@ namespace t_Dynamic
         [ExpectedException(typeof(RuntimeBinderException))]
         public void NoNonTObjectClasses()
         {
-            // We can't deal with non-TObject classes. Make sure we bomb correctly here!
-            Assert.Inconclusive();
+            dynamic c = new ROOTNET.Utility.ROOTCreator();
+            var h = c.TArray();
+            //dynamic h = ROOTNET.Utility.ROOTCreator.CreateByName("pari<int,int>", new object[0]);
+            Assert.IsNull(h, "no object should have been created");
+        }
+
+        [TestMethod]
+        public void AbstractClassCtorFail()
+        {
+            Assert.Inconclusive("TArray");
         }
     }
 }
