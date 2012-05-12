@@ -1,5 +1,4 @@
-﻿using Microsoft.CSharp.RuntimeBinder;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace t_Dynamic
 {
@@ -30,7 +29,7 @@ namespace t_Dynamic
         }
 
         [TestMethod]
-        [ExpectedException(typeof(RuntimeBinderException))]
+        [ExpectedException(typeof(ROOTNET.Utility.ROOTDynamicException))]
         public void TestCreatorCTorBadClass()
         {
             dynamic c = new ROOTNET.Utility.ROOTCreator();
@@ -38,19 +37,12 @@ namespace t_Dynamic
         }
 
         [TestMethod]
-        [ExpectedException(typeof(RuntimeBinderException))]
+        [ExpectedException(typeof(ROOTNET.Utility.ROOTDynamicException))]
         public void NoNonTObjectClasses()
         {
             dynamic c = new ROOTNET.Utility.ROOTCreator();
             var h = c.TArray();
-            //dynamic h = ROOTNET.Utility.ROOTCreator.CreateByName("pari<int,int>", new object[0]);
             Assert.IsNull(h, "no object should have been created");
-        }
-
-        [TestMethod]
-        public void AbstractClassCtorFail()
-        {
-            Assert.Inconclusive("TArray");
         }
     }
 }

@@ -120,6 +120,7 @@
     <ClCompile Include="NetStringArrayTranslator.cpp" />
     <ClCompile Include="NetStringToConstCPP.cpp" />
     <ClCompile Include="ROOTCreator.cpp" />
+    <ClCompile Include="ROOTDynamicException.cpp" />
     <ClCompile Include="ROOTVersionAttribute.cpp" />
     <ClCompile Include="root_type_holder.cpp" />
     <ClCompile Include="ROOTDotNet.cpp" />
@@ -135,6 +136,7 @@
     <ClInclude Include="NetStringToConstCPP.hpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ROOTCreator.h" />
+    <ClInclude Include="ROOTDynamicException.h" />
     <ClInclude Include="ROOTVersionAttribute.h" />
     <ClInclude Include="root_type_holder.hpp" />
     <ClInclude Include="ROOTDotNet.h" />

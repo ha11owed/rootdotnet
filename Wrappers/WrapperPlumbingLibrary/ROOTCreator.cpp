@@ -9,6 +9,7 @@
 #include "DynamicHelpers.h"
 #include "ROOTDotNet.h"
 #include "ROOTDOTNETBaseTObject.hpp"
+#include "ROOTDynamicException.h"
 
 #include <TClass.h>
 #include <TMethodCall.h>
@@ -51,10 +52,10 @@ namespace ROOTNET
 			ROOTNET::Utility::NetStringToConstCPP class_name(root_object_name);
 			auto c = TClass::GetClass(class_name);
 			if (c == nullptr)
-				return nullptr;
+				throw gcnew ROOTDynamicException("ROOT does not know about the class");
 
 			if (!c->InheritsFrom("TObject"))
-				return nullptr;
+				throw gcnew ROOTDynamicException("The class does not inherrit from TObject and so can't be handled by ROOT.NET");
 
 			//
 			// Next parse through the ctor arguments, and see if we can find the constructor method.
