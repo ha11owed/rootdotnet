@@ -31,14 +31,33 @@ namespace {
 	class RTCString : public ROOTTypeConverter
 	{
 	public:
+		RTCString()
+			: _cache (nullptr)
+		{}
+		~RTCString()
+		{
+			delete[] _cache;
+		}
+
 		string GetArgType() const { return "const char*";}
 
-		void SetArg (System::Object ^obj) {}
+		void SetArg (System::Object ^obj, Cint::G__CallFunc *func)
+		{
+			ROOTNET::Utility::NetStringToConstCPP carg((System::String^) obj);
+			string sarg(carg);
+			_cache = new char[sarg.size()+1];
+			strncpy (_cache, sarg.c_str(), sarg.size());
+			_cache[sarg.size()] = 0;
+			func->SetArg(reinterpret_cast<long>(_cache));
+		}
 		
 		bool Call (G__CallFunc *func, void *ptr, System::Object^% result)
 		{
 			return false;
 		}
+	private:
+		// We need to make sure the string stays around...
+		char *_cache;
 	};
 
 	template<typename T>
@@ -46,7 +65,7 @@ namespace {
 	{
 	public:
 		string GetArgType() const { return typeid(T).name(); }
-		void SetArg (System::Object ^obj) {}
+		void SetArg (System::Object ^obj, Cint::G__CallFunc *func) {}
 		bool Call (G__CallFunc *func, void *ptr, System::Object^% result)
 		{
 			return false;
@@ -65,7 +84,7 @@ namespace {
 		{}
 
 		string GetArgType() const { return string(_cls->GetName()) + "*"; }
-		void SetArg (System::Object ^obj) {}
+		void SetArg (System::Object ^obj, Cint::G__CallFunc *func) {}
 
 		bool Call (G__CallFunc *func, void *ptr, System::Object^% result)
 		{
@@ -84,7 +103,7 @@ namespace {
 		{}
 
 		string GetArgType() const { return string(_cls->GetName()); }
-		void SetArg (System::Object ^obj) {}
+		void SetArg (System::Object ^obj, Cint::G__CallFunc *func) {}
 
 		// We own the memory we come back with.
 		bool Call (G__CallFunc *func, void *ptr, System::Object^% result)
@@ -109,7 +128,7 @@ namespace {
 	public:
 
 		string GetArgType() const { return "void";}
-		void SetArg(System::Object ^obj) {}
+		void SetArg(System::Object ^obj, Cint::G__CallFunc *func) {}
 
 		bool Call (G__CallFunc *fun, void *ptr, System::Object^% result)
 		{
@@ -392,9 +411,10 @@ namespace ROOTNET
 			// Setup the arguments
 			//
 
+			_methodCall->ResetArg();
 			for (int i_arg = 0; i_arg < args->Length; i_arg++)
 			{
-				_arg_converters[i_arg]->SetArg(args[i_arg]);
+				_arg_converters[i_arg]->SetArg(args[i_arg], _methodCall);
 			}
 
 			//

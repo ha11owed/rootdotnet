@@ -31,7 +31,7 @@ namespace ROOTNET
 			// Do a call, return the thing
 			virtual bool Call (Cint::G__CallFunc *func, void* ptr, System::Object^% result) = 0;
 
-			virtual void SetArg (System::Object^ arg) = 0;
+			virtual void SetArg (System::Object^ arg, Cint::G__CallFunc *func) = 0;
 		};
 
 		class DynamicCaller

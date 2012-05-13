@@ -63,7 +63,13 @@ namespace t_Dynamic
         public void NoSuchCtor()
         {
             dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TObjString("dude", 57);
-            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void SingleStringArgCtor()
+        {
+            dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TObjString("dude");
+            Assert.AreEqual("dude", c.GetName(), "Name stored");
         }
     }
 }
