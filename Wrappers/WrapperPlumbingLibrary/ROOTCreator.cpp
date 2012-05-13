@@ -74,32 +74,6 @@ namespace ROOTNET
 				return nullptr;
 
 			return obj;
-#ifdef notyet
-			auto proto = DynamicHelpers::GeneratePrototype(args);
-
-			//
-			// Find the proper constructor
-			//
-
-			TMethodCall method;
-			method.InitWithPrototype(c, class_name, proto.c_str());
-			if (!method.IsValid())
-				throw gcnew ROOTDynamicException("Unable to find a ctor for this argument list and this object");
-			auto m = method.GetMethod();
-			auto p = m->GetPrototype();
-
-			//
-			// If this is the special case of a trivial ctor, then we can use the cls.New call.
-			//
-
-			if (proto.size() == 0)
-			{
-				auto obj = static_cast<::TObject*>(c->New());
-				return ROOTObjectServices::GetBestObject<ROOTDOTNETBaseTObject^>(obj);
-			}
-
-			return nullptr;
-#endif
 		}
 
 		///
