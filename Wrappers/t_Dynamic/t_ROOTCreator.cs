@@ -71,5 +71,16 @@ namespace t_Dynamic
             dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TObjString("dude");
             Assert.AreEqual("dude", c.GetName(), "Name stored");
         }
+
+        [TestMethod]
+        public void MulitipleArgCtor()
+        {
+            dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TH1F("hi", "there", 100, 0.0, 100.0);
+            Assert.AreEqual("hi", c.GetName(), "Name stored");
+            Assert.AreEqual("there", c.GetTitle(), "Title stored");
+            Assert.AreEqual(100, c.GetNbinsX(), "# of bins");
+            Assert.AreEqual(0.0, c.GetBinLowEdge(1), "Low bin boundary");
+            Assert.AreEqual(100.0, c.GetBinLowEdge(101), "High bin boundary");
+        }
     }
 }

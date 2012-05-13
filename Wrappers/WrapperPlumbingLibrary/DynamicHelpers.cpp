@@ -64,13 +64,19 @@ namespace {
 	class RTCBasicType : public ROOTTypeConverter
 	{
 	public:
-		string GetArgType() const { return typeid(T).name(); }
-		void SetArg (System::Object ^obj, Cint::G__CallFunc *func) {}
+		RTCBasicType (string tname) :_name(tname) {}
+		string GetArgType() const { return _name; }
+		void SetArg (System::Object ^obj, Cint::G__CallFunc *func)
+		{
+			T r = (T) obj;
+			func->SetArg(r);
+		}
 		bool Call (G__CallFunc *func, void *ptr, System::Object^% result)
 		{
 			return false;
 		}
 	private:
+		const string _name;
 	};
 
 	//
@@ -150,17 +156,21 @@ namespace {
 		if (resolvedName == "const char*")
 			return new RTCString();
 
-		if (resolvedName == "int")
-			return new RTCBasicType<int>();
+		if (resolvedName == "int"
+			|| resolvedName == "long"
+			|| resolvedName == "short")
+			return new RTCBasicType<long>(resolvedName);
 
-		if (resolvedName == "short")
-			return new RTCBasicType<short>();
+		if (resolvedName == "unsigned int"
+			|| resolvedName == "unsigned long"
+			|| resolvedName == "unsigned short")
+			return new RTCBasicType<unsigned long>(resolvedName);
 
 		if (resolvedName == "double")
-			return new RTCBasicType<double>();
+			return new RTCBasicType<double>(resolvedName);
 
 		if (resolvedName == "float")
-			return new RTCBasicType<float>();
+			return new RTCBasicType<float>(resolvedName);
 
 		if (resolvedName == "void")
 			return new RTCVoidType();
@@ -216,6 +226,18 @@ namespace ROOTNET
 				} else if (gt == long::typeid)
 				{
 					thisType = "long";
+				} else if (gt == short::typeid)
+				{
+					thisType = "short";
+				} else if (gt == unsigned int::typeid)
+				{
+					thisType = "unsigned int";
+				} else if (gt == unsigned long::typeid)
+				{
+					thisType = "unsigned long";
+				} else if (gt == unsigned short::typeid)
+				{
+					thisType = "unsigned short";
 				} else if (gt == float::typeid)
 				{
 					thisType = "float";
@@ -396,11 +418,11 @@ namespace ROOTNET
 			{
 				G__ClassInfo *gcl = static_cast<G__ClassInfo*>(_method->GetClass()->GetClassInfo());
 				if (gcl == nullptr)
-					return false;
+					throw gcnew System::InvalidOperationException("ROOT Class we already know about we can't get the info for!");
 
 				auto gmi = gcl->GetMethod(_method->GetName(), ArgList().c_str(), &_offset, G__ClassInfo::ExactMatch);
 				if (!gmi.IsValid())
-					return false;
+					throw gcnew System::InvalidOperationException("ROOT Method we already know about we can't get the method info for!");
 
 				_methodCall = new G__CallFunc();
 				_methodCall->Init();
