@@ -79,8 +79,19 @@ namespace ROOTNET
 				throw gcnew ROOTDynamicException("Attempt to call method on null ptr object!");
 			auto classSpec = GetTObjectPointer()->IsA();
 			if (classSpec == nullptr)
-				return false;
+				throw gcnew System::InvalidOperationException("Attempt to call method on ROOT object that has no class info - impossible!");
 
+			//
+			// Get the call site setup
+			//
+
+		    ROOTNET::Utility::NetStringToConstCPP method_name(binder->Name);
+			auto caller = DynamicHelpers::GetFunctionCaller(classSpec, (string) method_name, args);
+			if (caller == nullptr)
+				return false;
+			return caller->Call(GetTObjectPointer(), args, result);
+
+#ifdef notyet
 			//
 			// Do the method lookup next. We have copied some of the code we are dealing with from
 			// the SFRame project.
@@ -192,6 +203,7 @@ namespace ROOTNET
 			//
 
 			return false;
+#endif
 		}
 	}
 }

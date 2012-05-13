@@ -13,6 +13,7 @@
 #include <TDataType.h>
 
 #include <typeinfo>
+#include <algorithm>
 #include <sstream>
 
 #pragma make_public(TObject)
@@ -20,6 +21,7 @@
 using std::string;
 using std::vector;
 using std::ostringstream;
+using std::max;
 
 #ifdef nullptr
 #undef nullptr
@@ -28,18 +30,26 @@ using std::ostringstream;
 namespace {
 	using namespace ROOTNET::Utility;
 
+	//
+	// Deal with CINT when we have a string argument or return.
+	//
 	class RTCString : public ROOTTypeConverter
 	{
 	public:
-		RTCString()
-			: _cache (nullptr)
+		RTCString(bool isConst)
+			: _cache (nullptr), _isConst (isConst)
 		{}
 		~RTCString()
 		{
 			delete[] _cache;
 		}
 
-		string GetArgType() const { return "const char*";}
+		string GetArgType() const
+		{
+			if (_isConst)
+				return "const char*";
+			return "char*";
+		}
 
 		void SetArg (System::Object ^obj, Cint::G__CallFunc *func)
 		{
@@ -53,30 +63,70 @@ namespace {
 		
 		bool Call (G__CallFunc *func, void *ptr, System::Object^% result)
 		{
-			return false;
+			auto c = reinterpret_cast<char*>(func->ExecInt(ptr));
+			result = gcnew System::String(c);
+			return true;
 		}
 	private:
 		// We need to make sure the string stays around...
 		char *_cache;
+		bool _isConst;
 	};
 
+
+	///// Type Traits to deal with the actual calling for simple types.
+
 	template<typename T>
+	struct RTCBasicTypeCallerTraits
+	{
+		static T Call (G__CallFunc *func, void *ptr);
+	};
+
+	template<>
+	struct RTCBasicTypeCallerTraits<long>
+	{
+		static long Call (G__CallFunc *func, void *ptr)
+		{
+			return func->ExecInt(ptr);
+		}
+	};
+	template<>
+	struct RTCBasicTypeCallerTraits<unsigned long>
+	{
+		static unsigned long Call (G__CallFunc *func, void *ptr)
+		{
+			return (unsigned long) func->ExecInt(ptr);
+		}
+	};
+	template<>
+	struct RTCBasicTypeCallerTraits<double>
+	{
+		static double Call (G__CallFunc *func, void *ptr)
+		{
+			return func->ExecDouble(ptr);
+		}
+	};
+
+	//////
+
+	template<typename T, typename D>
 	class RTCBasicType : public ROOTTypeConverter
 	{
 	public:
-		RTCBasicType (string tname) :_name(tname) {}
-		string GetArgType() const { return _name; }
+		RTCBasicType () {}
+		string GetArgType() const { return typeid(T).name(); }
 		void SetArg (System::Object ^obj, Cint::G__CallFunc *func)
 		{
-			T r = (T) obj;
+			D r = (D) obj;
 			func->SetArg(r);
 		}
 		bool Call (G__CallFunc *func, void *ptr, System::Object^% result)
 		{
-			return false;
+			D r = RTCBasicTypeCallerTraits<D>::Call(func, ptr);
+			result = (T) r;
+			return true;
 		}
 	private:
-		const string _name;
 	};
 
 	//
@@ -138,7 +188,9 @@ namespace {
 
 		bool Call (G__CallFunc *fun, void *ptr, System::Object^% result)
 		{
-			return false;
+			fun->Exec(ptr);
+			result = nullptr;
+			return true;
 		}
 	};
 
@@ -154,23 +206,29 @@ namespace {
 		auto resolvedName = DynamicHelpers::resolveTypedefs(tname);
 
 		if (resolvedName == "const char*")
-			return new RTCString();
+			return new RTCString(true);
+		if (resolvedName == "char*")
+			return new RTCString(false);
 
-		if (resolvedName == "int"
-			|| resolvedName == "long"
-			|| resolvedName == "short")
-			return new RTCBasicType<long>(resolvedName);
+		if (resolvedName == "short")
+			return new RTCBasicType<short, long>();
+		if (resolvedName == "int")
+			return new RTCBasicType<int, long>();
+		if (resolvedName == "long")
+			return new RTCBasicType<long, long>();
 
-		if (resolvedName == "unsigned int"
-			|| resolvedName == "unsigned long"
-			|| resolvedName == "unsigned short")
-			return new RTCBasicType<unsigned long>(resolvedName);
+		if (resolvedName == "unsigned short")
+			return new RTCBasicType<unsigned short, long>();
+		if (resolvedName == "unsigned int")
+			return new RTCBasicType<unsigned int, long>();
+		if (resolvedName == "unsigned long")
+			return new RTCBasicType<unsigned long, long>();
 
 		if (resolvedName == "double")
-			return new RTCBasicType<double>(resolvedName);
+			return new RTCBasicType<double, double>();
 
 		if (resolvedName == "float")
-			return new RTCBasicType<float>(resolvedName);
+			return new RTCBasicType<float, double>();
 
 		if (resolvedName == "void")
 			return new RTCVoidType();
@@ -205,6 +263,24 @@ namespace {
 	ROOTTypeConverter *FindConverter (TMethodArg *arg)
 	{
 		return FindConverter(arg->GetFullTypeName());
+	}
+
+	//
+	// Parse a type - removing the modifiers, etc. If the modifiers are already set, keep
+	// pushing stuff on the front.
+	//
+	void parse_type (const string &type, string &current, string &modifiers)
+	{
+		int ptr_index = type.find("*");
+		int ref_index = type.find("&");
+		int index = max(ptr_index, ref_index);
+		if (index == type.npos) {
+			current = type;
+			return;
+		}
+
+		current = type.substr(0, index);
+		modifiers = type.substr(index) + modifiers;
 	}
 }
 
@@ -293,21 +369,23 @@ namespace ROOTNET
 		}
 
 		//
-		// Make sure all type-defs are taken care of.
+		// Make sure all type-defs are taken care of. Deal with pointer info as well.
 		//
 		string DynamicHelpers::resolveTypedefs(const std::string &type)
 		{
-			string current (type);
+			string current, modifiers;
+			parse_type (type, current, modifiers);
 			while (true)
 			{
 				auto dtinfo = gROOT->GetType(current.c_str());
 				if (dtinfo == nullptr)
-					return current;
+					return current + modifiers;
 
 				string newname = dtinfo->GetTypeName();
 				if (newname == current)
-					return current;
-				current = newname;
+					return current + modifiers;
+
+				parse_type (newname, current, modifiers);
 			}
 		}
 
