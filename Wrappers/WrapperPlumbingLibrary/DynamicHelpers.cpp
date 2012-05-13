@@ -140,11 +140,39 @@ namespace {
 		{}
 
 		string GetArgType() const { return string(_cls->GetName()) + "*"; }
-		void SetArg (System::Object ^obj, Cint::G__CallFunc *func) {}
 
+		//
+		// Do the object pointer.
+		// 
+		// Since we handle only TObject's here, we don't have to worry about multiple inherritance,
+		// and offests for various pointers. Everything has to come from a TObject, and we start from there.
+		//
+		void SetArg (System::Object ^obj, Cint::G__CallFunc *func)
+		{
+
+			auto rdnobj = (ROOTDOTNETBaseTObject^) obj;
+			auto robj = rdnobj->GetTObjectPointer();
+			void *ptr = static_cast<void*>(robj);
+
+			func->SetArg(reinterpret_cast<long>(ptr));
+		}
+
+		//
+		// Go get an object. A null pointer is ok to come back. But we can't
+		// do much about its type in this dynamic area.
+		// Ownership is not ours - the ROOT system (or someone else) is responsible.
 		bool Call (G__CallFunc *func, void *ptr, System::Object^% result)
 		{
-			return false;
+			void *r = (void*) func->ExecInt(ptr);
+			if (r == nullptr)
+			{
+				return true;
+			}
+
+			auto obj = reinterpret_cast<::TObject*>(r);
+			auto rdnobj = ROOTObjectServices::GetBestObject<ROOTDOTNETBaseTObject^>(obj);
+			result = rdnobj;
+			return true;
 		}
 	private:
 		::TClass *_cls;

@@ -88,9 +88,9 @@ namespace t_Dynamic
             c.Fill(4.0);
 
             dynamic c2 = c.Clone();
-            dynamic r = c.Divide(c2);
+            c.Divide(c2);
 
-            Assert.AreEqual(1.0, r.GetBinContent(1), "Divided bin value");
+            Assert.AreEqual(1.0, c.GetBinContent(1), "Divided bin value");
         }
     }
 }
