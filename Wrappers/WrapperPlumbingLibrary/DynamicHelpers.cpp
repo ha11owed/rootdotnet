@@ -108,22 +108,32 @@ namespace {
 	};
 
 	//////
-
-	template<typename T, typename D>
+	// Converter for an actual type in the code. A little tricky because we have to deal with
+	// all sorts of conversions, etc.
+	//
+	// ArgType - this is the type that is in the method prototype (e.g. float)
+	// CintType - when dealing with CInt's call interface (e.g. double in this case)
+	// ActualType - this is the type of the actual argument object (e.g. int)
+	//
+	//  So the int needs to be converterd to the double to call ROOT, and upon a return, it
+	// should be getting back a double. :-)
+	//
+	template<typename ArgType, typename CintType, typename ActualType>
 	class RTCBasicType : public ROOTTypeConverter
 	{
 	public:
 		RTCBasicType () {}
-		string GetArgType() const { return typeid(T).name(); }
+		string GetArgType() const { return typeid(ArgType).name(); }
 		void SetArg (System::Object ^obj, Cint::G__CallFunc *func)
 		{
-			D r = (D) obj;
+			auto val = *reinterpret_cast<ActualType^>(obj);
+			CintType r = (CintType) val;
 			func->SetArg(r);
 		}
 		bool Call (G__CallFunc *func, void *ptr, System::Object^% result)
 		{
-			D r = RTCBasicTypeCallerTraits<D>::Call(func, ptr);
-			result = (T) r;
+			CintType r = RTCBasicTypeCallerTraits<CintType>::Call(func, ptr);
+			result = (ArgType) r;
 			return true;
 		}
 	private:
@@ -223,9 +233,34 @@ namespace {
 	};
 
 	//
+	// Create a converter to do the last bit of conversion between types.
+	template<typename T, typename D>
+	ROOTTypeConverter *make_basic_converter (System::Object^ obj)
+	{
+		if (obj == nullptr)
+			return new RTCBasicType<T, D, int>();
+
+		auto t = obj->GetType();
+		if (t == int::typeid)
+			return new RTCBasicType<T, D, int>();
+		if (t == short::typeid)
+			return new RTCBasicType<T, D, short>();
+		if (t == long::typeid)
+			return new RTCBasicType<T, D, long>();
+
+		if (t == double::typeid)
+			return new RTCBasicType<T, D, double>();
+		if (t == float::typeid)
+			return new RTCBasicType<T, D, float>();
+
+		// Yikes! No idea!
+		return nullptr;
+	}
+
+	//
 	// Get a type converter for the given name.
 	//
-	ROOTTypeConverter *FindConverter (const string &tname)
+	ROOTTypeConverter *FindConverter (const string &tname, System::Object ^arg)
 	{
 		//
 		// Any typedefs we need to worry about?
@@ -239,24 +274,24 @@ namespace {
 			return new RTCString(false);
 
 		if (resolvedName == "short")
-			return new RTCBasicType<short, long>();
+			return make_basic_converter<short, long>(arg);
 		if (resolvedName == "int")
-			return new RTCBasicType<int, long>();
+			return make_basic_converter<int, long>(arg);
 		if (resolvedName == "long")
-			return new RTCBasicType<long, long>();
+			return make_basic_converter<long, long>(arg);
 
 		if (resolvedName == "unsigned short")
-			return new RTCBasicType<unsigned short, long>();
+			return make_basic_converter<unsigned short, long>(arg);
 		if (resolvedName == "unsigned int")
-			return new RTCBasicType<unsigned int, long>();
+			return make_basic_converter<unsigned int, long>(arg);
 		if (resolvedName == "unsigned long")
-			return new RTCBasicType<unsigned long, long>();
+			return make_basic_converter<unsigned long, long>(arg);
 
 		if (resolvedName == "double")
-			return new RTCBasicType<double, double>();
+			return make_basic_converter<double, double>(arg);
 
 		if (resolvedName == "float")
-			return new RTCBasicType<float, double>();
+			return make_basic_converter<float, double>(arg);
 
 		if (resolvedName == "void")
 			return new RTCVoidType();
@@ -288,9 +323,9 @@ namespace {
 	//
 	// Return a type converter for this argument
 	//
-	ROOTTypeConverter *FindConverter (TMethodArg *arg)
+	ROOTTypeConverter *FindConverter (TMethodArg *arg, System::Object ^argv)
 	{
-		return FindConverter(arg->GetFullTypeName());
+		return FindConverter(arg->GetFullTypeName(), argv);
 	}
 
 	//
@@ -439,9 +474,14 @@ namespace ROOTNET
 			TIter next(arg_list);
 			::TObject *obj;
 			vector<ROOTTypeConverter*> converters;
+			int index = 0;
 			while((obj = next()) != nullptr)
 			{
-				converters.push_back(FindConverter(static_cast<TMethodArg*>(obj)));
+				System::Object ^arg = nullptr;
+				if (index < args->Length)
+					arg = args[index];
+				converters.push_back(FindConverter(static_cast<TMethodArg*>(obj), arg));
+				index++;
 			}
 
 			//
@@ -453,7 +493,7 @@ namespace ROOTNET
 			if (method_name == cls_info->GetName()) {
 				rtn_converter = FindConverterROOTCtor(method->GetReturnTypeName());
 			} else {
-				rtn_converter = FindConverter(method->GetReturnTypeName());
+				rtn_converter = FindConverter(method->GetReturnTypeName(), nullptr);
 			}
 
 			//

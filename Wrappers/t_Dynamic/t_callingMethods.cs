@@ -77,7 +77,7 @@ namespace t_Dynamic
             dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TH1F();
             c.SetBins(10, 0.0, 10.0);
             c.Fill(4);
-            Assert.AreEqual(1.0, c.GetBinContent(4), "Bin #4");
+            Assert.AreEqual(1.0, c.GetBinContent(5), "Bin #4");
         }
 
         [TestMethod]
