@@ -101,10 +101,10 @@ namespace {
 	};
 
 	// Direct object, no pointer. we own the thing now.
-	class RTCROOTTypeDirectObject : public ROOTTypeConverter
+	class RTCROOTTypeCtorObject : public ROOTTypeConverter
 	{
 	public:
-		inline RTCROOTTypeDirectObject (TClass *cls)
+		inline RTCROOTTypeCtorObject (TClass *cls)
 			: _cls (cls)
 		{}
 
@@ -181,12 +181,21 @@ namespace {
 			return new RTCROOTType(cls_info);
 		}
 
-		cls_info = TClass::GetClass(resolvedName.c_str());
+		return nullptr;
+	}
+
+	///
+	/// CTor returns require some special handling.
+	///
+	ROOTTypeConverter *FindConverterROOTCtor (const string &tname)
+	{
+		auto resolvedName = DynamicHelpers::resolveTypedefs(tname);
+
+		auto cls_info = TClass::GetClass(resolvedName.c_str());
 		if (cls_info != nullptr)
 		{
-			return new RTCROOTTypeDirectObject(cls_info); // Ctor return...
+			return new RTCROOTTypeCtorObject(cls_info); // Ctor return...
 		}
-
 		return nullptr;
 	}
 
@@ -330,10 +339,16 @@ namespace ROOTNET
 			}
 
 			//
-			// And the output type
+			// And the output type. We do something special for ctor's here as the resulting
+			// output needs to be dealt with carefully.
 			//
 
-			ROOTTypeConverter *rtn_converter = FindConverter(method->GetReturnTypeName());
+			ROOTTypeConverter *rtn_converter;
+			if (method_name == cls_info->GetName()) {
+				rtn_converter = FindConverterROOTCtor(method->GetReturnTypeName());
+			} else {
+				rtn_converter = FindConverter(method->GetReturnTypeName());
+			}
 
 			//
 			// ANd create the guy for that will do the actual work with the above information. Make sure it is
