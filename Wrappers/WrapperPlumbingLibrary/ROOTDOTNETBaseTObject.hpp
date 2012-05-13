@@ -66,9 +66,6 @@ namespace ROOTNET
 			/// Keep track of why our pointer was set to null. Mostly helpful is
 			/// tracking down bombs and crashes.
 			ReasonPointerNullEnum _whyNull;
-
-		private:
-			std::string resolveTypedefs(const std::string &name);
 		};
 	}
 }

@@ -14,6 +14,7 @@
 #include <TClass.h>
 #include <TMethodCall.h>
 #include <TApplication.h>
+#include <TFunction.h>
 
 #pragma make_public(TObject)
 
@@ -60,7 +61,32 @@ namespace ROOTNET
 			// Next parse through the ctor arguments, and see if we can find the constructor method.
 			//
 
+			auto caller = DynamicHelpers::GetFunctionCaller(c, (string) class_name, args);
+			if (caller == nullptr)
+				throw gcnew ROOTDynamicException("This ROOT Object does not have a ctor with these arguments");
+
+			//
+			// Now that we have a caller, call it!
+			//
+
+			auto obj = caller->CallCtor (c, args);
+			if (obj == nullptr)
+				return nullptr;
+
+			return obj;
+#ifdef notyet
 			auto proto = DynamicHelpers::GeneratePrototype(args);
+
+			//
+			// Find the proper constructor
+			//
+
+			TMethodCall method;
+			method.InitWithPrototype(c, class_name, proto.c_str());
+			if (!method.IsValid())
+				throw gcnew ROOTDynamicException("Unable to find a ctor for this argument list and this object");
+			auto m = method.GetMethod();
+			auto p = m->GetPrototype();
 
 			//
 			// If this is the special case of a trivial ctor, then we can use the cls.New call.
@@ -73,12 +99,6 @@ namespace ROOTNET
 			}
 
 			return nullptr;
-#ifdef notyet
-			TMethodCall method;
-			method.InitWithPrototype(c, class_name, proto.c_str());
-			if (!method.IsValid())
-				return false;
-
 #endif
 		}
 

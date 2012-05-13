@@ -1,15 +1,174 @@
 #include "DynamicHelpers.h"
 #include "ROOTDOTNETBaseTObject.hpp"
 #include "NetStringToConstCPP.hpp"
+#include "ROOTDOTNETBaseTObject.hpp"
+#include "ROOTDotNet.h"
 
+#include <Api.h>
 #include <TClass.h>
+#include <TList.h>
+#include <TMethod.h>
+#include <TMethodArg.h>
+#include <TROOT.h>
+#include <TDataType.h>
+
+#include <typeinfo>
+#include <sstream>
+
 #pragma make_public(TObject)
 
 using std::string;
+using std::vector;
+using std::ostringstream;
 
 #ifdef nullptr
 #undef nullptr
 #endif
+
+namespace {
+	using namespace ROOTNET::Utility;
+
+	class RTCString : public ROOTTypeConverter
+	{
+	public:
+		string GetArgType() const { return "const char*";}
+
+		void SetArg (System::Object ^obj) {}
+		
+		bool Call (G__CallFunc *func, void *ptr, System::Object^% result)
+		{
+			return false;
+		}
+	};
+
+	template<typename T>
+	class RTCBasicType : public ROOTTypeConverter
+	{
+	public:
+		string GetArgType() const { return typeid(T).name(); }
+		void SetArg (System::Object ^obj) {}
+		bool Call (G__CallFunc *func, void *ptr, System::Object^% result)
+		{
+			return false;
+		}
+	private:
+	};
+
+	//
+	// Pointer to an object.
+	//
+	class RTCROOTType : public ROOTTypeConverter
+	{
+	public:
+		inline RTCROOTType (TClass *cls)
+			: _cls(cls)
+		{}
+
+		string GetArgType() const { return string(_cls->GetName()) + "*"; }
+		void SetArg (System::Object ^obj) {}
+
+		bool Call (G__CallFunc *func, void *ptr, System::Object^% result)
+		{
+			return false;
+		}
+	private:
+		::TClass *_cls;
+	};
+
+	// Direct object, no pointer. we own the thing now.
+	class RTCROOTTypeDirectObject : public ROOTTypeConverter
+	{
+	public:
+		inline RTCROOTTypeDirectObject (TClass *cls)
+			: _cls (cls)
+		{}
+
+		string GetArgType() const { return string(_cls->GetName()); }
+		void SetArg (System::Object ^obj) {}
+
+		// We own the memory we come back with.
+		bool Call (G__CallFunc *func, void *ptr, System::Object^% result)
+		{
+			void *r = (void*) func->ExecInt(ptr);
+			if (r == nullptr)
+				return false;
+
+			// Assume it is a TObject (we should be safe here)
+			auto obj = reinterpret_cast<::TObject*>(r);
+			auto rdnobj = ROOTObjectServices::GetBestObject<ROOTDOTNETBaseTObject^>(obj);
+			rdnobj->SetNativePointerOwner(true); // We track this and delete it when it is done!
+			result = rdnobj;
+			return true;
+		}
+	private:
+		::TClass *_cls;
+	};
+
+	class RTCVoidType : public ROOTTypeConverter
+	{
+	public:
+
+		string GetArgType() const { return "void";}
+		void SetArg(System::Object ^obj) {}
+
+		bool Call (G__CallFunc *fun, void *ptr, System::Object^% result)
+		{
+			return false;
+		}
+	};
+
+	//
+	// Get a type converter for the given name.
+	//
+	ROOTTypeConverter *FindConverter (const string &tname)
+	{
+		//
+		// Any typedefs we need to worry about?
+		//
+
+		auto resolvedName = DynamicHelpers::resolveTypedefs(tname);
+
+		if (resolvedName == "const char*")
+			return new RTCString();
+
+		if (resolvedName == "int")
+			return new RTCBasicType<int>();
+
+		if (resolvedName == "short")
+			return new RTCBasicType<short>();
+
+		if (resolvedName == "double")
+			return new RTCBasicType<double>();
+
+		if (resolvedName == "float")
+			return new RTCBasicType<float>();
+
+		if (resolvedName == "void")
+			return new RTCVoidType();
+
+		auto cls_info = DynamicHelpers::ExtractROOTClassInfoPtr(resolvedName);
+		if (cls_info != nullptr)
+		{
+			return new RTCROOTType(cls_info);
+		}
+
+		cls_info = TClass::GetClass(resolvedName.c_str());
+		if (cls_info != nullptr)
+		{
+			return new RTCROOTTypeDirectObject(cls_info); // Ctor return...
+		}
+
+		return nullptr;
+	}
+
+	//
+	// Return a type converter for this argument
+	//
+	ROOTTypeConverter *FindConverter (TMethodArg *arg)
+	{
+		return FindConverter(arg->GetFullTypeName());
+	}
+}
 
 namespace ROOTNET
 {
@@ -81,6 +240,188 @@ namespace ROOTNET
 
 			auto nameonly = tname.substr(0, ptr);
 			return ::TClass::GetClass(nameonly.c_str());
+		}
+
+		//
+		// Make sure all type-defs are taken care of.
+		//
+		string DynamicHelpers::resolveTypedefs(const std::string &type)
+		{
+			string current (type);
+			while (true)
+			{
+				auto dtinfo = gROOT->GetType(current.c_str());
+				if (dtinfo == nullptr)
+					return current;
+
+				string newname = dtinfo->GetTypeName();
+				if (newname == current)
+					return current;
+				current = newname;
+			}
+		}
+
+		///
+		/// We will put together a caller for this list of arguments.
+		///
+		DynamicCaller *DynamicHelpers::GetFunctionCaller(::TClass *cls_info, const std::string &method_name, array<System::Object^> ^args)
+		{
+			//
+			// See if we can get the method that we will be calling for this function.
+			//
+
+			auto proto = DynamicHelpers::GeneratePrototype(args);
+			auto method = cls_info->GetMethodWithPrototype(method_name.c_str(), proto.c_str());
+			if (method == nullptr)
+				return nullptr;
+
+			//
+			// Now, we can get a list of converters for the input types.
+			//
+
+			auto arg_list = method->GetListOfMethodArgs();
+			TIter next(arg_list);
+			::TObject *obj;
+			vector<ROOTTypeConverter*> converters;
+			while((obj = next()) != nullptr)
+			{
+				converters.push_back(FindConverter(static_cast<TMethodArg*>(obj)));
+			}
+
+			//
+			// And the output type
+			//
+
+			ROOTTypeConverter *rtn_converter = FindConverter(method->GetReturnTypeName());
+
+			//
+			// ANd create the guy for that will do the actual work with the above information. Make sure it is
+			// valid. If not, trash it, and return null.
+			//
+
+			auto caller = new DynamicCaller(converters, rtn_converter, method);
+			if (caller->IsValid()) {
+				return caller;
+			}
+			delete caller;
+			return nullptr;
+		}
+
+		///
+		/// Create a holder that will keep converters, etc., for a function.
+		///
+		DynamicCaller::DynamicCaller (std::vector<ROOTTypeConverter*> &converters, ROOTTypeConverter* rtn_converter, ::TMethod *method)
+			: _arg_converters(converters), _rtn_converter(rtn_converter), _method(method), _methodCall (nullptr)
+		{
+		}
+
+		///
+		/// Clean up everything.
+		///
+		DynamicCaller::~DynamicCaller(void)
+		{
+			delete _rtn_converter;
+			for (int i = 0; i < _arg_converters.size(); i++) {
+				delete _arg_converters[i];
+			}
+
+			delete _methodCall;
+		}
+
+		//
+		// Make sure everything is cool to go!
+		//
+		bool DynamicCaller::IsValid() const
+		{
+			if (_rtn_converter == nullptr || _method == nullptr)
+				return false;
+
+			for each (ROOTTypeConverter*o in _arg_converters)
+			{
+				if (o == nullptr)
+					return false;
+			}
+
+			return true;
+		}
+
+		///
+		/// Do the call
+		///  Code is basically copied from ConstructorHolder in pyroot.
+		///
+		System::Object^ DynamicCaller::CallCtor(::TClass *clsInfo, array<System::Object^> ^args)
+		{
+			//
+			// Allocate space for this object, and set everything up.
+			//
+
+			System::Object ^result = nullptr;
+			Call(clsInfo, args, result);
+
+			//
+			// If that fails, then see if we can do something else.
+			//
+
+			return result;
+		}
+
+		//
+		// Do a call for a compiled in class.
+		//
+		bool DynamicCaller::Call(::TObject *ptr, array<System::Object^> ^args, System::Object^% result)
+		{
+			///
+			/// Get the calling function
+			///
+			if (_methodCall == nullptr)
+			{
+				G__ClassInfo *gcl = static_cast<G__ClassInfo*>(_method->GetClass()->GetClassInfo());
+				if (gcl == nullptr)
+					return false;
+
+				auto gmi = gcl->GetMethod(_method->GetName(), ArgList().c_str(), &_offset, G__ClassInfo::ExactMatch);
+				if (!gmi.IsValid())
+					return false;
+
+				_methodCall = new G__CallFunc();
+				_methodCall->Init();
+				_methodCall->SetFunc(gmi);
+			}
+
+			//
+			// Setup the arguments
+			//
+
+			for (int i_arg = 0; i_arg < args->Length; i_arg++)
+			{
+				_arg_converters[i_arg]->SetArg(args[i_arg]);
+			}
+
+			//
+			// Now execute the thing.
+			//
+
+			return _rtn_converter->Call (_methodCall, (void*)((long)ptr + _offset), result);
+		}
+
+		//
+		// Get a prototype list for everyone...
+		//
+
+		string DynamicCaller::ArgList() const
+		{
+			ostringstream args;
+			bool isFirst = true;
+			for each (ROOTTypeConverter *c in _arg_converters)
+			{
+				if (!isFirst)
+					args << ",";
+				isFirst = false;
+
+				args << c->GetArgType();
+			}
+
+			return args.str();
 		}
 	}
 }

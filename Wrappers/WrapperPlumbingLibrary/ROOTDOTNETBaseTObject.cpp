@@ -141,7 +141,7 @@ namespace ROOTNET
 			// Do the invocation. How we do this depends on the return type, unfortunately!
 			//
 
-			string return_type_name (resolveTypedefs(method.GetMethod()->GetReturnTypeName()));
+			string return_type_name (DynamicHelpers::resolveTypedefs(method.GetMethod()->GetReturnTypeName()));
 			if (return_type_name == "double" || return_type_name == "float")
 			{
 				double val = 0;
@@ -192,25 +192,6 @@ namespace ROOTNET
 			//
 
 			return false;
-		}
-
-		//
-		// Make sure all type-defs are taken care of.
-		//
-		string ROOTDOTNETBaseTObject::resolveTypedefs(const std::string &type)
-		{
-			string current (type);
-			while (true)
-			{
-				auto dtinfo = gROOT->GetType(current.c_str());
-				if (dtinfo == nullptr)
-					return current;
-
-				string newname = dtinfo->GetTypeName();
-				if (newname == current)
-					return current;
-				current = newname;
-			}
 		}
 	}
 }

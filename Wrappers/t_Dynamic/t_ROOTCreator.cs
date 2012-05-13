@@ -63,6 +63,7 @@ namespace t_Dynamic
         public void NoDeafultCTor()
         {
             dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TObjString();
+            Assert.Inconclusive();
         }
     }
 }
