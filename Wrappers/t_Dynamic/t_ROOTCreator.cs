@@ -60,9 +60,9 @@ namespace t_Dynamic
 
         [TestMethod]
         [ExpectedException(typeof(ROOTNET.Utility.ROOTDynamicException))]
-        public void NoDeafultCTor()
+        public void NoSuchCtor()
         {
-            dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TObjString();
+            dynamic c = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TObjString("dude", 57);
             Assert.Inconclusive();
         }
     }
