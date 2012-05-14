@@ -21,16 +21,10 @@
     <ClCompile Include="AssemblyInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ROOTSource\root_type_helpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="ROOTSource\Globals.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
-    <ClCompile Include="ROOTSource\NTObject.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
-    <ClCompile Include="ROOTSource\NTSystem.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
-    <ClCompile Include="ROOTSource\NTSelector.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
     <ClCompile Include="ROOTSource\NTClass.cpp">
@@ -42,27 +36,30 @@
     <ClCompile Include="ROOTSource\NTNamed.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
+    <ClCompile Include="ROOTSource\NTObject.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTSelector.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTNamed.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\libTree-make_public.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\Globals.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\libCore-make_public.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTNamed.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\root_type_helpers.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTSystem.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTSelector.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\NTClass.hpp">
@@ -72,6 +69,12 @@
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\NTNamed.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTSelector.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\root_type_helpers.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
   </ItemGroup>
