@@ -2,15 +2,25 @@
 #include "ROOTDOTNETBaseTObject.hpp"
 #include "ROOTObjectManager.h"
 #include "NetStringToConstCPP.hpp"
+#include "DynamicHelpers.h"
+#include "ROOTDynamicException.h"
+#include "ROOTDotNet.h"
 
 #include <TObject.h>
 #include <TClass.h>
 #include <TMethodCall.h>
 #include <TFunction.h>
-
+#include <TROOT.h>
+#include <TDataType.h>
+#include <sstream>
 #include <string>
 
 using std::string;
+using std::ostringstream;
+
+#ifdef nullptr
+#undef nullptr
+#endif
 
 namespace ROOTNET
 {
@@ -66,131 +76,21 @@ namespace ROOTNET
 			//
 
 			if (GetTObjectPointer() == nullptr)
-				return false;
+				throw gcnew ROOTDynamicException("Attempt to call method on null ptr object!");
 			auto classSpec = GetTObjectPointer()->IsA();
 			if (classSpec == nullptr)
-				return false;
+				throw gcnew System::InvalidOperationException("Attempt to call method on ROOT object that has no class info - impossible!");
 
 			//
-			// Do the method lookup next. We have copied some of the code we are dealing with from
-			// the SFRame project.
-			// http://sframe.svn.sourceforge.net/viewvc/sframe/SFrame/trunk/core/src/SCycleOutput.cxx
+			// Get the call site setup
 			//
-
-			auto prototype = GeneratePrototype(args);
-			if (prototype == "<>")
-				return false;
 
 		    ROOTNET::Utility::NetStringToConstCPP method_name(binder->Name);
-			TMethodCall method;
-			method.InitWithPrototype(classSpec, method_name, prototype.c_str());
-			if (!method.IsValid())
+			auto caller = DynamicHelpers::GetFunctionCaller(classSpec, (string) method_name, args);
+			if (caller == nullptr)
 				return false;
+			return caller->Call(GetTObjectPointer(), args, result);
 
-			//
-			// Now build up the argument list for CINT
-			//
-
-			for each (auto arg in args)
-			{
-				if (arg->GetType() == int::typeid || arg->GetType() == long::typeid)
-				{
-					long i = (long) arg;
-					method.SetParam(i);
-				} else if (arg->GetType() == float::typeid || arg->GetType() == double::typeid)
-				{
-					double d = (double) arg;
-					method.SetParam(d);
-				}
-			}
-
-			//
-			// Do the invocation. How we do this depends on the return type, unfortunately!
-			//
-
-			string return_type_name (resolveTypedefs(method.GetMethod()->GetReturnTypeName()));
-			if (return_type_name == "double" || return_type_name == "float")
-			{
-				double val = 0;
-				method.Execute(GetTObjectPointer(), val);
-				if (return_type_name == "double") {
-					result = val;
-				} else {
-					result = (float) val;
-				}
-				return true;
-			} if (return_type_name == "int" || return_type_name == "long")
-			{
-				long val = 0;
-				method.Execute(GetTObjectPointer(), val);
-				if (return_type_name == "int") {
-					result = (int) val;
-				} else {
-					result = val;
-				}
-				return true;
-			} else {
-				return false;
-			}
-
-			//
-			// Translate the result back into something we know about!
-			//
-
-			return false;
-		}
-
-		//
-		// Make sure all type-defs are taken care of.
-		//
-		string ROOTDOTNETBaseTObject::resolveTypedefs(const std::string &type)
-		{
-			if (type == "Int_t")
-				return "int";
-			if (type == "Double_t")
-				return "double";
-			if (type == "Float_t")
-				return "float";
-			if (type == "Long_t")
-				return "long";
-			return type;
-		}
-
-		//
-		// Given the list of arguments, generate a prototype string
-		// that CINT can understand for argument lookup.
-		//
-		string ROOTDOTNETBaseTObject::GeneratePrototype(array<Object^> ^args)
-		{
-			string result = "";
-
-			for each (auto arg in args)
-			{
-				string thisType = "";
-				if (arg->GetType() == int::typeid)
-				{
-					thisType = "int";
-				} else if (arg->GetType() == long::typeid)
-				{
-					thisType = "long";
-				} else if (arg->GetType() == float::typeid)
-				{
-					thisType = "float";
-				} else if (arg->GetType() == double::typeid)
-				{
-					thisType = "double";
-				} else {
-					return "<>"; // Can't do it!
-				}
-
-				if (result.size() == 0) {
-					result = thisType;
-				} else {
-					result += "," + thisType;
-				}
-			}
-
-			return result;
 		}
 	}
 }

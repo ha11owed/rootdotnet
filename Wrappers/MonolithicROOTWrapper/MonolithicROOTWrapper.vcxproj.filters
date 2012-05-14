@@ -33,6 +33,15 @@
     <ClCompile Include="ROOTSource\NTSelector.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
+    <ClCompile Include="ROOTSource\NTClass.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTDictionary.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTNamed.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -54,6 +63,15 @@
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\NTSelector.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTClass.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTDictionary.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTNamed.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
   </ItemGroup>

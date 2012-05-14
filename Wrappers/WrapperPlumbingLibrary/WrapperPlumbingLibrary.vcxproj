@@ -70,7 +70,7 @@
       <ForcedIncludeFiles>w32pragma.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libCore.lib</AdditionalDependencies>
+      <AdditionalDependencies>libCore.lib;libCint.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -90,7 +90,7 @@
       <ForcedIncludeFiles>w32pragma.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libCore.lib</AdditionalDependencies>
+      <AdditionalDependencies>libCore.lib;libCint.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -115,9 +115,12 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="CPPStringArray.cpp" />
+    <ClCompile Include="DynamicHelpers.cpp" />
     <ClCompile Include="NetArrayTranslator.cpp" />
     <ClCompile Include="NetStringArrayTranslator.cpp" />
     <ClCompile Include="NetStringToConstCPP.cpp" />
+    <ClCompile Include="ROOTCreator.cpp" />
+    <ClCompile Include="ROOTDynamicException.cpp" />
     <ClCompile Include="ROOTVersionAttribute.cpp" />
     <ClCompile Include="root_type_holder.cpp" />
     <ClCompile Include="ROOTDotNet.cpp" />
@@ -127,10 +130,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPPStringArray.hpp" />
+    <ClInclude Include="DynamicHelpers.h" />
     <ClInclude Include="NetArrayTranslator.hpp" />
     <ClInclude Include="NetStringArrayTranslator.hpp" />
     <ClInclude Include="NetStringToConstCPP.hpp" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ROOTCreator.h" />
+    <ClInclude Include="ROOTDynamicException.h" />
     <ClInclude Include="ROOTVersionAttribute.h" />
     <ClInclude Include="root_type_holder.hpp" />
     <ClInclude Include="ROOTDotNet.h" />

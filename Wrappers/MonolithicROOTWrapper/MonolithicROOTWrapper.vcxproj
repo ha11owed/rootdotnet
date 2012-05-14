@@ -115,6 +115,9 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="ROOTSource\Globals.cpp" />
+    <ClCompile Include="ROOTSource\NTClass.cpp" />
+    <ClCompile Include="ROOTSource\NTDictionary.cpp" />
+    <ClCompile Include="ROOTSource\NTNamed.cpp" />
     <ClCompile Include="ROOTSource\NTObject.cpp" />
     <ClCompile Include="ROOTSource\NTSelector.cpp" />
     <ClCompile Include="ROOTSource\root_type_helpers.cpp" />
@@ -124,6 +127,9 @@
     <ClInclude Include="ROOTSource\Globals.hpp" />
     <ClInclude Include="ROOTSource\libCore-make_public.hpp" />
     <ClInclude Include="ROOTSource\libTree-make_public.hpp" />
+    <ClInclude Include="ROOTSource\NTClass.hpp" />
+    <ClInclude Include="ROOTSource\NTDictionary.hpp" />
+    <ClInclude Include="ROOTSource\NTNamed.hpp" />
     <ClInclude Include="ROOTSource\NTObject.hpp" />
     <ClInclude Include="ROOTSource\NTSelector.hpp" />
     <ClInclude Include="ROOTSource\root_type_helpers.hpp" />
