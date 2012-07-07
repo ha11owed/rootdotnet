@@ -24,120 +24,120 @@ using namespace TestUtilities;
 
 namespace t_RootClassInfo
 {
-  [TestClass]
-  public ref class t_RootClassInfoCollection
-  {
-  private:
-	TestContext^ testContextInstance;
-
-  public: 
-	/// <summary>
-	///Gets or sets the test context which provides
-	///information about and functionality for the current test run.
-	///</summary>
-	property Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ TestContext
+	[TestClass]
+	public ref class t_RootClassInfoCollection
 	{
-	  Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ get()
-	  {
-		return testContextInstance;
-	  }
-	  System::Void set(Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ value)
-	  {
-		testContextInstance = value;
-	  }
-	};
+	private:
+		TestContext^ testContextInstance;
+
+	public: 
+		/// <summary>
+		///Gets or sets the test context which provides
+		///information about and functionality for the current test run.
+		///</summary>
+		property Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ TestContext
+		{
+			Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ get()
+			{
+				return testContextInstance;
+			}
+			System::Void set(Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ value)
+			{
+				testContextInstance = value;
+			}
+		};
 
 #pragma region Additional test attributes
-	//
-	//You can use the following additional attributes as you write your tests:
-	//
-	//Use ClassInitialize to run code before running the first test in the class
-	//[ClassInitialize()]
-	//static void MyClassInitialize(TestContext^ testContext) {};
-	//
-	//Use ClassCleanup to run code after all tests in a class have run
-	//[ClassCleanup()]
-	//static void MyClassCleanup() {};
-	//
-	//Use TestInitialize to run code before running each test
-	//[TestInitialize()]
-	//void MyTestInitialize() {};
-	//
-	//Use TestCleanup to run code after each test has run
-	//[TestCleanup()]
-	//void MyTestCleanup() {};
-	//
+		//
+		//You can use the following additional attributes as you write your tests:
+		//
+		//Use ClassInitialize to run code before running the first test in the class
+		//[ClassInitialize()]
+		//static void MyClassInitialize(TestContext^ testContext) {};
+		//
+		//Use ClassCleanup to run code after all tests in a class have run
+		//[ClassCleanup()]
+		//static void MyClassCleanup() {};
+		//
+		//Use TestInitialize to run code before running each test
+		//[TestInitialize()]
+		//void MyTestInitialize() {};
+		//
+		//Use TestCleanup to run code after each test has run
+		//[TestCleanup()]
+		//void MyTestCleanup() {};
+		//
 #pragma endregion 
-    [ClassInitialize]
-    static void SetupClassTest(Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ testContext)
-    {
-      int nargs = 2;
-      char *argv[2];
-      argv[0] = "ROOTWrapperGenerator.exe";
-      argv[1] = "-b";
-      TApplication *app = new TApplication ("ROOTWrapperGenerator", &nargs, argv);
-      gSystem->Load("libHist");
-      gSystem->Load("libHist");
-      gSystem->Load("libRooFit");
-    }
-
-
-	[TestCleanup]
-	[TestInitialize]
-	void CleanOutTypeSystem()
-	{
-	  CPPNetTypeMapper::Reset();
-	  RootClassInfoCollection::Reset();
-	}
-
-	const RootClassMethod *FindMethod(const string &mname, const vector<RootClassMethod> &protos)
-	{
-	  for (int i = 0; i < protos.size(); i++) {
-		if (protos[i].CPPName() == mname) {
-		  return &protos[i];
+		[ClassInitialize]
+		static void SetupClassTest(Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ testContext)
+		{
+			int nargs = 2;
+			char *argv[2];
+			argv[0] = "ROOTWrapperGenerator.exe";
+			argv[1] = "-b";
+			TApplication *app = new TApplication ("ROOTWrapperGenerator", &nargs, argv);
+			gSystem->Load("libHist");
+			gSystem->Load("libHist");
+			gSystem->Load("libRooFit");
 		}
-	  }
-	  return 0;
-	}
 
-	[TestMethod]
-	void TestBasicRecall()
-	{
-	  RootClassInfo *c = RootClassInfoCollection::GetRootClassInfoPtr ("TH1F");
-	  Assert::IsTrue (c != 0, "Null pointer came back!");
-	  Assert::IsTrue (c->NETName() == std::string("NTH1F"), "Class name wasn't right");
-	}
 
-	[TestMethod]
-	void TestSamePointer()
-	{
-	  RootClassInfo *c1 = RootClassInfoCollection::GetRootClassInfoPtr ("TH1F");
-	  RootClassInfo *c2 = RootClassInfoCollection::GetRootClassInfoPtr ("TH1F");
-	  Assert::IsTrue(c1 == c2, "The pointers are not the same!");
-	}
+		[TestCleanup]
+		[TestInitialize]
+		void CleanOutTypeSystem()
+		{
+			CPPNetTypeMapper::Reset();
+			RootClassInfoCollection::Reset();
+		}
 
-	[TestMethod]
-	void TestBadMethodRemoval()
-	{
-	  /// If a function is on the "blocked" list then it shouldn't get translated!
-	  /// And RootClassInfoCollection should handle this for us!
+		const RootClassMethod *FindMethod(const string &mname, const vector<RootClassMethod> &protos)
+		{
+			for (int i = 0; i < protos.size(); i++) {
+				if (protos[i].CPPName() == mname) {
+					return &protos[i];
+				}
+			}
+			return 0;
+		}
 
-	  CPPNetTypeMapper::instance()->AddTypeMapper(new TTSimpleType("bool", "bool"));
-	  CPPNetTypeMapper::instance()->AddTypedefMapping("Bool_t", "bool");
+		[TestMethod]
+		void TestBasicRecall()
+		{
+			RootClassInfo *c = RootClassInfoCollection::GetRootClassInfoPtr ("TH1F");
+			Assert::IsTrue (c != 0, "Null pointer came back!");
+			Assert::IsTrue (c->NETName() == std::string("NTH1F"), "Class name wasn't right");
+		}
 
-	  gSystem->Load("libRooFitCore");
+		[TestMethod]
+		void TestSamePointer()
+		{
+			RootClassInfo *c1 = RootClassInfoCollection::GetRootClassInfoPtr ("TH1F");
+			RootClassInfo *c2 = RootClassInfoCollection::GetRootClassInfoPtr ("TH1F");
+			Assert::IsTrue(c1 == c2, "The pointers are not the same!");
+		}
 
-	  RootClassInfo cinfo ("RooAbsReal");
-	  vector<RootClassMethod> protos (cinfo.GetAllPrototypesForThisClass(true));
-	  const RootClassMethod *m = FindMethod ("evalErrorLoggingEnabled", protos);
-	  Assert::IsTrue(m != 0, "evalErrorLoggingEnabled should have been in the list!");
-	  Assert::IsTrue(m->IsStatic(), "Method should be listed as static!");
+		[TestMethod]
+		void TestBadMethodRemoval()
+		{
+			/// If a function is on the "blocked" list then it shouldn't get translated!
+			/// And RootClassInfoCollection should handle this for us!
 
-	  RootClassInfoCollection::SetBadMethods(WrapperConfigurationInfo::GetListOfBadMethods());
-	  RootClassInfo &cinfo1 (RootClassInfoCollection::GetRootClassInfo("RooAbsReal"));
-	  vector<RootClassMethod> protos1 (cinfo1.GetAllPrototypesForThisClass(true));
-	  m = FindMethod ("evalErrorLoggingEnabled", protos1);
-	  Assert::IsTrue(m == 0, "evalErrorLoggingEnabled should not have been in the list!");
-	}
-  };
+			CPPNetTypeMapper::instance()->AddTypeMapper(new TTSimpleType("bool", "bool"));
+			CPPNetTypeMapper::instance()->AddTypedefMapping("Bool_t", "bool");
+
+			gSystem->Load("libRooFitCore");
+
+			RootClassInfo cinfo ("RooAbsReal");
+			vector<RootClassMethod> protos (cinfo.GetAllPrototypesForThisClass(true));
+			const RootClassMethod *m = FindMethod ("evalErrorLoggingEnabled", protos);
+			Assert::IsTrue(m != 0, "evalErrorLoggingEnabled should have been in the list!");
+			Assert::IsTrue(m->IsStatic(), "Method should be listed as static!");
+
+			RootClassInfoCollection::SetBadMethods(WrapperConfigurationInfo::GetListOfBadMethods());
+			RootClassInfo &cinfo1 (RootClassInfoCollection::GetRootClassInfo("RooAbsReal"));
+			vector<RootClassMethod> protos1 (cinfo1.GetAllPrototypesForThisClass(true));
+			m = FindMethod ("evalErrorLoggingEnabled", protos1);
+			Assert::IsTrue(m == 0, "evalErrorLoggingEnabled should not have been in the list!");
+		}
+	};
 }
