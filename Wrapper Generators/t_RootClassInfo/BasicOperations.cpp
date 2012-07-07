@@ -137,6 +137,42 @@ namespace t_RootClassInfo
 			delete cinfo;
 		}
 
+		[TestMethod]
+		void GetBestInherritedForBaseClass()
+		{
+			RootClassInfo *cinfo = new RootClassInfo("TObject");
+			auto iclass = cinfo->GetBestClassToInherrit();
+			Assert::IsTrue(iclass.size() == 0, "TObject has no inherrited classes");
+			delete cinfo;
+		}
+
+		[TestMethod]
+		void GetBestInherritedForSingleInheritance()
+		{
+			RootClassInfo *cinfo = new RootClassInfo("TArrayF");
+			auto iclass = cinfo->GetBestClassToInherrit();
+			Assert::IsTrue(iclass == "TArray", "TArray should be what we come from!");
+			delete cinfo;
+		}
+
+		[TestMethod]
+		void GetBestInherritedForMultiInheritance1()
+		{
+			RootClassInfo *cinfo = new RootClassInfo("TH1F");
+			auto iclass = cinfo->GetBestClassToInherrit();
+			Assert::IsTrue(iclass == "TH1", "TH1 should be what we come from!");
+			delete cinfo;
+		}
+
+		[TestMethod]
+		void GetBestInherritedForMultiInheritance2()
+		{
+			RootClassInfo *cinfo = new RootClassInfo("TH1");
+			auto iclass = cinfo->GetBestClassToInherrit();
+			Assert::IsTrue(iclass == "TNamed", "TNamed should be what we come from!");
+			delete cinfo;
+		}
+
 #ifdef notanymore
 		// This GetDragType used to be implemented by both sub-classes, but ROOT has cleaned up their code. Nice! The result is this
 		// test is no longer meanful. We'll have to do something else when a bug creeps in later.

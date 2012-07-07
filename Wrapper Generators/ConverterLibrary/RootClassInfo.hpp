@@ -39,6 +39,10 @@ public:
 	/// Returns a list of ROOT classes this class inherits directly from (no deep inherritance is calculated).
 	const std::vector<std::string> &GetDirectInheritedClasses (void) const;
 
+	/// Returns the name of the class we should inherrit from if we had to choose one. Returns zero length
+	/// string if this is a base class.
+	std::string GetBestClassToInherrit (void) const;
+
 	/// Removes a class for the list of inherited classes. :-)
 	void RemoveInheritedClass (const std::string &class_name);
 

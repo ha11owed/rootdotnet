@@ -86,6 +86,38 @@ const vector<string> &RootClassInfo::GetDirectInheritedClasses(void) const
 }
 
 ///
+/// Return the best class to inherrit from when we move to the .NET world.
+/// -> base class, return the empty string
+/// -> single inherritance, return it
+/// -> multiple inherritance, return the class with the most methods
+///
+string RootClassInfo::GetBestClassToInherrit(void) const
+{
+	auto myParents (GetDirectInheritedClasses());
+	if (myParents.size() == 0)
+		return "";
+	if (myParents.size() == 1)
+		return myParents[0];
+
+	// Now we have to look at how many methods are in each of the various subclasses.
+	string bestClass;
+	int bestNumberMethods = 0;
+
+	for_each (myParents.begin(), myParents.end(), [&] (string superName)
+	{
+		auto cSuperInfo (RootClassInfoCollection::GetRootClassInfo(superName));
+		int numMethods = cSuperInfo.GetAllPrototypesForThisClass(true).size();
+		if (numMethods > bestNumberMethods)
+		{
+			bestNumberMethods = numMethods;
+			bestClass = superName;
+		}
+	});
+
+	return bestClass;
+}
+
+///
 /// Remove a list from the inherited class list
 ///
 void RootClassInfo::RemoveInheritedClass (const std::string &class_name)
