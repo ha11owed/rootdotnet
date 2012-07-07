@@ -411,6 +411,28 @@ namespace {
 
 		return result;
 	}
+
+	///
+	/// Returns a list of deep non-inherrited classes.
+	///
+	set<string> GetNonInherritedClasses(const RootClassInfo &info)
+	{
+		auto superClasses (info.GetDirectInheritedClasses());
+		auto directSuper (info.GetBestClassToInherrit());
+		set<string> inh_classes;
+		for_each(superClasses.begin(), superClasses.end(), [&] (const string &cname)
+		{
+			if (directSuper != cname) {
+				auto classInfo (RootClassInfoCollection::GetRootClassInfo(cname));
+				auto deepClasses (classInfo.GetInheritedClassesDeep());
+				copy(deepClasses.begin(), deepClasses.end(), inserter(inh_classes, inh_classes.begin()));
+				inh_classes.insert(cname);
+			}
+		});
+		inh_classes.insert(info.CPPName());
+
+		return inh_classes;
+	}
 }
 
 class emit_enum_as_static {
@@ -751,13 +773,13 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 
 	///
 	/// Give us some access to the C++ pointers for all inherited classes...
-	/// We have to be a little careful to deal with how inherritance works.
+	/// When dealing with inherritance make sure that we do the CPP_Instance's 
+	/// correctly.
 	///
 
-	vector<string> inh_classes(info.GetInheritedClassesDeep());
-	inh_classes.push_back(info.CPPName());
-	for (unsigned int i = 0; i < inh_classes.size(); i++) {
-		string cls (inh_classes[i]);
+	auto inh_classes(GetNonInherritedClasses(info));
+	for_each(inh_classes.begin(), inh_classes.end(), [&] (const string &cls)
+	{
 		if (cls.find("<") == cls.npos) {
 			emitter.start_line() << "public:" << endl;
 			emitter.start_line() << "virtual ::" << cls << " *CPP_Instance_" << cls << "(void)" << endl;
@@ -765,7 +787,7 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 			emitter.start_line() << "  return _instance;" << endl;
 			emitter.brace_close();
 		}
-	}
+	});
 
 	///
 	/// And a ctor that can start from a pointer
@@ -820,6 +842,18 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	const vector<RootClassMethod> &class_protos(info.GetAllPrototypesForThisClass(true));
 	for (unsigned int i = 0; i < class_protos.size(); i++) {
 		const RootClassMethod &method = class_protos[i];
+
+		//
+		// We only want to implement this class if it is in one of the classes we have implemented as an
+		// interface.
+		//
+
+		if (inh_classes.find(method.ClassOfMethodDefinition()) == inh_classes.end())
+			continue;
+
+		//
+		// Accumulate the various indexers, or if there is a problem with this method, etc.
+		//
 
 		if (method.IsIndexer()) {
 			arrayOperators.push_back(method);
