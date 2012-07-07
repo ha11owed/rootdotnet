@@ -166,6 +166,9 @@ namespace t_RootClassInfo
 			delete cinfo;      
 		}
 
+#ifdef notyet
+		// We can't use this any longer b/c the names of the methods used below (for TVirtualDragManager)
+		// changed.
 		[TestMethod]
 		void TestArgTypeReturnEquality()
 		{
@@ -190,9 +193,6 @@ namespace t_RootClassInfo
 			Assert::IsFalse (m1->is_equal(*m2, true), "Methods should not be equal when considering the return type!");
 		}
 
-#ifdef notyet
-		// We can't use this any longer b/c the names of the methods used below (for TVirtualDragManager)
-		// changed.
 		[TestMethod]
 		void TestArgTypeReturnLessThan()
 		{
