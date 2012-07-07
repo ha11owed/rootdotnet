@@ -30,188 +30,188 @@ using std::vector;
 ///
 namespace t_RootClassInfo
 {
-  [TestClass]
-  public ref class MethodEquality
-  {
-  private:
-    TestContext^ testContextInstance;
-
-  public: 
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    property Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ TestContext
-    {
-      Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ get()
-      {
-	return testContextInstance;
-      }
-      System::Void set(Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ value)
-      {
-	testContextInstance = value;
-      }
-    };
-
-	[ClassInitialize]
-	static void SetupClassTest(Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ testContext)
+	[TestClass]
+	public ref class MethodEquality
 	{
-	  int nargs = 2;
-	  char *argv[2];
-	  argv[0] = "ROOTWrapperGenerator.exe";
-	  argv[1] = "-b";
-	  TApplication *app = new TApplication ("ROOTWrapperGenerator", &nargs, argv);
-	  gSystem->Load("libHist");
-	  gSystem->Load("libHist");
-	  gSystem->Load("libRooFit");
-	}
+	private:
+		TestContext^ testContextInstance;
 
-	[TestCleanup]
-	[TestInitialize]
-    void CleanOutTypeSystem()
-    {
-      CPPNetTypeMapper::Reset();
-	  RootClassInfoCollection::Reset();
-    }
+	public: 
+		/// <summary>
+		///Gets or sets the test context which provides
+		///information about and functionality for the current test run.
+		///</summary>
+		property Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ TestContext
+		{
+			Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ get()
+			{
+				return testContextInstance;
+			}
+			System::Void set(Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ value)
+			{
+				testContextInstance = value;
+			}
+		};
 
-    /// Find a particular method in a list.
-    const RootClassMethod *FindMethod(const string &mname, const vector<RootClassMethod> &protos)
-    {
-      for (int i = 0; i < protos.size(); i++) {
-	if (protos[i].CPPName() == mname) {
-	  return &protos[i];
-	}
-      }
-      return 0;
-    }
+		[ClassInitialize]
+		static void SetupClassTest(Microsoft::VisualStudio::TestTools::UnitTesting::TestContext^ testContext)
+		{
+			int nargs = 2;
+			char *argv[2];
+			argv[0] = "ROOTWrapperGenerator.exe";
+			argv[1] = "-b";
+			TApplication *app = new TApplication ("ROOTWrapperGenerator", &nargs, argv);
+			gSystem->Load("libHist");
+			gSystem->Load("libHist");
+			gSystem->Load("libRooFit");
+		}
 
-    /// Find a particular method in a list.
-    const vector<RootClassMethod> FindMethods(const string &mname, const vector<RootClassMethod> &protos)
-    {
-      vector<RootClassMethod> results;
-      for (int i = 0; i < protos.size(); i++) {
-	if (protos[i].CPPName() == mname) {
-	  results.push_back(protos[i]);
-	}
-      }
-      return results;
-    }
+		[TestCleanup]
+		[TestInitialize]
+		void CleanOutTypeSystem()
+		{
+			CPPNetTypeMapper::Reset();
+			RootClassInfoCollection::Reset();
+		}
 
-    [TestMethod]
-    void TestReflexiveEquality()
-    {
-      /// Make sure the same method is, uh, the same! :-)
-      RootClassInfo *cinfo = new RootClassInfo ("TNamed");
-      vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
+		/// Find a particular method in a list.
+		const RootClassMethod *FindMethod(const string &mname, const vector<RootClassMethod> &protos)
+		{
+			for (int i = 0; i < protos.size(); i++) {
+				if (protos[i].CPPName() == mname) {
+					return &protos[i];
+				}
+			}
+			return 0;
+		}
 
-      const RootClassMethod *m = FindMethod("Copy", protos);
-      Assert::IsTrue (m != 0, "Could not find the Copy method in the list of TH1F methods!");
-      const RootClassMethod &method(*m);
-      Assert::IsTrue (method.is_equal(method), "Comparison of method to itself failed!");
-    };
+		/// Find a particular method in a list.
+		const vector<RootClassMethod> FindMethods(const string &mname, const vector<RootClassMethod> &protos)
+		{
+			vector<RootClassMethod> results;
+			for (int i = 0; i < protos.size(); i++) {
+				if (protos[i].CPPName() == mname) {
+					results.push_back(protos[i]);
+				}
+			}
+			return results;
+		}
 
-    [TestMethod]
-    void TestObviousInequality()
-    {
-      /// Names are different! :-)
-      RootClassInfo *cinfo = new RootClassInfo ("TNamed");
-      vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
+		[TestMethod]
+		void TestReflexiveEquality()
+		{
+			/// Make sure the same method is, uh, the same! :-)
+			RootClassInfo *cinfo = new RootClassInfo ("TNamed");
+			vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
 
-      const RootClassMethod *m1 = FindMethod("Copy", protos);
-      const RootClassMethod *m2 = FindMethod("Compare", protos);
-      Assert::IsTrue (m1 != 0, "Could not find the Copy method in the list of TH1F methods!");
-      Assert::IsTrue (m2 != 0, "Could not find the Compare method in the list of TH1F methods!");
-      Assert::IsFalse (m1->is_equal(*m2), "Comparison of method to a different one said they were the same!");
-    }
+			const RootClassMethod *m = FindMethod("Copy", protos);
+			Assert::IsTrue (m != 0, "Could not find the Copy method in the list of TH1F methods!");
+			const RootClassMethod &method(*m);
+			Assert::IsTrue (method.is_equal(method), "Comparison of method to itself failed!");
+		};
 
-    [TestMethod]
-    void TestArgsDifferent()
-    {
-      /// Names are different! :-)
-      RootClassInfo *cinfo = new RootClassInfo ("TNamed");
-      vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
+		[TestMethod]
+		void TestObviousInequality()
+		{
+			/// Names are different! :-)
+			RootClassInfo *cinfo = new RootClassInfo ("TNamed");
+			vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
 
-      vector<RootClassMethod> all_clears (FindMethods("Clear", protos));
-      Assert::IsTrue (all_clears.size() > 1);
-      Assert::IsFalse(all_clears[0].is_equal(all_clears[1]), "Methods that differ by arg list length should not be marked as different!");
-      delete cinfo;
-    }
+			const RootClassMethod *m1 = FindMethod("Copy", protos);
+			const RootClassMethod *m2 = FindMethod("Compare", protos);
+			Assert::IsTrue (m1 != 0, "Could not find the Copy method in the list of TH1F methods!");
+			Assert::IsTrue (m2 != 0, "Could not find the Compare method in the list of TH1F methods!");
+			Assert::IsFalse (m1->is_equal(*m2), "Comparison of method to a different one said they were the same!");
+		}
 
-    [TestMethod]
-    void TestArgTypesDifferent()
-    {
-      RootClassInfo *cinfo = new RootClassInfo ("TObject");
-      vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
+		[TestMethod]
+		void TestArgsDifferent()
+		{
+			/// Names are different! :-)
+			RootClassInfo *cinfo = new RootClassInfo ("TNamed");
+			vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
 
-      vector<RootClassMethod> all_clears (FindMethods("Execute", protos));
+			vector<RootClassMethod> all_clears (FindMethods("Clear", protos));
+			Assert::IsTrue (all_clears.size() > 1);
+			Assert::IsFalse(all_clears[0].is_equal(all_clears[1]), "Methods that differ by arg list length should not be marked as different!");
+			delete cinfo;
+		}
 
-      ///
-      /// Find the correct two!
-      ///
+		[TestMethod]
+		void TestArgTypesDifferent()
+		{
+			RootClassInfo *cinfo = new RootClassInfo ("TObject");
+			vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
 
-      vector<RootClassMethod> all_executes;
-      for (int i = 0; i < all_clears.size(); i++) {
-	if (all_clears[i].arguments().size() == 3) {
-	  all_executes.push_back(all_clears[i]);
-	}
-      }
+			vector<RootClassMethod> all_clears (FindMethods("Execute", protos));
 
-      Assert::IsTrue(all_executes.size() >= 2, "Could not find the proper Execute methods to do the compare!");
+			///
+			/// Find the correct two!
+			///
 
-      ///
-      /// Test for equality!
-      ///
+			vector<RootClassMethod> all_executes;
+			for (int i = 0; i < all_clears.size(); i++) {
+				if (all_clears[i].arguments().size() == 3) {
+					all_executes.push_back(all_clears[i]);
+				}
+			}
 
-      Assert::IsFalse(all_executes[0].is_equal(all_executes[1]), "Methods that differ by arg list types should not be marked as different!");
-      delete cinfo;      
-    }
+			Assert::IsTrue(all_executes.size() >= 2, "Could not find the proper Execute methods to do the compare!");
 
-	[TestMethod]
-	void TestArgTypeReturnEquality()
-	{
-	  CPPNetTypeMapper::instance()->AddTypeMapper(new TTSimpleType("int", "int"));
-	  CPPNetTypeMapper::instance()->AddTypedefMapping("Int_t", "int");
+			///
+			/// Test for equality!
+			///
 
-	  gSystem->Load("libGui");
+			Assert::IsFalse(all_executes[0].is_equal(all_executes[1]), "Methods that differ by arg list types should not be marked as different!");
+			delete cinfo;      
+		}
 
-	  RootClassInfo cinfo1 ("TGFrame");
-	  RootClassInfo cinfo2 ("TVirtualDragManager");
+		[TestMethod]
+		void TestArgTypeReturnEquality()
+		{
+			CPPNetTypeMapper::instance()->AddTypeMapper(new TTSimpleType("int", "int"));
+			CPPNetTypeMapper::instance()->AddTypedefMapping("Int_t", "int");
 
-	  vector<RootClassMethod> methods1 (cinfo1.GetPrototypesImplementedByThisClass());
-	  vector<RootClassMethod> methods2 (cinfo2.GetPrototypesImplementedByThisClass());
+			gSystem->Load("libGui");
 
-	  const RootClassMethod *m1 (FindMethod("GetDragType", methods1));
-	  const RootClassMethod *m2 (FindMethod("GetDragType", methods2));
+			RootClassInfo cinfo1 ("TGFrame");
+			RootClassInfo cinfo2 ("TVirtualDragManager");
 
-	  Assert::IsTrue (m1 != 0, "Could not find #1 method");
-	  Assert::IsTrue (m2 != 0, "Could not find #2 method");
+			vector<RootClassMethod> methods1 (cinfo1.GetPrototypesImplementedByThisClass());
+			vector<RootClassMethod> methods2 (cinfo2.GetPrototypesImplementedByThisClass());
 
-	  Assert::IsTrue(m1->is_equal(*m2), "Methods should be equal!");
-	  Assert::IsFalse (m1->is_equal(*m2, true), "Methods should not be equal when considering the return type!");
-	}
+			const RootClassMethod *m1 (FindMethod("GetDragType", methods1));
+			const RootClassMethod *m2 (FindMethod("GetDragType", methods2));
 
-	[TestMethod]
-	void TestArgTypeReturnLessThan()
-	{
-	  CPPNetTypeMapper::instance()->AddTypeMapper(new TTSimpleType("int", "int"));
-	  CPPNetTypeMapper::instance()->AddTypedefMapping("Int_t", "int");
+			Assert::IsTrue (m1 != 0, "Could not find #1 method");
+			Assert::IsTrue (m2 != 0, "Could not find #2 method");
 
-	  gSystem->Load("libGui");
+			Assert::IsTrue(m1->is_equal(*m2), "Methods should be equal!");
+			Assert::IsFalse (m1->is_equal(*m2, true), "Methods should not be equal when considering the return type!");
+		}
 
-	  RootClassInfo cinfo1 ("TGFrame");
-	  RootClassInfo cinfo2 ("TVirtualDragManager");
+		[TestMethod]
+		void TestArgTypeReturnLessThan()
+		{
+			CPPNetTypeMapper::instance()->AddTypeMapper(new TTSimpleType("int", "int"));
+			CPPNetTypeMapper::instance()->AddTypedefMapping("Int_t", "int");
 
-	  vector<RootClassMethod> methods1 (cinfo1.GetPrototypesImplementedByThisClass());
-	  vector<RootClassMethod> methods2 (cinfo2.GetPrototypesImplementedByThisClass());
+			gSystem->Load("libGui");
 
-	  const RootClassMethod *m1 (FindMethod("GetDragType", methods1));
-	  const RootClassMethod *m2 (FindMethod("GetDragType", methods2));
+			RootClassInfo cinfo1 ("TGFrame");
+			RootClassInfo cinfo2 ("TVirtualDragManager");
 
-	  Assert::IsTrue (m1 != 0, "Could not find #1 method");
-	  Assert::IsTrue (m2 != 0, "Could not find #2 method");
+			vector<RootClassMethod> methods1 (cinfo1.GetPrototypesImplementedByThisClass());
+			vector<RootClassMethod> methods2 (cinfo2.GetPrototypesImplementedByThisClass());
 
-	  Assert::IsTrue(m1->is_less_than(*m2) == m2->is_less_than(*m1), "The two methods should be equal");
-	  Assert::IsTrue(m1->is_less_than(*m2, true) != m2->is_less_than(*m1, true), "The two methods should not be equal when considering return type");
-	}
-  };
+			const RootClassMethod *m1 (FindMethod("GetDragType", methods1));
+			const RootClassMethod *m2 (FindMethod("GetDragType", methods2));
+
+			Assert::IsTrue (m1 != 0, "Could not find #1 method");
+			Assert::IsTrue (m2 != 0, "Could not find #2 method");
+
+			Assert::IsTrue(m1->is_less_than(*m2) == m2->is_less_than(*m1), "The two methods should be equal");
+			Assert::IsTrue(m1->is_less_than(*m2, true) != m2->is_less_than(*m1, true), "The two methods should not be equal when considering return type");
+		}
+	};
 }
