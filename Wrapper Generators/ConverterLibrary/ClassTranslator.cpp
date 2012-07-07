@@ -40,6 +40,10 @@ using std::transform;
 using std::back_inserter;
 using std::inserter;
 
+#ifdef nullptr
+#undef nullptr
+#endif
+
 ClassTranslator::ClassTranslator(const std::string &base_dir)
 	: _base_directory (base_dir)
 {
@@ -729,6 +733,14 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	emitter.start_line() << "    ROOTNET::Interface::" << info.NETName() << endl;
 	emitter.brace_open();
 
+	//
+	// Do protected
+	//
+
+	emitter.start_line() << "protected:" << endl;
+	emitter.start_line() << "  void SetInstance (::" << info.CPPName() << "* instance)" << endl;
+	emitter.start_line() <<"   { _instance = instance; }" << endl;
+
 	///
 	/// Hold onto the C++ pointer!
 	///
@@ -739,7 +751,7 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 
 	///
 	/// Give us some access to the C++ pointers for all inherited classes...
-	/// Make sure that if one of the inherrited classes is a template we don't accidentally emit that!
+	/// We have to be a little careful to deal with how inherritance works.
 	///
 
 	vector<string> inh_classes(info.GetInheritedClassesDeep());
@@ -1087,6 +1099,14 @@ void ClassTranslator::emit_function_body(const RootClassMethod &method, const Ro
 			emitter() << cpp_argnames[i];
 		}
 		emitter() << ");" << endl;
+
+		// If this has a super-class, we need to set the instance there.
+		auto superInfo (info.GetBestClassToInherrit());
+		if (superInfo.size() != 0) {
+			auto superInfoPtr = RootClassInfoCollection::GetRootClassInfo(superInfo);
+			emitter.start_line() << superInfoPtr.NETName() << "::SetInstance(_instance);" << endl;
+		}
+
 		emit_registration(info, emitter, true);
 	} else {
 		const CPPNetTypeMapper::TypeTranslator *return_translator = method.get_return_type_translator();
@@ -1146,18 +1166,36 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 	emitter() << "#undef nullptr" << endl;
 	emitter() << "#endif" << endl;
 
+	//
+	// If this isn't a base class then we will need to reference other guys in the c-tors.
+	//
+
+	auto superClass = info.GetBestClassToInherrit();
+	RootClassInfo *superClassInfo (nullptr);
+	if (superClass.size() != 0) {
+		superClassInfo = RootClassInfoCollection::GetRootClassInfoPtr(superClass);
+	}
+
 	///
 	/// First, do our particular c-tors...
 	///
 
 	emitter.start_line() << info.NETName() << "::" << info.NETName() << "(::" << info.CPPName() << " *instance)" << endl;
-	emitter.start_line() << " : _instance(instance)" << endl;
+	emitter.start_line() << " : _instance(instance)";
+	if (superClassInfo != nullptr) {
+		emitter() << ", " << superClassInfo->NETName() << "(_instance)";
+	}
+	emitter() << endl;
 	emitter.brace_open();
 	emit_registration(info, emitter, false);
 	emitter.brace_close();
 
 	emitter.start_line() << info.NETName() << "::" << info.NETName() << "(::" << info.CPPName() << " &instance)" << endl;
-	emitter.start_line() << " : _instance(&instance)" << endl;
+	emitter.start_line() << " : _instance(&instance)";
+	if (superClassInfo != nullptr) {
+		emitter() << ", " << superClassInfo->NETName() << "(_instance)";
+	}
+	emitter() << endl;
 	emitter.brace_open();
 	emit_registration(info, emitter, false);
 	emitter.brace_close();
@@ -1208,6 +1246,11 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 			}
 
 			emitter.start_line() << method.generate_method_header(true) << endl;
+
+			if (method.IsCtor() && superClassInfo != nullptr) {
+				emitter.start_line() << "  : " << superClassInfo->NETName() << " ((::" << superClassInfo->CPPName() << "*) nullptr)" << endl;
+			}
+
 			emitter.brace_open();
 		} catch (runtime_error &e) {
 			cout << "  translation failed (" << method.CPPName() << "): " << e.what() << endl;
