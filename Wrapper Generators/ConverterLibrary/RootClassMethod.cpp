@@ -131,11 +131,15 @@ string RootClassMethod::generate_method_header(bool add_object_qualifier, bool u
 	// If this is an over-ride, then we need to emit the "override" keyword.
 	//
 
-	auto superClass (_parent->GetBestClassToInherrit());
-	if (superClass.size() > 0) {
-		auto superPtr (RootClassInfoCollection::GetRootClassInfo(superClass));
-		if (superPtr.has_method(this->CPPName()))
-			result << " override";
+	if (!IsStatic()) {
+		auto superClass (_parent->GetBestClassToInherrit());
+#ifdef notyet
+		if (superClass.size() > 0) {
+			auto superPtr (RootClassInfoCollection::GetRootClassInfo(superClass));
+			if (superPtr.has_method(CPPName()))
+				result << " override";
+		}
+#endif
 	}
 
 	return result.str();
