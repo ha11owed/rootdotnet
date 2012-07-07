@@ -569,28 +569,5 @@ namespace t_RootClassInfo
 		Assert::IsTrue(props[i].name() != "Mag", "Found a property with name Mag!");
 	  }
 	}
-
-	[TestMethod]
-	void TestBadMethodRemoval()
-	{
-	  /// If a function is on the "blocked" list then it shouldn't get translated!
-
-	  CPPNetTypeMapper::instance()->AddTypeMapper(new TTSimpleType("bool", "bool"));
-	  CPPNetTypeMapper::instance()->AddTypedefMapping("Bool_t", "bool");
-
-	  gSystem->Load("libRooFitCore");
-
-	  RootClassInfo cinfo ("RooAbsReal");
-	  vector<RootClassMethod> protos (cinfo.GetAllPrototypesForThisClass(true));
-	  const RootClassMethod *m = FindMethod ("evalErrorLoggingEnabled", protos);
-	  Assert::IsTrue(m != 0, "evalErrorLoggingEnabled should have been in the list!");
-	  Assert::IsTrue(m->IsStatic(), "Method should be listed as static!");
-
-	  RootClassInfo cinfo1 ("RooAbsReal");
-	  cinfo1.set_bad_method_names (WrapperConfigurationInfo::GetListOfBadMethods());
-	  vector<RootClassMethod> protos1 (cinfo1.GetAllPrototypesForThisClass(true));
-	  m = FindMethod ("evalErrorLoggingEnabled", protos1);
-	  Assert::IsTrue(m == 0, "evalErrorLoggingEnabled should not have been in the list!");
-	}
   };
 }
