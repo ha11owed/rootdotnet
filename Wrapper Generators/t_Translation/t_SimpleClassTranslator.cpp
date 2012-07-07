@@ -232,7 +232,7 @@ namespace t_Translation
 	  CPPNetTypeMapper::instance()->AddTypeMapper(new TTCPPString());
 	  trans->translate(RootClassInfo("TArray"));
 	  Assert::IsFalse(FileUtilities::FindString(".\\TestInterfaceStaticMethod\\NTArray.cpp", "Class_name"), "The method Class_Name doesn't seem to be here!");
-	  Assert::IsTrue(FileUtilities::FindString(".\\TestInterfaceStaticMethod\\NTArray.cpp", "namespace Interface{"), "The interface static impl for Class_Name is missing");
+	  Assert::IsTrue(FileUtilities::FindString(".\\TestInterfaceStaticMethod\\NTArray.cpp", "namespace Interface {"), "The interface static impl for Class_Name is missing");
 	  delete trans;
 	};
 
