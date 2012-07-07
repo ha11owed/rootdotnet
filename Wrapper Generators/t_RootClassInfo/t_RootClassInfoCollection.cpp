@@ -12,8 +12,10 @@
 #pragma managed
 
 #include <vector>
+#include <set>
 
 using std::vector;
+using std::set;
 using std::string;
 
 using namespace System;
@@ -129,15 +131,18 @@ namespace t_RootClassInfo
 
 			RootClassInfo cinfo ("RooAbsReal");
 			vector<RootClassMethod> protos (cinfo.GetAllPrototypesForThisClass(true));
-			const RootClassMethod *m = FindMethod ("evalErrorLoggingEnabled", protos);
-			Assert::IsTrue(m != 0, "evalErrorLoggingEnabled should have been in the list!");
+			const RootClassMethod *m = FindMethod ("clearEvalErrorLog", protos);
+			Assert::IsTrue(m != 0, "clearEvalErrorLog should have been in the list!");
 			Assert::IsTrue(m->IsStatic(), "Method should be listed as static!");
 
-			RootClassInfoCollection::SetBadMethods(WrapperConfigurationInfo::GetListOfBadMethods());
+			set<string> bad_methods;
+			bad_methods.insert("clearEvalErrorLog");
+			RootClassInfoCollection::SetBadMethods(bad_methods);
+
 			RootClassInfo &cinfo1 (RootClassInfoCollection::GetRootClassInfo("RooAbsReal"));
 			vector<RootClassMethod> protos1 (cinfo1.GetAllPrototypesForThisClass(true));
-			m = FindMethod ("evalErrorLoggingEnabled", protos1);
-			Assert::IsTrue(m == 0, "evalErrorLoggingEnabled should not have been in the list!");
+			m = FindMethod ("clearEvalErrorLog", protos1);
+			Assert::IsTrue(m == 0, "clearEvalErrorLog should not have been in the list!");
 		}
 	};
 }
