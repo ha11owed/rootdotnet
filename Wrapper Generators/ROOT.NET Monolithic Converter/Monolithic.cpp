@@ -71,11 +71,11 @@ int main()
 
 	/// The below lines are used during debugging in order to build a single (problem) class.
 	/// The below lines are used during debugging in order to build a single (problem) class.
-	asked_for_class_list.push_back ("TSelector");
-	asked_for_class_list.push_back ("TClass");
+	asked_for_class_list.push_back ("TH1F");
 
 	/// Make sure the libraries that are going to be needed are loaded!
 	libraries_to_load.push_back ("libCore");
+	libraries_to_load.push_back ("libHist");
 
 	output_dir = "..\\..\\Wrappers\\MonolithicROOTWrapper\\ROOTSource";
 

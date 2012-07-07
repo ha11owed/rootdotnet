@@ -24,13 +24,25 @@
     <ClCompile Include="ROOTSource\root_type_helpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ROOTSource\Globals.cpp">
+    <ClCompile Include="ROOTSource\NTArray.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
-    <ClCompile Include="ROOTSource\NTClass.cpp">
+    <ClCompile Include="ROOTSource\NTArrayF.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
-    <ClCompile Include="ROOTSource\NTDictionary.cpp">
+    <ClCompile Include="ROOTSource\NTAttFill.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTAttLine.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTAttMarker.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTH1.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTH1F.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
     <ClCompile Include="ROOTSource\NTNamed.cpp">
@@ -39,16 +51,10 @@
     <ClCompile Include="ROOTSource\NTObject.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
-    <ClCompile Include="ROOTSource\NTSelector.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTNamed.hpp">
-      <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\libTree-make_public.hpp">
       <Filter>Header Files</Filter>
@@ -56,25 +62,40 @@
     <ClInclude Include="ROOTSource\NTObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ROOTSource\Globals.hpp">
+    <ClInclude Include="ROOTSource\NTNamed.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\root_type_helpers.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\libCore-make_public.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
-    <ClInclude Include="ROOTSource\NTClass.hpp">
+    <ClInclude Include="ROOTSource\libHist-make_public.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
-    <ClInclude Include="ROOTSource\NTDictionary.hpp">
+    <ClInclude Include="ROOTSource\NTArray.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTArrayF.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTAttFill.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTAttLine.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTAttMarker.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTH1.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTH1F.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\NTNamed.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTSelector.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\root_type_helpers.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
   </ItemGroup>
