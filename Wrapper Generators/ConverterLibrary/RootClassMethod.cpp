@@ -126,6 +126,10 @@ string RootClassMethod::generate_method_header(bool add_object_qualifier, bool u
 
 	result << " (" << generate_normalized_method_arguments(use_argument_names) << ")";
 
+	//
+	// If this is an over-ride, then we need to emit the "override" keyword.
+	//
+
 	return result.str();
 }
 
