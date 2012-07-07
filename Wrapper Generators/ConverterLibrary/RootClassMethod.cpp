@@ -1,6 +1,7 @@
 #include "RootClassMethod.hpp"
 #include "RootClassMethodArg.hpp"
 #include "RootClassInfo.hpp"
+#include "RootClassInfoCollection.hpp"
 #include "CPPNetTypeMapper.hpp"
 #include "ROOTHelpers.h"
 #include "ConverterErrorLog.hpp"
@@ -129,6 +130,13 @@ string RootClassMethod::generate_method_header(bool add_object_qualifier, bool u
 	//
 	// If this is an over-ride, then we need to emit the "override" keyword.
 	//
+
+	auto superClass (_parent->GetBestClassToInherrit());
+	if (superClass.size() > 0) {
+		auto superPtr (RootClassInfoCollection::GetRootClassInfo(superClass));
+		if (superPtr.has_method(this->CPPName()))
+			result << " override";
+	}
 
 	return result.str();
 }
