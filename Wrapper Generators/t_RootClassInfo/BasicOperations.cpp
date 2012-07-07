@@ -137,6 +137,10 @@ namespace t_RootClassInfo
 	  delete cinfo;
 	}
 
+#ifdef notanymore
+	// This GetDragType used to be implemented by both sub-classes, but ROOT has cleaned up their code. Nice! The result is this
+	// test is no longer meanful. We'll have to do something else when a bug creeps in later.
+
 	///
 	/// GetDragType comes from two sub-classes. How do we pick either one??? Very hard to know! So, we have to "bail".
 	///
@@ -168,6 +172,7 @@ namespace t_RootClassInfo
 		Assert::IsTrue("EDragType" == m->return_type(), "Incorrect return type");
 		
 	}
+#endif
 
 	[TestMethod]
 	void TypeMapLookups()
