@@ -935,6 +935,11 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	auto fields (info.GetAllDataFields(true));
 	for (int i = 0; i < fields.size(); i++) {
 		const RootClassField &f(fields[i]);
+
+		// Make sure this field is in the proper class!
+		if (inh_classes.find(f.ClassOfFieldDefinition()) == inh_classes.end())
+			continue;
+
 		emitter.start_line() << "property " << f.NETType() << " " << f.NETName() << " {" << endl;
 		if (f.GetterOK()) {
 			emitter.start_line() << "  virtual " << f.NETType() << " get ();" << endl;
@@ -1264,9 +1269,14 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 	set<string> written_methods;
 	vector<RootClassMethod> arrayOperators;
 	const vector<RootClassMethod> &class_protos (info.GetAllPrototypesForThisClass(true));
+	auto inh_classes(GetNonInherritedClasses(info));
 
 	for (unsigned int i = 0; i < class_protos.size(); i++) {
 		const RootClassMethod &method = class_protos[i];
+
+		// Make sure this is a method we want to be implementing here!
+		if (inh_classes.find(method.ClassOfMethodDefinition()) == inh_classes.end())
+			continue;
 
 		if (method.IsIndexer()) {
 			arrayOperators.push_back(method);
@@ -1327,12 +1337,20 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 	const vector<RootClassProperty> &properties (info.GetProperties());
 	for (vector<RootClassProperty>::const_iterator itr = properties.begin(); itr != properties.end(); itr++) {
 		if (itr->isGetter()) {
+			// Make sure this is a method we want to be implementing here!
+			if (inh_classes.find(itr->getter_method()->ClassOfMethodDefinition()) == inh_classes.end())
+				continue;
+
 			emitter.start_line() << itr->property_type() << " " << info.NETName() << "::" << itr->name() << "::get ()" << endl;
 			emitter.brace_open();
 			emit_function_body(*(itr->getter_method()), info, emitter);
 			emitter.brace_close();
 		}
 		if (itr->isSetter()) {
+			// Make sure this is a method we want to be implementing here!
+			if (inh_classes.find(itr->setter_method()->ClassOfMethodDefinition()) == inh_classes.end())
+				continue;
+
 			emitter.start_line() << "void " << info.NETName() << "::" << itr->name() << "::set (" << itr->property_type()
 				<< " " << itr->setter_method()->arguments()[0].get_argname()  << ")" << endl;
 			emitter.brace_open();
