@@ -120,6 +120,7 @@
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <Private>false</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -140,6 +141,7 @@
     <ClCompile Include="MethodInheritance.cpp" />
     <ClCompile Include="MethodOrderingOperator.cpp" />
     <ClCompile Include="t_ClassInheritance.cpp" />
+    <ClCompile Include="t_Methods.cpp" />
     <ClCompile Include="t_RootClassInfoCollection.cpp" />
     <ClCompile Include="t_SpecialCases.cpp" />
   </ItemGroup>
