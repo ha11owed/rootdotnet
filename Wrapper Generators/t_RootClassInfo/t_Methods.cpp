@@ -107,5 +107,25 @@ namespace t_RootClassInfo
 			Assert::IsTrue(methods[singleArgMethod]->IsDefaultOverride(), "Single arg method is inherrited");
 			Assert::IsFalse(methods[doubleArgMethod]->IsDefaultOverride(), "Double arg method is not inherrited");
 		}
+
+		[TestMethod]
+		void TestMethodIsOverride2()
+		{
+			InitEverything();
+
+			RootClassInfo *cinfo = new RootClassInfo ("TInterpreter");
+			auto methods = FindMethods("Execute", cinfo->GetAllPrototypesForThisClass(true));
+			Assert::IsTrue(methods.size() == 2, "Expected two versions of execute");
+
+			auto m1name = methods[0]->generate_normalized_method_header();
+			auto m2name = methods[1]->generate_normalized_method_header();
+
+			bool isArrayOne = m1name.find("array") == m1name.npos;
+			auto arrayOne = isArrayOne ? methods[1] : methods[0];
+			auto nonArrayOne = isArrayOne ? methods[0] : methods[1];
+
+			Assert::IsTrue(nonArrayOne->IsDefaultOverride(), "2 arg should be inherrited");
+			Assert::IsTrue(arrayOne->IsDefaultOverride(), "3 arg should be inherrited");
+		}
 	};
 }

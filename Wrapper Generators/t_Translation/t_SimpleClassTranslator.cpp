@@ -339,6 +339,7 @@ namespace t_Translation
 		[TestMethod]
 		void TestCovarGeneration()
 		{
+			WrapperConfigurationInfo::InitTypeTranslators();
 			CPPNetTypeMapper::instance()->AddTypeMapper(new TTROOTClass("TH2", true));
 			CPPNetTypeMapper::instance()->AddTypeMapper(new TTROOTClass("TH2D", true));
 			CPPNetTypeMapper::instance()->AddTypeMapper(new TTROOTClass("TProfile", true));

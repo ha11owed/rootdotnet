@@ -582,7 +582,7 @@ bool RootClassMethod::is_equal(const RootClassMethod &other, bool consider_retur
 
   /// Make sure the argument types are the same!
   for (int i = 0; i < arguments().size(); i++) {
-	if (arguments()[i].CPPTypeName() != other.arguments()[i].CPPTypeName()) {
+	if (arguments()[i].NETTypeName() != other.arguments()[i].NETTypeName()) {
 	  return false;
 	}
   }

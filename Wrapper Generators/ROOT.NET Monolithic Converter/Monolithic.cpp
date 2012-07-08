@@ -77,6 +77,8 @@ int main()
 	asked_for_class_list.push_back ("TListIter");
 	asked_for_class_list.push_back ("TIter");
 	asked_for_class_list.push_back ("TClonesArray");
+	asked_for_class_list.push_back ("TInterpreter");
+	asked_for_class_list.push_back ("TProfile2D");
 
 	/// Make sure the libraries that are going to be needed are loaded!
 	libraries_to_load.push_back ("libCore");

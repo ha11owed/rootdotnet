@@ -4,6 +4,8 @@
 #include "RootClassInfo.hpp"
 #include "RootClassMethod.hpp"
 #include "TTSimpleType.hpp"
+#include "TTROOTClass.hpp"
+#include "WrapperConfigurationInfo.hpp"
 #include "RootClassInfoCollection.hpp"
 
 #include "TApplication.h"
@@ -101,6 +103,9 @@ namespace t_RootClassInfo
 		void TestReflexiveEquality()
 		{
 			/// Make sure the same method is, uh, the same! :-)
+			WrapperConfigurationInfo::InitTypeTranslators();
+			CPPNetTypeMapper::instance()->AddTypeMapper(new TTROOTClass("TObject", true, "&"));
+
 			RootClassInfo *cinfo = new RootClassInfo ("TNamed");
 			vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
 
@@ -140,6 +145,8 @@ namespace t_RootClassInfo
 		[TestMethod]
 		void TestArgTypesDifferent()
 		{
+			WrapperConfigurationInfo::InitTypeTranslators();
+			CPPNetTypeMapper::instance()->AddTypeMapper(new TTROOTClass("TMethod", true, "*"));
 			RootClassInfo *cinfo = new RootClassInfo ("TObject");
 			vector<RootClassMethod> protos (cinfo->GetPrototypesImplementedByThisClass());
 
