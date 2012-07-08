@@ -96,13 +96,16 @@ public:
 
 	const CPPNetTypeMapper::TypeTranslator *type_translator(void) const;
 
+	// Return if static. We are static only if everyone is static!!
 	bool isStatic (void) const
 	{
-		if (_setter)
-			return _setter_m.IsStatic();
+		if (_setter & _getter)
+			return _setter_m.IsStatic() && _getter_m.IsStatic();
+
 		if (_getter)
 			return _getter_m.IsStatic();
-		return false;
+
+		return _setter_m.IsStatic();
 	}
 
 private:

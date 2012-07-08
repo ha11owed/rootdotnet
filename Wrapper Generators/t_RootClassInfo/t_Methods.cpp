@@ -8,6 +8,7 @@
 #include "TVectorArray.hpp"
 #include "TPointerSimpleType.hpp"
 #include "WrapperConfigurationInfo.hpp"
+#include "TTROOTClass.hpp"
 
 #include "TApplication.h"
 #include "TSystem.h"
@@ -17,8 +18,11 @@ using namespace System::Text;
 using namespace System::Collections::Generic;
 using namespace	Microsoft::VisualStudio::TestTools::UnitTesting;
 
+#include <algorithm>
+
 using std::string;
 using std::vector;
+using std::find_if;
 
 namespace t_RootClassInfo
 {
@@ -126,6 +130,49 @@ namespace t_RootClassInfo
 
 			Assert::IsTrue(nonArrayOne->IsDefaultOverride(), "2 arg should be inherrited");
 			Assert::IsTrue(arrayOne->IsDefaultOverride(), "3 arg should be inherrited");
+		}
+
+		///
+		/// Find a property from the full list of properties
+		///
+		const RootClassProperty *FindProperty (const string &pname, const vector<RootClassProperty> properties)
+		{
+			for (int i = 0; i < properties.size(); i++) {
+				if (pname == properties[i].name())
+					return &(properties[i]);
+			}
+			return nullptr;
+		}
+
+		[TestMethod]
+		void TestPropertyIsNotStaticWhenBothPresent()
+		{
+			InitEverything();
+			CPPNetTypeMapper::instance()->AddTypeMapper(new TTROOTClass("TObject", true));
+			CPPNetTypeMapper::instance()->AddTypeMapper(new TTROOTClass("TObject", true, "*"));
+
+			RootClassInfo *cinfo = new RootClassInfo ("TRef");
+			auto propGet = FindProperty("Object", cinfo->GetProperties());
+			Assert::IsFalse(propGet == nullptr, "Expected to find the object property");
+			Assert::IsFalse(propGet->isStatic(), "Expected Object to be a local, not a static, property");
+			delete cinfo;
+		}
+
+		[TestMethod]
+		void TestPropertyStatic()
+		{
+			InitEverything();
+			RootClassInfo *cinfo = new RootClassInfo("TObject");
+
+			auto propStatic = FindProperty("ObjectStat", cinfo->GetProperties());
+			Assert::IsFalse(propStatic == nullptr, "Could not find ObjectStat");
+			Assert::IsTrue(propStatic->isStatic(), "ObjectStat is static");
+
+			auto propLocal = FindProperty("Name", cinfo->GetProperties());
+			Assert::IsFalse(propLocal == nullptr, "COuld not find Name");
+			Assert::IsFalse(propLocal->isStatic(), "Name should be local property");
+
+			delete cinfo;
 		}
 	};
 }
