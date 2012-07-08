@@ -39,6 +39,8 @@ using std::inserter;
 using std::mem_fun_ref;
 using std::bind2nd;
 using std::copy;
+using std::copy_if;
+using std::find_if;
 
 /// The normal initializer
 RootClassInfo::RootClassInfo(const std::string &name)
@@ -1190,7 +1192,6 @@ const std::vector<RootClassProperty> &RootClassInfo::GetProperties(void) const
 ///
 /// See if there exists a method with this property name
 ///
-
 bool RootClassInfo::has_method (const std::string &method_name) const
 {
 	auto m = this->GetAllPrototypesForThisClass(true);
@@ -1200,5 +1201,16 @@ bool RootClassInfo::has_method (const std::string &method_name) const
 		return true;
 	}
 	return false;
+}
+
+///
+/// Return a list of all methods that satisfy a particular name.
+///
+vector<RootClassMethod> RootClassInfo::methods_of_name(const std::string &method_name) const
+{
+	vector<RootClassMethod> result;
+	auto m = GetAllPrototypesForThisClass(true);
+	copy_if(m.begin(), m.end(), back_inserter(result), [&] (const RootClassMethod &m) { return m.NETName() == method_name;});
+	return result;
 }
 

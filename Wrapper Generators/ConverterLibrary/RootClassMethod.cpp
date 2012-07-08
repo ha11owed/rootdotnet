@@ -15,6 +15,7 @@
 #include <sstream>
 #include <cassert>
 #include <locale>
+#include <algorithm>
 
 using std::locale;
 using std::isalpha;
@@ -22,6 +23,7 @@ using std::string;
 using std::ostringstream;
 using std::vector;
 using std::set;
+using std::find_if;
 
 RootClassMethod::RootClassMethod(void)
 : _root_method_info (0), _args_good (false), _is_ambiguous(false), _is_hidden(false), _skip_method (false), _covar_method(false),
@@ -153,9 +155,18 @@ bool RootClassMethod::IsDefaultOverride() const
 		}
 	}
 
-	if (_superclass_ptr != nullptr)
-		if (_superclass_ptr->has_method(CPPName()))
-			return true;
+	//
+	// Now, check to see if the method exists in the super class. If so, see
+	// if the exact method exists.
+	//
+	if (_superclass_ptr != nullptr) {
+		auto methods (_superclass_ptr->methods_of_name(CPPName()));
+		const auto me = *this;
+		auto found = find_if(methods.begin(), methods.end(), [&] (const RootClassMethod &method) {
+			return method.is_equal(me);
+		});
+		return found != methods.end();
+	}
 
 	return false;
 }

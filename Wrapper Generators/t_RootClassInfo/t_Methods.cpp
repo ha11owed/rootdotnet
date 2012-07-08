@@ -5,6 +5,9 @@
 #include "RootClassMethod.hpp"
 #include "CPPNetTypeMapper.hpp"
 #include "TTSimpleType.hpp"
+#include "TVectorArray.hpp"
+#include "TPointerSimpleType.hpp"
+#include "WrapperConfigurationInfo.hpp"
 
 #include "TApplication.h"
 #include "TSystem.h"
@@ -56,6 +59,17 @@ namespace t_RootClassInfo
 			return 0;
 		}
 
+		const vector<const RootClassMethod*> FindMethods(const string &mname, const vector<RootClassMethod> &protos)
+		{
+			vector<const RootClassMethod*> results;
+			for (int i = 0; i < protos.size(); i++) {
+				if (protos[i].CPPName() == mname) {
+					results.push_back(&protos[i]);
+				}
+			}
+			return results;
+		}
+
 		[TestMethod]
 		void TestMethodIsVirtual()
 		{
@@ -69,6 +83,29 @@ namespace t_RootClassInfo
 			auto method = FindMethod("GetAt", cinfo->GetAllPrototypesForThisClass(true));
 			Assert::IsFalse(method == nullptr, "We shoudl have a method");
 			Assert::IsTrue(method->IsVirtual(), "Method should be marked virtual");
+		}
+
+		void InitEverything()
+		{
+			WrapperConfigurationInfo::InitTypeTranslators();
+		}
+
+		[TestMethod]
+		void TestMethodIsOverride()
+		{
+			InitEverything();
+
+			RootClassInfo *cinfo = new RootClassInfo ("TArrayF");
+			auto methods = FindMethods("Set", cinfo->GetAllPrototypesForThisClass(true));
+			Assert::IsTrue(methods.size() == 2, "Expected two different set methods");
+
+			// Get the single arg and double arg method.
+			int singleArgMethod = methods[0]->generate_normalized_method_header().find(",") == string::npos ? 0 : 1;
+			int doubleArgMethod = singleArgMethod == 0 ? 1 : 0;
+
+			// Single arg method is inheerited
+			Assert::IsTrue(methods[singleArgMethod]->IsDefaultOverride(), "Single arg method is inherrited");
+			Assert::IsFalse(methods[doubleArgMethod]->IsDefaultOverride(), "Double arg method is not inherrited");
 		}
 	};
 }
