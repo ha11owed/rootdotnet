@@ -115,6 +115,7 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="ROOTSource\NTArray.cpp" />
+    <ClCompile Include="ROOTSource\NTArrayD.cpp" />
     <ClCompile Include="ROOTSource\NTArrayF.cpp" />
     <ClCompile Include="ROOTSource\NTAttFill.cpp" />
     <ClCompile Include="ROOTSource\NTAttLine.cpp" />
@@ -125,6 +126,9 @@
     <ClCompile Include="ROOTSource\NTDictionary.cpp" />
     <ClCompile Include="ROOTSource\NTH1.cpp" />
     <ClCompile Include="ROOTSource\NTH1F.cpp" />
+    <ClCompile Include="ROOTSource\NTH2.cpp" />
+    <ClCompile Include="ROOTSource\NTH2D.cpp" />
+    <ClCompile Include="ROOTSource\NTInterpreter.cpp" />
     <ClCompile Include="ROOTSource\NTIter.cpp" />
     <ClCompile Include="ROOTSource\NTIterator.cpp" />
     <ClCompile Include="ROOTSource\NTList.cpp" />
@@ -132,6 +136,7 @@
     <ClCompile Include="ROOTSource\NTNamed.cpp" />
     <ClCompile Include="ROOTSource\NTObjArray.cpp" />
     <ClCompile Include="ROOTSource\NTObject.cpp" />
+    <ClCompile Include="ROOTSource\NTProfile2D.cpp" />
     <ClCompile Include="ROOTSource\NTSeqCollection.cpp" />
     <ClCompile Include="ROOTSource\root_type_helpers.cpp" />
   </ItemGroup>
@@ -141,6 +146,7 @@
     <ClInclude Include="ROOTSource\libHist-make_public.hpp" />
     <ClInclude Include="ROOTSource\libTree-make_public.hpp" />
     <ClInclude Include="ROOTSource\NTArray.hpp" />
+    <ClInclude Include="ROOTSource\NTArrayD.hpp" />
     <ClInclude Include="ROOTSource\NTArrayF.hpp" />
     <ClInclude Include="ROOTSource\NTAttFill.hpp" />
     <ClInclude Include="ROOTSource\NTAttLine.hpp" />
@@ -151,6 +157,9 @@
     <ClInclude Include="ROOTSource\NTDictionary.hpp" />
     <ClInclude Include="ROOTSource\NTH1.hpp" />
     <ClInclude Include="ROOTSource\NTH1F.hpp" />
+    <ClInclude Include="ROOTSource\NTH2.hpp" />
+    <ClInclude Include="ROOTSource\NTH2D.hpp" />
+    <ClInclude Include="ROOTSource\NTInterpreter.hpp" />
     <ClInclude Include="ROOTSource\NTIter.hpp" />
     <ClInclude Include="ROOTSource\NTIterator.hpp" />
     <ClInclude Include="ROOTSource\NTList.hpp" />
@@ -158,6 +167,7 @@
     <ClInclude Include="ROOTSource\NTNamed.hpp" />
     <ClInclude Include="ROOTSource\NTObjArray.hpp" />
     <ClInclude Include="ROOTSource\NTObject.hpp" />
+    <ClInclude Include="ROOTSource\NTProfile2D.hpp" />
     <ClInclude Include="ROOTSource\NTSeqCollection.hpp" />
     <ClInclude Include="ROOTSource\root_type_helpers.hpp" />
   </ItemGroup>
