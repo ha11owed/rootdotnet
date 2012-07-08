@@ -96,6 +96,15 @@ public:
 
 	const CPPNetTypeMapper::TypeTranslator *type_translator(void) const;
 
+	bool isStatic (void) const
+	{
+		if (_setter)
+			return _setter_m.IsStatic();
+		if (_getter)
+			return _getter_m.IsStatic();
+		return false;
+	}
+
 private:
 	std::string _property_name;
 	std::string _property_type;

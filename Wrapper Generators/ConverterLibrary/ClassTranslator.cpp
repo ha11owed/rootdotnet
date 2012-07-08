@@ -620,7 +620,10 @@ void ClassTranslator::generate_interface (RootClassInfo &class_info, SourceEmitt
 
 	const vector<RootClassProperty> &properties (class_info.GetProperties());
 	for (vector<RootClassProperty>::const_iterator itr = properties.begin(); itr != properties.end(); itr++) {
-		emitter.start_line() << "property " << itr->property_type() << " " << itr->name() << " {" << endl;
+		emitter.start_line();
+		if (itr->isStatic())
+			emitter() << "static ";
+		emitter() << "property " << itr->property_type() << " " << itr->name() << " {" << endl;
 		if (itr->isGetter()) {
 			emitter.start_line() << "  " << itr->property_type() << " get ();" << endl;
 		}
@@ -915,15 +918,36 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 
 	const vector<RootClassProperty> &properties (info.GetProperties());
 	for (vector<RootClassProperty>::const_iterator itr = properties.begin(); itr != properties.end(); itr++) {
-		emitter.start_line() << "property " << itr->property_type() << " " << itr->name() << " {" << endl;
-		if (itr->isGetter()) {
-			emitter.start_line() << "  virtual " << itr->property_type() << " get ()";
+
+		// Make sure at least one of these guys is defined in this thing
+		bool getter_good = itr->isGetter() && inh_classes.find(itr->getter_method()->ClassOfMethodDefinition()) != inh_classes.end();
+		bool setter_good = itr->isSetter() && inh_classes.find(itr->setter_method()->ClassOfMethodDefinition()) != inh_classes.end();
+
+		if (!getter_good && !setter_good)
+			continue;
+
+		// Emit the proper getters and setters
+
+		emitter.start_line();
+		if (itr->isStatic())
+			emitter() << "static ";
+		emitter() << "property " << itr->property_type() << " " << itr->name() << " {" << endl;
+
+		if (getter_good) {
+			emitter.start_line() << "  ";
+			if (!itr->isStatic())
+				emitter() << "virtual ";
+			emitter() << itr->property_type() << " get ()";
 			if (itr->getter_method()->IsDefaultOverride())
 				emitter() << " override";
 			emitter() << ";" << endl;
 		}
-		if (itr->isSetter()) {
-			emitter.start_line() << "  virtual void set (" << itr->property_type() << " value)";
+
+		if (setter_good) {
+			emitter.start_line() << "  ";
+			if (!itr->isStatic())
+				emitter() << "virtual ";
+			emitter() << "void set (" << itr->property_type() << " value)";
 			if (itr->setter_method()->IsDefaultOverride())
 				emitter() << " override";
 			emitter() << ";" << endl;
