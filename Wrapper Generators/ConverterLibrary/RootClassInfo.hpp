@@ -109,6 +109,9 @@ private:
 	mutable std::vector<std::string> _inherited_classes_deep;
 	mutable bool _inherited_deep_good;
 
+	mutable std::string _best_class_to_inherrit;
+	mutable bool _best_class_to_inherrit_good;
+
 	std::vector<RootClassMethod> RootClassInfo::GetAllPrototypesForThisClassImpl (bool clean) const;
 	mutable std::vector<RootClassMethod> _methods;
 	mutable bool _methods_good;

@@ -45,7 +45,8 @@ RootClassInfo::RootClassInfo(const std::string &name)
 : _inherited_good (false), _name(name), _methods_good (false), _methods_clean_good(false),
 _referenced_classes_good(false), _inherited_deep_good(false), _netname("N" + name),
 _enum_info_valid (false), _class_properties_good(false), _methods_implemented_good(false),
-_methods_implemented_good_clean(false), _fields_good(false), _fields_clean_good(false), _fields_for_class_good(false)
+_methods_implemented_good_clean(false), _fields_good(false), _fields_clean_good(false), _fields_for_class_good(false),
+_best_class_to_inherrit_good(false)
 {
 }
 
@@ -54,7 +55,8 @@ RootClassInfo::RootClassInfo()
 : _inherited_good (false), _methods_good (false),
 _referenced_classes_good(false), _inherited_deep_good(false),
 _enum_info_valid (false), _class_properties_good(false), _methods_implemented_good(false),
-_methods_implemented_good_clean(false), _fields_good(false), _fields_clean_good(false), _fields_for_class_good (false)
+_methods_implemented_good_clean(false), _fields_good(false), _fields_clean_good(false), _fields_for_class_good (false),
+_best_class_to_inherrit_good(false)
 {
 }
 
@@ -93,11 +95,19 @@ const vector<string> &RootClassInfo::GetDirectInheritedClasses(void) const
 ///
 string RootClassInfo::GetBestClassToInherrit(void) const
 {
+	if (_best_class_to_inherrit_good)
+		return _best_class_to_inherrit;
+	_best_class_to_inherrit_good = true;
+
 	auto myParents (GetDirectInheritedClasses());
-	if (myParents.size() == 0)
+	if (myParents.size() == 0) {
+		_best_class_to_inherrit = "";
 		return "";
-	if (myParents.size() == 1)
+	}
+	if (myParents.size() == 1) {
+		_best_class_to_inherrit = myParents[0];
 		return myParents[0];
+	}
 
 	// Now we have to look at how many methods are in each of the various subclasses.
 	string bestClass;
@@ -114,6 +124,7 @@ string RootClassInfo::GetBestClassToInherrit(void) const
 		}
 	});
 
+	_best_class_to_inherrit = bestClass;
 	return bestClass;
 }
 

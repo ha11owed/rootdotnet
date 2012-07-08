@@ -25,12 +25,13 @@ using std::set;
 
 RootClassMethod::RootClassMethod(void)
 : _root_method_info (0), _args_good (false), _is_ambiguous(false), _is_hidden(false), _skip_method (false), _covar_method(false),
-  _parent(0)
+  _parent(0), _superclass_ptr_good(false)
 {
 }
 
 RootClassMethod::RootClassMethod(TMethod *method, const RootClassInfo *parent_class, int max_args)
-: _root_method_info (method), _parent (parent_class), _args_good(false), _is_ambiguous(false), _is_hidden(false), _is_user_conversion_good(false), _skip_method(false), _covar_method(false)
+: _root_method_info (method), _parent (parent_class), _args_good(false), _is_ambiguous(false), _is_hidden(false), _is_user_conversion_good(false), _skip_method(false), _covar_method(false),
+_superclass_ptr_good(false)
 {
 	if (max_args < 0) {
 		_number_args = method->GetNargs();
@@ -129,18 +130,24 @@ string RootClassMethod::generate_method_header(bool add_object_qualifier, bool u
 
 	//
 	// If this is an over-ride, then we need to emit the "override" keyword.
+	// We do a bunch of caching here b/c it cna be a little expensive doing all the lookups.
 	//
 
-	if (!IsStatic()) {
-		auto superClass (_parent->GetBestClassToInherrit());
-#ifdef notyet
-		if (superClass.size() > 0) {
-			auto superPtr (RootClassInfoCollection::GetRootClassInfo(superClass));
-			if (superPtr.has_method(CPPName()))
-				result << " override";
+	if (!_superclass_ptr_good) {
+		_superclass_ptr_good = true;
+		_superclass_ptr = nullptr;
+
+		if (!IsStatic()) {
+			auto superClass (_parent->GetBestClassToInherrit());
+			if (superClass.size() > 0) {
+				_superclass_ptr = RootClassInfoCollection::GetRootClassInfoPtr(superClass);
+			}
 		}
-#endif
 	}
+
+	if (_superclass_ptr != nullptr)
+		if (_superclass_ptr->has_method(CPPName()))
+			result << " override";
 
 	return result.str();
 }

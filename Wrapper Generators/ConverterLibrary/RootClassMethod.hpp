@@ -150,6 +150,9 @@ private:
 	mutable bool _args_good;
 	mutable std::vector<RootClassMethodArg> _args;
 
+	mutable bool _superclass_ptr_good;
+	mutable RootClassInfo *_superclass_ptr;
+
 	/// Returns true if this looks like a root class...
 	bool is_root_class (const std::string &class_name) const;
 
