@@ -51,6 +51,30 @@
     <ClCompile Include="ROOTSource\NTObject.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
+    <ClCompile Include="ROOTSource\NTList.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTSeqCollection.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTClass.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTCollection.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTDictionary.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTIterator.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTListIter.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTIter.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -96,6 +120,30 @@
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\NTNamed.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTList.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTSeqCollection.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTClass.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTCollection.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTDictionary.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTIterator.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTListIter.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NTIter.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
   </ItemGroup>

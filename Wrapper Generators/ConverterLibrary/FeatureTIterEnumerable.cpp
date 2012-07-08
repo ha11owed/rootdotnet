@@ -29,10 +29,6 @@ bool FeatureTIterEnumerable::is_applicable (const RootClassInfo &info)
 	if (info.CPPName() == "TIter")
 		return true;
 
-	auto p = info.GetInheritedClassesDeep();
-	if (find(p.begin(), p.end(), "TIter") != p.end())
-		return true;
-
 	return false;
 }
 

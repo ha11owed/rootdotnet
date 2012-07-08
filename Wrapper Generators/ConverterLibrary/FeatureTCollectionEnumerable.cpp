@@ -32,10 +32,6 @@ bool FeatureTCollectionEnumerable::is_applicable (const RootClassInfo &info)
 	if (info.CPPName() == "TCollection")
 		return true;
 
-	auto p = info.GetInheritedClassesDeep();
-	if (find(p.begin(), p.end(), "TCollection") != p.end())
-		return true;
-
 	return false;
 }
 
