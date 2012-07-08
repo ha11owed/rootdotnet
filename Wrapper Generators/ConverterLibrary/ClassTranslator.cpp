@@ -581,9 +581,15 @@ void ClassTranslator::generate_interface (RootClassInfo &class_info, SourceEmitt
 
 	set<string> already_done_headers;
 	vector<RootClassMethod> indexerOperators;
+	auto inh_classes(GetNonInherritedClasses(class_info));
+
 	const vector<RootClassMethod> class_protos (class_info.GetAllPrototypesForThisClass(true));
 	for (unsigned int i = 0; i < class_protos.size(); i++) {
 		const RootClassMethod &method = class_protos[i];
+
+		// Make sure what we are looking at should be in here!
+		if (inh_classes.find(method.ClassOfMethodDefinition()) == inh_classes.end())
+			continue;
 
 		/// If it is an indexer, keep it for later
 		if (method.IsIndexer()) {
@@ -620,14 +626,21 @@ void ClassTranslator::generate_interface (RootClassInfo &class_info, SourceEmitt
 
 	const vector<RootClassProperty> &properties (class_info.GetProperties());
 	for (vector<RootClassProperty>::const_iterator itr = properties.begin(); itr != properties.end(); itr++) {
+		// Make sure at least one of these guys is defined in this thing
+		bool getter_good = itr->isGetter() && inh_classes.find(itr->getter_method()->ClassOfMethodDefinition()) != inh_classes.end();
+		bool setter_good = itr->isSetter() && inh_classes.find(itr->setter_method()->ClassOfMethodDefinition()) != inh_classes.end();
+
+		if (!getter_good && !setter_good)
+			continue;
+
 		emitter.start_line();
 		if (itr->isStatic())
 			emitter() << "static ";
 		emitter() << "property " << itr->property_type() << " " << itr->name() << " {" << endl;
-		if (itr->isGetter()) {
+		if (getter_good) {
 			emitter.start_line() << "  " << itr->property_type() << " get ();" << endl;
 		}
-		if (itr->isSetter()) {
+		if (setter_good) {
 			emitter.start_line() << "  void set (" << itr->property_type() << " value);" << endl;
 		}
 		emitter.start_line() << "}" << endl;
@@ -732,6 +745,38 @@ void ClassTranslator::generate_interface_static_methods (RootClassInfo &class_in
 		emitter() << ");" << endl;
 		emitter.brace_close();
 	}
+
+	///
+	/// Next, do the properties for the interface that have been declared static.
+	///
+
+	const vector<RootClassProperty> &properties (class_info.GetProperties());
+	for (vector<RootClassProperty>::const_iterator itr = properties.begin(); itr != properties.end(); itr++) {
+		if (!itr->isStatic())
+			continue;
+
+		// Make sure at least one of these guys is defined in this thing
+		bool getter_good = itr->isGetter() && inh_classes.find(itr->getter_method()->ClassOfMethodDefinition()) != inh_classes.end();
+		bool setter_good = itr->isSetter() && inh_classes.find(itr->setter_method()->ClassOfMethodDefinition()) != inh_classes.end();
+
+		if (!setter_good && !getter_good)
+			continue;
+
+		if (getter_good) {
+			emitter.start_line() << itr->property_type() << " " << class_info.NETName() << "::" << itr->name() << "::get ()" << endl;
+			emitter.brace_open();
+			emit_function_body(*(itr->getter_method()), class_info, emitter);
+			emitter.brace_close();
+		}
+		if (setter_good) {
+			emitter.start_line() << "void " << class_info.NETName() << "::" << itr->name() << "::set (" << itr->property_type()
+				<< " " << itr->setter_method()->arguments()[0].get_argname()  << ")" << endl;
+			emitter.brace_open();
+			emit_function_body(*(itr->setter_method()), class_info, emitter);
+			emitter.brace_close();
+		}
+	}
+
 
 	///
 	/// Great. Now we can close it out
@@ -1366,21 +1411,17 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 
 	const vector<RootClassProperty> &properties (info.GetProperties());
 	for (vector<RootClassProperty>::const_iterator itr = properties.begin(); itr != properties.end(); itr++) {
-		if (itr->isGetter()) {
-			// Make sure this is a method we want to be implementing here!
-			if (inh_classes.find(itr->getter_method()->ClassOfMethodDefinition()) == inh_classes.end())
-				continue;
+		// Make sure at least one of these guys is defined in this thing
+		bool getter_good = itr->isGetter() && inh_classes.find(itr->getter_method()->ClassOfMethodDefinition()) != inh_classes.end();
+		bool setter_good = itr->isSetter() && inh_classes.find(itr->setter_method()->ClassOfMethodDefinition()) != inh_classes.end();
 
+		if (getter_good) {
 			emitter.start_line() << itr->property_type() << " " << info.NETName() << "::" << itr->name() << "::get ()" << endl;
 			emitter.brace_open();
 			emit_function_body(*(itr->getter_method()), info, emitter);
 			emitter.brace_close();
 		}
-		if (itr->isSetter()) {
-			// Make sure this is a method we want to be implementing here!
-			if (inh_classes.find(itr->setter_method()->ClassOfMethodDefinition()) == inh_classes.end())
-				continue;
-
+		if (setter_good) {
 			emitter.start_line() << "void " << info.NETName() << "::" << itr->name() << "::set (" << itr->property_type()
 				<< " " << itr->setter_method()->arguments()[0].get_argname()  << ")" << endl;
 			emitter.brace_open();
