@@ -685,6 +685,7 @@ void ClassTranslator::generate_interface_static_methods (RootClassInfo &class_in
 	/// Work only on static methods here...
 	///
 
+	auto inh_classes(GetNonInherritedClasses(class_info));
 	set<string> already_done_headers;
 	const vector<RootClassMethod> &protos (class_info.GetAllPrototypesForThisClass(true));
 	for (unsigned int i = 0; i < protos.size(); i++) {
@@ -692,6 +693,8 @@ void ClassTranslator::generate_interface_static_methods (RootClassInfo &class_in
 		if (!method.IsStatic() || !method.IsGoodForInterface()) {
 			continue;
 		}
+		if (inh_classes.find(method.ClassOfMethodDefinition()) == inh_classes.end())
+			continue;
 
 		/// Generate and write out the header.
 
