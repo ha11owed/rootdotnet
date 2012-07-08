@@ -669,7 +669,11 @@ void ClassTranslator::generate_interface (RootClassInfo &class_info, SourceEmitt
 
 	vector<CPPIndexerInfo> indexers (SortIndexers(indexerOperators));
 	for (unsigned int i = 0; i < indexers.size(); i++) {
+
 		CPPIndexerInfo &info (indexers[i]);
+		if (inh_classes.find(info._method->ClassOfMethodDefinition()) == inh_classes.end())
+			continue;
+
 		emitter.start_line() << "property " << info._return_type->net_return_type_name() << " default[" << info._index_type->net_interface_name() << "] {" << endl;
 		emitter.start_line() << "  " << info._return_type->net_return_type_name() << " get (" << info._index_type->net_interface_name() << " index);" << endl;
 		if (info._is_setter) {
@@ -1032,10 +1036,21 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	vector<CPPIndexerInfo> indexers (SortIndexers(arrayOperators));
 	for (unsigned int i = 0; i < indexers.size(); i++) {
 		CPPIndexerInfo &info (indexers[i]);
+
+		if (inh_classes.find(info._method->ClassOfMethodDefinition()) == inh_classes.end())
+			continue;
+
 		emitter.start_line() << "property " << info._return_type->net_return_type_name() << " default[" << info._index_type->net_interface_name() << "] {" << endl;
-		emitter.start_line() << "  virtual " << info._return_type->net_return_type_name() << " get (" << info._index_type->net_interface_name() << " index);" << endl;
+		emitter.start_line() << "  virtual " << info._return_type->net_return_type_name() << " get (" << info._index_type->net_interface_name() << " index)";
+		if (info._method->IsDefaultOverride())
+			emitter() << " override";
+		emitter() << ";" << endl;
+
 		if (info._is_setter) {
-			emitter.start_line() << "  virtual void set (" << info._index_type->net_interface_name() << " index, " << info._return_type->net_return_type_name() << " value);" << endl;
+			emitter.start_line() << "  virtual void set (" << info._index_type->net_interface_name() << " index, " << info._return_type->net_return_type_name() << " value)";
+			if (info._method->IsDefaultOverride())
+				emitter() << " override";
+			emitter() << ";" << endl;
 		}
 		emitter.start_line() << "}" << endl;
 	}
