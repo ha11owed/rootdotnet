@@ -914,10 +914,16 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	for (vector<RootClassProperty>::const_iterator itr = properties.begin(); itr != properties.end(); itr++) {
 		emitter.start_line() << "property " << itr->property_type() << " " << itr->name() << " {" << endl;
 		if (itr->isGetter()) {
-			emitter.start_line() << "  virtual " << itr->property_type() << " get ();" << endl;
+			emitter.start_line() << "  virtual " << itr->property_type() << " get ()";
+			if (itr->getter_method()->IsDefaultOverride())
+				emitter() << " override";
+			emitter() << ";" << endl;
 		}
 		if (itr->isSetter()) {
-			emitter.start_line() << "  virtual void set (" << itr->property_type() << " value);" << endl;
+			emitter.start_line() << "  virtual void set (" << itr->property_type() << " value)";
+			if (itr->setter_method()->IsDefaultOverride())
+				emitter() << " override";
+			emitter() << ";" << endl;
 		}
 		emitter.start_line() << "}" << endl;
 	}
