@@ -831,7 +831,10 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	/// This will break if built in x64 I would guess. :-(
 	///
 
-	emitter.start_line() << "virtual int GetRawCPPPointer(void) {return (int) _instance;}" << endl;
+	emitter.start_line() << "virtual int GetRawCPPPointer(void)";
+	if (bestClassToInherrit.size() > 0)
+		emitter() << " new";
+	emitter() << " {return (int) _instance;}" << endl;
 
 	///
 	/// Emit all the method signatures...
@@ -1368,6 +1371,10 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 	auto &fields (info.GetAllDataFields(true));
 	for (int i = 0; i < fields.size(); i++) {
 		const RootClassField &f(fields[i]);
+
+		// Make sure this field is in the class we are working on here.
+		if (inh_classes.find(f.ClassOfFieldDefinition()) == inh_classes.end())
+			continue;
 
 		if (f.GetterOK()) {
 			emitter.start_line() << f.NETType() << " " << info.NETName() << "::" << f.NETName() << "::get ()" << endl;
