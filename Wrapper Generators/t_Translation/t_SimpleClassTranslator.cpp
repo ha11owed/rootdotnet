@@ -336,6 +336,9 @@ namespace t_Translation
 			delete trans;
 		}
 
+#ifdef notyet
+		// With the new way inherritance is being done, Rebin2D no longer appears in TProfile2D's files.
+		// So we expect not to see this there.
 		[TestMethod]
 		void TestCovarGeneration()
 		{
@@ -363,7 +366,7 @@ namespace t_Translation
 
 			delete trans;
 		}
-
+#endif
 		[TestMethod]
 		void TestProtectedHiddenProperty()
 		{
