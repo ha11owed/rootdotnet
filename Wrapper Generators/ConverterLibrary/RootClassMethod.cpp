@@ -128,6 +128,14 @@ string RootClassMethod::generate_method_header(bool add_object_qualifier, bool u
 
 	result << " (" << generate_normalized_method_arguments(use_argument_names) << ")";
 
+	return result.str();
+}
+
+///
+/// Return true if this method is an override of a parent method.
+///
+bool RootClassMethod::IsDefaultOverride() const
+{
 	//
 	// If this is an over-ride, then we need to emit the "override" keyword.
 	// We do a bunch of caching here b/c it cna be a little expensive doing all the lookups.
@@ -147,10 +155,11 @@ string RootClassMethod::generate_method_header(bool add_object_qualifier, bool u
 
 	if (_superclass_ptr != nullptr)
 		if (_superclass_ptr->has_method(CPPName()))
-			result << " override";
+			return true;
 
-	return result.str();
+	return false;
 }
+
 
 /// Check to see if we can translate this method header. This amounts to making usre that
 /// all the types are "good".

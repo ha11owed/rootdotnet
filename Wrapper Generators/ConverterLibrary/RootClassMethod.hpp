@@ -43,6 +43,9 @@ public:
 	/// True if it is a virtual method
 	bool IsVirtual (void) const;
 
+	/// True if this method over-rides one in the default super-class
+	bool IsDefaultOverride (void) const;
+
 	/// True if this is an operator
 	bool IsOperator (void) const;
 

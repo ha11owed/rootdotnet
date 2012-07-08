@@ -894,7 +894,10 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 					} else {
 						emitter() << "virtual ";
 					}
-					emitter() << method.generate_method_header() << ";" << endl;
+					emitter() << method.generate_method_header();
+					if (method.IsDefaultOverride())
+						emitter() << " override";
+					emitter() << ";" << endl;
 				}
 			}
 		} catch (runtime_error &e) {
