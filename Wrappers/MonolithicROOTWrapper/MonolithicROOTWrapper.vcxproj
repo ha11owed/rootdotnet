@@ -120,6 +120,7 @@
     <ClCompile Include="ROOTSource\NTAttFill.cpp" />
     <ClCompile Include="ROOTSource\NTAttLine.cpp" />
     <ClCompile Include="ROOTSource\NTAttMarker.cpp" />
+    <ClCompile Include="ROOTSource\NTAttPad.cpp" />
     <ClCompile Include="ROOTSource\NTClass.cpp" />
     <ClCompile Include="ROOTSource\NTClonesArray.cpp" />
     <ClCompile Include="ROOTSource\NTCollection.cpp" />
@@ -137,7 +138,10 @@
     <ClCompile Include="ROOTSource\NTObjArray.cpp" />
     <ClCompile Include="ROOTSource\NTObject.cpp" />
     <ClCompile Include="ROOTSource\NTProfile2D.cpp" />
+    <ClCompile Include="ROOTSource\NTQObject.cpp" />
+    <ClCompile Include="ROOTSource\NTRef.cpp" />
     <ClCompile Include="ROOTSource\NTSeqCollection.cpp" />
+    <ClCompile Include="ROOTSource\NTVirtualPad.cpp" />
     <ClCompile Include="ROOTSource\root_type_helpers.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +155,7 @@
     <ClInclude Include="ROOTSource\NTAttFill.hpp" />
     <ClInclude Include="ROOTSource\NTAttLine.hpp" />
     <ClInclude Include="ROOTSource\NTAttMarker.hpp" />
+    <ClInclude Include="ROOTSource\NTAttPad.hpp" />
     <ClInclude Include="ROOTSource\NTClass.hpp" />
     <ClInclude Include="ROOTSource\NTClonesArray.hpp" />
     <ClInclude Include="ROOTSource\NTCollection.hpp" />
@@ -168,7 +173,10 @@
     <ClInclude Include="ROOTSource\NTObjArray.hpp" />
     <ClInclude Include="ROOTSource\NTObject.hpp" />
     <ClInclude Include="ROOTSource\NTProfile2D.hpp" />
+    <ClInclude Include="ROOTSource\NTQObject.hpp" />
+    <ClInclude Include="ROOTSource\NTRef.hpp" />
     <ClInclude Include="ROOTSource\NTSeqCollection.hpp" />
+    <ClInclude Include="ROOTSource\NTVirtualPad.hpp" />
     <ClInclude Include="ROOTSource\root_type_helpers.hpp" />
   </ItemGroup>
   <ItemGroup>
