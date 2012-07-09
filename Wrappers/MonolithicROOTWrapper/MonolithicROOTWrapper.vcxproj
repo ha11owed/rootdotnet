@@ -68,7 +68,7 @@
       <ForcedIncludeFiles>w32pragma.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libCore.lib;libMatrix.lib;libHtml.lib;libTree.lib;libHist.lib;libRIO.lib;libGuiBld.lib;libGui.lib</AdditionalDependencies>
+      <AdditionalDependencies>libCore.lib;libRooFitCore.lib;libMatrix.lib;libHtml.lib;libTree.lib;libHist.lib;libRIO.lib;libGuiBld.lib;libGui.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -114,6 +114,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="ROOTSource\NRooAbsBinning.cpp" />
+    <ClCompile Include="ROOTSource\NRooPrintable.cpp" />
     <ClCompile Include="ROOTSource\NTArray.cpp" />
     <ClCompile Include="ROOTSource\NTArrayD.cpp" />
     <ClCompile Include="ROOTSource\NTArrayF.cpp" />
@@ -148,7 +150,10 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="ROOTSource\libCore-make_public.hpp" />
     <ClInclude Include="ROOTSource\libHist-make_public.hpp" />
+    <ClInclude Include="ROOTSource\libRooFitCore-make_public.hpp" />
     <ClInclude Include="ROOTSource\libTree-make_public.hpp" />
+    <ClInclude Include="ROOTSource\NRooAbsBinning.hpp" />
+    <ClInclude Include="ROOTSource\NRooPrintable.hpp" />
     <ClInclude Include="ROOTSource\NTArray.hpp" />
     <ClInclude Include="ROOTSource\NTArrayD.hpp" />
     <ClInclude Include="ROOTSource\NTArrayF.hpp" />
