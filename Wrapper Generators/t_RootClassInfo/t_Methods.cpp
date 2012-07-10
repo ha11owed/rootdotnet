@@ -132,6 +132,18 @@ namespace t_RootClassInfo
 			Assert::IsTrue(arrayOne->IsDefaultOverride(), "3 arg should be inherrited");
 		}
 
+		[TestMethod]
+		void TestMethodIsOverride3()
+		{
+			InitEverything();
+
+			RootClassInfo *cinfo = new RootClassInfo ("RooBinning");
+			auto methods = FindMethods("array", cinfo->GetAllPrototypesForThisClass(true));
+			Assert::IsTrue(methods.size() == 1, "Expected two versions of execute");
+
+			Assert::IsTrue(methods[0]->IsDefaultOverride(), "array method should be marked override!");
+		}
+
 		///
 		/// Find a property from the full list of properties
 		///

@@ -81,7 +81,7 @@ int main()
 	asked_for_class_list.push_back ("TProfile2D");
 	asked_for_class_list.push_back ("TVirtualPad");
 	asked_for_class_list.push_back ("TRef");
-	asked_for_class_list.push_back ("RooAbsBinning");
+	asked_for_class_list.push_back ("RooBinning");
 
 	/// Make sure the libraries that are going to be needed are loaded!
 	libraries_to_load.push_back ("libCore");

@@ -160,7 +160,7 @@ bool RootClassMethod::IsDefaultOverride() const
 	// if the exact method exists.
 	//
 	if (_superclass_ptr != nullptr) {
-		auto methods (_superclass_ptr->methods_of_name(CPPName()));
+		auto methods (_superclass_ptr->methods_of_name(NETName()));
 		const auto me = *this;
 		auto found = find_if(methods.begin(), methods.end(), [&] (const RootClassMethod &method) {
 			return method.is_equal(me);

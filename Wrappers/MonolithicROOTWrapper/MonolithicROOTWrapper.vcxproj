@@ -115,6 +115,7 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="ROOTSource\NRooAbsBinning.cpp" />
+    <ClCompile Include="ROOTSource\NRooBinning.cpp" />
     <ClCompile Include="ROOTSource\NRooPrintable.cpp" />
     <ClCompile Include="ROOTSource\NTArray.cpp" />
     <ClCompile Include="ROOTSource\NTArrayD.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="ROOTSource\libRooFitCore-make_public.hpp" />
     <ClInclude Include="ROOTSource\libTree-make_public.hpp" />
     <ClInclude Include="ROOTSource\NRooAbsBinning.hpp" />
+    <ClInclude Include="ROOTSource\NRooBinning.hpp" />
     <ClInclude Include="ROOTSource\NRooPrintable.hpp" />
     <ClInclude Include="ROOTSource\NTArray.hpp" />
     <ClInclude Include="ROOTSource\NTArrayD.hpp" />

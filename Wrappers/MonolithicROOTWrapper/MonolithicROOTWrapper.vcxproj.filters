@@ -114,6 +114,9 @@
     <ClCompile Include="ROOTSource\NRooPrintable.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
+    <ClCompile Include="ROOTSource\NRooBinning.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -225,6 +228,9 @@
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\NRooPrintable.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\NRooBinning.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
   </ItemGroup>
