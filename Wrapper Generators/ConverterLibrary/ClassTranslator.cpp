@@ -992,7 +992,7 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 				emitter() << "virtual ";
 			emitter() << itr->property_type() << " get ()";
 			if (itr->getter_method()->IsDefaultOverride())
-				emitter() << " override";
+				emitter() << " new";
 			emitter() << ";" << endl;
 		}
 
@@ -1002,7 +1002,7 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 				emitter() << "virtual ";
 			emitter() << "void set (" << itr->property_type() << " value)";
 			if (itr->setter_method()->IsDefaultOverride())
-				emitter() << " override";
+				emitter() << " new";
 			emitter() << ";" << endl;
 		}
 		emitter.start_line() << "}" << endl;
