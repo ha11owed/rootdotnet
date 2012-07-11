@@ -819,8 +819,11 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	//
 
 	emitter.start_line() << "protected:" << endl;
-	emitter.start_line() << "  void SetInstance (::" << info.CPPName() << "* instance)" << endl;
-	emitter.start_line() <<"   { _instance = instance; }" << endl;
+	emitter.start_line() << "  void SetInstance (::" << info.CPPName() << "* instance) {" << endl;
+	emitter.start_line() << "    _instance = instance;" << endl;
+	if (bestClassToInherrit.size() != 0)
+		emitter.start_line() << "    N" << bestClassToInherrit << "::SetInstance (instance);" << endl;
+	emitter.start_line() << "}" << endl;
 
 	///
 	/// Hold onto the C++ pointer!
