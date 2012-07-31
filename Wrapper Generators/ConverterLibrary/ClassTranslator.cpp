@@ -864,7 +864,7 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	//
 
 	emitter.start_line() << "protected:" << endl;
-	if (info.InheritsFromTObject()) {
+	if (info.InheritsFromTObject() || info.CPPName() == "TObject") {
 		emitter.start_line() << "virtual ::TObject *GetTObjectPointer (void) override { return _instance; }" << endl;
 	} else {
 		emitter.start_line() << "virtual ::TObject *GetTObjectPointer (void) override { return (::TObject*) 0; }" << endl;

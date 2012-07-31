@@ -88,6 +88,7 @@ namespace t_Dynamic
         {
             dynamic c = (dynamic)ROOTNET.Utility.ROOTCreator.CreateByName("TParameter<int>", new object[] { "Dude", (int)5 });
             Assert.AreEqual(5, c.GetVal(), "Value of parameter");
+            Assert.AreEqual("Dude", c.GetName(), "Name of the object");
         }
     }
 }
