@@ -37,7 +37,7 @@ namespace ROOTNET
 		/// Create an object, but do it by name rather than using the DLR... when an object name contains template arguments, etc.
 		/// It should be cast to a dynamic type by the calling guy.
 		///
-		System::Object^ ROOTCreator::CreateByName(System::String^ root_object_name, array<Object^> ^args)
+		System::Object^ ROOTCreator::CreateByName(System::String^ root_object_name, ...array<Object^> ^args)
 		{
 			//
 			// Some basic init. Very quick if it has been done already

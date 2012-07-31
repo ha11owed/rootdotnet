@@ -90,5 +90,13 @@ namespace t_Dynamic
             Assert.AreEqual(5, c.GetVal(), "Value of parameter");
             Assert.AreEqual("Dude", c.GetName(), "Name of the object");
         }
+
+        [TestMethod]
+        public void TestVariableParameters()
+        {
+            dynamic c = (dynamic)ROOTNET.Utility.ROOTCreator.CreateByName("TParameter<int>", "Dude", (int)5);
+            Assert.AreEqual(5, c.GetVal(), "Value of parameter");
+            Assert.AreEqual("Dude", c.GetName(), "Name of the object");
+        }
     }
 }
