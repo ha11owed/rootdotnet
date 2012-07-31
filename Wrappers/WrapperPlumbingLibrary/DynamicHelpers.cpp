@@ -273,24 +273,24 @@ namespace {
 		if (resolvedName == "char*")
 			return new RTCString(false);
 
-		if (resolvedName == "short")
+		if (resolvedName == "short" || resolvedName == "const short" || resolvedName == "const short&")
 			return make_basic_converter<short, long>(arg);
-		if (resolvedName == "int")
+		if (resolvedName == "int" || resolvedName == "const int" || resolvedName == "const int&")
 			return make_basic_converter<int, long>(arg);
-		if (resolvedName == "long")
+		if (resolvedName == "long" || resolvedName == "const long" || resolvedName == "const long&")
 			return make_basic_converter<long, long>(arg);
 
-		if (resolvedName == "unsigned short")
+		if (resolvedName == "unsigned short" || resolvedName == "const unsigned short" || resolvedName == "const unsigned short&")
 			return make_basic_converter<unsigned short, long>(arg);
-		if (resolvedName == "unsigned int")
+		if (resolvedName == "unsigned int" || resolvedName == "const unsigned int" || resolvedName == "const unsigned int&")
 			return make_basic_converter<unsigned int, long>(arg);
-		if (resolvedName == "unsigned long")
+		if (resolvedName == "unsigned long" || resolvedName == "const unsigned long" || resolvedName == "const unsigned long&")
 			return make_basic_converter<unsigned long, long>(arg);
 
-		if (resolvedName == "double")
+		if (resolvedName == "double" || resolvedName == "const double" || resolvedName == "const double&")
 			return make_basic_converter<double, double>(arg);
 
-		if (resolvedName == "float")
+		if (resolvedName == "float" || resolvedName == "const float" || resolvedName == "const float&")
 			return make_basic_converter<float, double>(arg);
 
 		if (resolvedName == "void")

@@ -82,5 +82,12 @@ namespace t_Dynamic
             Assert.AreEqual(0.0, c.GetBinLowEdge(1), "Low bin boundary");
             Assert.AreEqual(100.0, c.GetBinLowEdge(101), "High bin boundary");
         }
+
+        [TestMethod]
+        public void TestTParameterTemplate()
+        {
+            dynamic c = (dynamic)ROOTNET.Utility.ROOTCreator.CreateByName("TParameter<int>", new object[] { "Dude", (int)5 });
+            Assert.AreEqual(5, c.GetVal(), "Value of parameter");
+        }
     }
 }
