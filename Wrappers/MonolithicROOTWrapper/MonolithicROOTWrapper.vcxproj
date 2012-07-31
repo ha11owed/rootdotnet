@@ -117,8 +117,10 @@
     <ClCompile Include="ROOTSource\NTAttFill.cpp" />
     <ClCompile Include="ROOTSource\NTAttLine.cpp" />
     <ClCompile Include="ROOTSource\NTAttMarker.cpp" />
+    <ClCompile Include="ROOTSource\NTAttText.cpp" />
     <ClCompile Include="ROOTSource\NTNamed.cpp" />
     <ClCompile Include="ROOTSource\NTObject.cpp" />
+    <ClCompile Include="ROOTSource\NTStyle.cpp" />
     <ClCompile Include="ROOTSource\NTTree.cpp" />
     <ClCompile Include="ROOTSource\root_type_helpers.cpp" />
   </ItemGroup>
@@ -129,8 +131,10 @@
     <ClInclude Include="ROOTSource\NTAttFill.hpp" />
     <ClInclude Include="ROOTSource\NTAttLine.hpp" />
     <ClInclude Include="ROOTSource\NTAttMarker.hpp" />
+    <ClInclude Include="ROOTSource\NTAttText.hpp" />
     <ClInclude Include="ROOTSource\NTNamed.hpp" />
     <ClInclude Include="ROOTSource\NTObject.hpp" />
+    <ClInclude Include="ROOTSource\NTStyle.hpp" />
     <ClInclude Include="ROOTSource\NTTree.hpp" />
     <ClInclude Include="ROOTSource\root_type_helpers.hpp" />
   </ItemGroup>

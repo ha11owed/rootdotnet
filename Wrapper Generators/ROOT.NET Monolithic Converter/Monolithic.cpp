@@ -71,11 +71,11 @@ int main()
 
 	/// The below lines are used during debugging in order to build a single (problem) class.
 	/// The below lines are used during debugging in order to build a single (problem) class.
-	asked_for_class_list.push_back ("TTree");
+	asked_for_class_list.push_back ("TLorentzVector");
 
 	/// Make sure the libraries that are going to be needed are loaded!
 	libraries_to_load.push_back ("libCore");
-	libraries_to_load.push_back ("libHist");
+	libraries_to_load.push_back ("libPhysics");
 
 	output_dir = "..\\..\\Wrappers\\MonolithicROOTWrapper\\ROOTSource";
 
