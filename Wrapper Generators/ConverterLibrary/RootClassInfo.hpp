@@ -117,18 +117,14 @@ private:
 
 	std::vector<RootClassMethod> RootClassInfo::GetAllPrototypesForThisClassImpl (bool clean) const;
 	mutable std::vector<RootClassMethod> _methods;
-	mutable std::vector<RootClassMethod> _operators;
 	mutable bool _methods_good;
 	mutable std::vector<RootClassMethod> _methods_clean;
-	mutable std::vector<RootClassMethod> _operators_clean;
 	mutable bool _methods_clean_good;
 
 	mutable bool _methods_implemented_good;
 	mutable std::vector<RootClassMethod> _methods_implemented;
-	mutable std::vector<RootClassMethod> _operators_implemented;
 	mutable bool _methods_implemented_good_clean;
 	mutable std::vector<RootClassMethod> _methods_implemented_clean;
-	mutable std::vector<RootClassMethod> _operators_implemented_clean;
 
 	std::vector<RootClassField> GetAllDataFieldsForThisClassImpl () const;
 	mutable bool _fields_for_class_good;

@@ -274,11 +274,7 @@ const std::vector<RootClassMethod> &RootClassInfo::GetPrototypesImplementedByThi
 		&& (_bad_method_names.find(method.CPPName()) == _bad_method_names.end())
 		&& (_bad_method_names.find(_name + "::" + method.CPPName()) == _bad_method_names.end())
 		) {
-			if (method.CPPName().find("operator") == string::npos) {
-				_methods_implemented.push_back(method);
-			} else {
-				_operators_implemented.push_back(method);
-			}
+		_methods_implemented.push_back(method);
 	  }
 	}
 
@@ -293,7 +289,6 @@ const std::vector<RootClassMethod> &RootClassInfo::GetPrototypesImplementedByThi
   if (clean) {
 	if (!_methods_implemented_good_clean) {
 	  _methods_implemented_clean = make_method_list_clean (*this, _methods_implemented);
-	  _operators_implemented_clean = make_method_list_clean (*this, _operators_implemented);
 	  _methods_implemented_good_clean = true;
 	}
 	return _methods_implemented_clean;
@@ -424,33 +419,11 @@ namespace {
 
 	inline bool operator() (const RootClassMethod &m)
 	{
-		return _method_names.find(m.CPPName()) != _method_names.end();
+	  return _method_names.find(m.CPPName()) != _method_names.end();
 	}
 
   private:
 	const set<string> &_method_names;
-  };
-
-
-  ///
-  /// If a method name contains a particular string, then fire (or if it doesn't).
-  class methods_containing_name {
-  public:
-	inline methods_containing_name (const string &method_names, bool if_contains = true)
-	  : _method_name(method_names), _select_if_contains(if_contains)
-	{
-	}
-
-	inline bool operator() (const RootClassMethod &m)
-	{
-		if (_select_if_contains)
-		  return m.CPPName().find(_method_name) != string::npos;
-		return m.CPPName().find(_method_name) == string::npos;
-	}
-
-  private:
-	const string &_method_name;
-	bool _select_if_contains;
   };
 
   template<class C>
@@ -498,10 +471,8 @@ const vector<RootClassMethod> &RootClassInfo::GetAllPrototypesForThisClass (bool
   ///
 
   if (!_methods_good) {
-	  auto all_methods = GetAllPrototypesForThisClassImpl(false);
-	  copy_if(all_methods.begin(), all_methods.end(), back_inserter(_methods), methods_containing_name("operator", false));
-	  copy_if(all_methods.begin(), all_methods.end(), back_inserter(_operators), methods_containing_name("operator", true));
-	  _methods_good = true;
+	_methods = GetAllPrototypesForThisClassImpl (false);
+	_methods_good = true;
   }
 
   if (!clean) {
@@ -514,7 +485,6 @@ const vector<RootClassMethod> &RootClassInfo::GetAllPrototypesForThisClass (bool
 
   if (!_methods_clean_good) {
 	_methods_clean = make_method_list_clean (*this, _methods);
-	_operators_clean = make_method_list_clean (*this, _operators);
 	_methods_clean_good = true;
   }
 
@@ -623,7 +593,7 @@ std::vector<RootClassMethod> RootClassInfo::GetAllPrototypesForThisClassImpl (bo
   copy (thisClass.begin(), thisClass.end(), inserter(methods_as_set, methods_as_set.begin()));
 
   ///
-  /// Covarient methods are evil. These are methods with the same name and different return types. These are not
+  /// Covarient methods are evil. These are methods with the same name and same return symantics. These are not
   /// allowed in the interface symantics (but will be in C# 4.0 I think!??). But we have to remove them here.
   /// We do this by looking for any method in the current class that is also in the methods below. If we find one,
   /// we have to promote the subclass to this version, sadly.
