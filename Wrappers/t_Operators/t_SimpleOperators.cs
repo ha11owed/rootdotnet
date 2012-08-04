@@ -24,5 +24,31 @@ namespace t_Operators
             Assert.AreEqual(3.5, a3.Z(), "Z");
             Assert.AreEqual(4.5, a3.T(), "T");
         }
+
+        [TestMethod]
+        public void TestAdditionWithObjectInterfaces1()
+        {
+            var a1 = new ROOTNET.NTLorentzVector(1.0, 2.0, 3.0, 4.0);
+            ROOTNET.Interface.NTLorentzVector a2 = (new ROOTNET.NTLorentzVector(0.5, 0.5, 0.5, 0.5));
+            var a3 = a1 + a2;
+            Assert.AreEqual(1.5, a3.X(), "X");
+            Assert.AreEqual(2.5, a3.Y(), "Y");
+            Assert.AreEqual(3.5, a3.Z(), "Z");
+            Assert.AreEqual(4.5, a3.T(), "T");
+        }
+
+#if false
+        [TestMethod]
+        public void TestAdditionWithObjectInterfaces2()
+        {
+            ROOTNET.Interface.NTLorentzVector a1 = new ROOTNET.NTLorentzVector(1.0, 2.0, 3.0, 4.0);
+            ROOTNET.NTLorentzVector a2 = new ROOTNET.NTLorentzVector(0.5, 0.5, 0.5, 0.5);
+            var a3 = a1 + a2;
+            Assert.AreEqual(1.5, a3.X(), "X");
+            Assert.AreEqual(2.5, a3.Y(), "Y");
+            Assert.AreEqual(3.5, a3.Z(), "Z");
+            Assert.AreEqual(4.5, a3.T(), "T");
+        }
+#endif
     }
 }

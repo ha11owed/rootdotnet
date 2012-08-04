@@ -794,28 +794,55 @@ void ClassTranslator::generate_interface_static_methods (RootClassInfo &class_in
 }
 
 namespace {
-	// Emit the method header for an operator. This is different than the classic one because
+	// Emit the method headers for an operator. This is different than the classic one because
 	// it is static - so we have to have both guys as operators.
-	string generate_operator_header (const RootClassMethod &method, bool emit_class_method_name = false)
+	// We reverse the order so that as long as their is one 
+	vector<string> generate_operator_header (const RootClassMethod &method, bool emit_class_method_name = false)
 	{
-		ostringstream header;
 		auto mainObj = CPPNetTypeMapper::instance()->get_translator_from_cpp(method.OwnerClass().CPPName());
-		header << method.get_return_type_translator()->net_typename() << " ";
-
-		if (emit_class_method_name) {
-			header << method.OwnerClass().NETName() << "::";
-		}
-
-		header << method.NETName()
-			<< "("
-			<< mainObj->net_typename() << " base_obj_a1";
+		auto base_arg (mainObj->net_typename() + " base_obj_a1");
 
 		string args (method.generate_normalized_method_arguments(true));
-		if (args.length() > 0) {
-			header << ", " << args;
+		string args_sep = ", ";
+		if (args.length() == 0)
+			args_sep = "";
+
+		//
+		// We reverse the arguments so that you can something like "5 * obj" and "obj * 5".
+		// However, if it is "obj * obj" and both obj's are same, then we can't do this because
+		// we'll end up with ambigous operators.
+		//
+
+		int max_count = 2;
+		const RootClassInfo &cInfo (method.OwnerClass());
+		if (method.arguments().size() > 0 && method.arguments()[0].RawCPPTypeName() == cInfo.CPPName())
+			max_count = 1;
+
+		//
+		// Emit everything
+		//
+
+		vector<string> result;
+		for (int count = 0; count < max_count; count++) {
+			ostringstream header;
+			header << method.get_return_type_translator()->net_typename() << " ";
+
+			if (emit_class_method_name) {
+				header << method.OwnerClass().NETName() << "::";
+			}
+
+			header << method.NETName()
+				<< "(";
+
+			if (count == 0) {
+				header << base_arg << args_sep << args;
+			} else {
+				header << args << args_sep << base_arg;
+			}
+			header << ")";
+			result.push_back(header.str());
 		}
-		header << ")";
-		return header.str();
+		return result;
 	}
 }
 
@@ -1010,8 +1037,11 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 
 	emitter.start_line() << "// Math Operators for C#-like languages" << endl;
 	for (vector<RootClassMethod>::const_iterator itr = mathOperators.begin(); itr != mathOperators.end(); itr++) {
-		emitter.start_line() << "static ";
-		emitter() << generate_operator_header (*itr) << ";" << endl;
+		auto headers (generate_operator_header (*itr));
+		for (vector<string>::const_iterator itr_h = headers.begin(); itr_h != headers.end(); itr_h++) {
+			emitter.start_line() << "static ";
+			emitter() << *itr_h << ";" << endl;
+		}
 	}
 
 	///
@@ -1481,22 +1511,25 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 	//
 
 	for (vector<RootClassMethod>::const_iterator itr = mathOperators.begin(); itr != mathOperators.end(); itr++) {
-		emitter.start_line() << generate_operator_header(*itr, true) << endl;
-		emitter.brace_open();
+		auto headers (generate_operator_header(*itr, true));
+		for (vector<string>::const_iterator itr_h = headers.begin(); itr_h != headers.end(); itr_h++) {
+			emitter.start_line() << *itr_h << endl;
+			emitter.brace_open();
 
-		// Get the CPP versions of the arguments
-		const vector<RootClassMethodArg> &args = itr->arguments();
-		vector<string> cpp_argnames (emit_cpp_args(args, emitter));
+			// Get the CPP versions of the arguments
+			const vector<RootClassMethodArg> &args = itr->arguments();
+			vector<string> cpp_argnames (emit_cpp_args(args, emitter));
 
-		// Now, return the result!
-		auto op (parse_nonassign_operator(*itr));
-		emitter.start_line() << "return "
-			<< "ROOTNET::Utility::ROOTObjectServices::GetBestObject<" << itr->OwnerClass().NETName() << "^> "
-			<< "(new ::" << itr->OwnerClass().CPPName()
-			<< "( *(base_obj_a1->_instance) " << op << " " << cpp_argnames[0] << "));" << endl;
+			// Now, return the result!
+			auto op (parse_nonassign_operator(*itr));
+			emitter.start_line() << "return "
+				<< "ROOTNET::Utility::ROOTObjectServices::GetBestObject<" << itr->OwnerClass().NETName() << "^> "
+				<< "(new ::" << itr->OwnerClass().CPPName()
+				<< "( *(base_obj_a1->_instance) " << op << " " << cpp_argnames[0] << "));" << endl;
 
-		emitter.brace_close();
-		emitter() << endl;
+			emitter.brace_close();
+			emitter() << endl;
+		}
 	}
 
 	///
