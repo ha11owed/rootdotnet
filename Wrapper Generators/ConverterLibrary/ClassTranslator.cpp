@@ -904,6 +904,7 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 
 	set<string> written_methods;
 	vector<RootClassMethod> arrayOperators;
+	vector<RootClassMethod> mathOperators;
 	const vector<RootClassMethod> &class_protos(info.GetAllPrototypesForThisClass(true));
 	for (unsigned int i = 0; i < class_protos.size(); i++) {
 		const RootClassMethod &method = class_protos[i];
@@ -925,6 +926,12 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 			continue;
 		}
 		if (!method.IsGoodForClass()) {
+			continue;
+		}
+
+		if (method.IsMathOperator())
+		{
+			mathOperators.push_back(method);
 			continue;
 		}
 
@@ -1362,6 +1369,7 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 
 	set<string> written_methods;
 	vector<RootClassMethod> arrayOperators;
+	vector<RootClassMethod> mathOperators;
 	const vector<RootClassMethod> &class_protos (info.GetAllPrototypesForThisClass(true));
 	auto inh_classes(GetNonInherritedClasses(info));
 
@@ -1378,6 +1386,11 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 		}
 
 		if (!method.IsGoodForClass()) {
+			continue;
+		}
+
+		if (method.IsMathOperator()) {
+			mathOperators.push_back(method);
 			continue;
 		}
 

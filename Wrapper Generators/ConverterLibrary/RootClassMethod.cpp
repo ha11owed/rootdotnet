@@ -249,6 +249,13 @@ bool RootClassMethod::IsOperator(void) const
 	return name.find("operator") == 0;
 }
 
+/// Is this a math like operator?
+bool RootClassMethod::IsMathOperator(void) const
+{
+	string name (_root_method_info->GetName());
+	return name == "operator+";
+}
+
 /// Simple test to see if this method is an array lookup operator
 bool RootClassMethod::IsIndexer() const
 {

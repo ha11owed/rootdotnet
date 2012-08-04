@@ -49,6 +49,9 @@ public:
 	/// True if this is an operator
 	bool IsOperator (void) const;
 
+	/// True if this is a math operator (operator+)
+	bool IsMathOperator (void) const;
+
 	/// True if it is an index lookup (i.e. operator[]).
 	bool IsIndexer(void) const;
 
