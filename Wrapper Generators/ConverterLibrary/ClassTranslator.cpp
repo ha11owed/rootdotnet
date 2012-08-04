@@ -793,6 +793,32 @@ void ClassTranslator::generate_interface_static_methods (RootClassInfo &class_in
 	emitter.brace_close(); // End of namespace
 }
 
+namespace {
+	// Emit the method header for an operator. This is different than the classic one because
+	// it is static - so we have to have both guys as operators.
+	string generate_operator_header (const RootClassMethod &method, bool emit_class_method_name = false)
+	{
+		ostringstream header;
+		auto mainObj = CPPNetTypeMapper::instance()->get_translator_from_cpp(method.OwnerClass().CPPName());
+		header << method.get_return_type_translator()->net_typename() << " ";
+
+		if (emit_class_method_name) {
+			header << method.OwnerClass().NETName() << "::";
+		}
+
+		header << method.NETName()
+			<< "("
+			<< mainObj->net_typename() << " base_obj_a1";
+
+		string args (method.generate_normalized_method_arguments(true));
+		if (args.length() > 0) {
+			header << ", " << args;
+		}
+		header << ")";
+		return header.str();
+	}
+}
+
 ///
 /// Generate the header for the class.
 ///
@@ -976,6 +1002,16 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 			cout << "  translation failed (" << method.CPPName() << "): " << e.what() << endl;
 			continue;
 		}
+	}
+
+	//
+	// Do the math operators. Here we need to generate static versions so C# knows what to do.
+	//
+
+	emitter.start_line() << "// Math Operators for C#-like languages" << endl;
+	for (vector<RootClassMethod>::const_iterator itr = mathOperators.begin(); itr != mathOperators.end(); itr++) {
+		emitter.start_line() << "static ";
+		emitter() << generate_operator_header (*itr) << ";" << endl;
 	}
 
 	///
@@ -1302,6 +1338,15 @@ void ClassTranslator::emit_function_body(const RootClassMethod &method, const Ro
 	}
 }
 
+namespace {
+	// Get the operator out for a non-asignment operator ("operator+").
+	string parse_nonassign_operator (const RootClassMethod &method)
+	{
+		auto name = method.NETName().substr(string("operator").length());
+		return name;
+	}
+}
+
 ///
 /// Generate the actual class.
 ///
@@ -1426,6 +1471,29 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 		///
 		/// Done with the method
 		///
+
+		emitter.brace_close();
+		emitter() << endl;
+	}
+
+	//
+	// Do the math methods
+	//
+
+	for (vector<RootClassMethod>::const_iterator itr = mathOperators.begin(); itr != mathOperators.end(); itr++) {
+		emitter.start_line() << generate_operator_header(*itr, true) << endl;
+		emitter.brace_open();
+
+		// Get the CPP versions of the arguments
+		const vector<RootClassMethodArg> &args = itr->arguments();
+		vector<string> cpp_argnames (emit_cpp_args(args, emitter));
+
+		// Now, return the result!
+		auto op (parse_nonassign_operator(*itr));
+		emitter.start_line() << "return "
+			<< "ROOTNET::Utility::ROOTObjectServices::GetBestObject<" << itr->OwnerClass().NETName() << "^> "
+			<< "(new ::" << itr->OwnerClass().CPPName()
+			<< "( *(base_obj_a1->_instance) " << op << " " << cpp_argnames[0] << "));" << endl;
 
 		emitter.brace_close();
 		emitter() << endl;
