@@ -41,9 +41,6 @@
     <ClInclude Include="ROOTSource\NTObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ROOTSource\NTNamed.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
     <ClInclude Include="ROOTSource\libCore-make_public.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
