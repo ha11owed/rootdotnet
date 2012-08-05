@@ -35,7 +35,7 @@ void TArrayOfChar::translate_to_cpp_cleanup (const std::string &net_name, const 
 /// Not sure what this is supposed to mean at the moment -- so I'm going to leave this alone for
 /// now -- hold nose and close eyes -- but warn...
 ///
-void TArrayOfChar::translate_to_net (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter) const
+void TArrayOfChar::translate_to_net (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter, bool use_interface) const
 {
 	emitter.start_line() << "ROOTNET::Utility::CPPStringArray ^" << net_name << " = gcnew ROOTNET::Utility::CPPStringArray(" << cpp_name << ");" << endl;
 }

@@ -19,7 +19,7 @@ void TTCPPString::translate_to_cpp(const std::string &net_name, const std::strin
 ///
 /// Emit the code that will move from the CPP world to the .NET world
 ///
-void TTCPPString::translate_to_net(const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter) const
+void TTCPPString::translate_to_net(const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter, bool use_interface) const
 {
   emitter.start_line() << "::System::String ^" << net_name << " = gcnew ::System::String(" << cpp_name << ");" << endl;
 }

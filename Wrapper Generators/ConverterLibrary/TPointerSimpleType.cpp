@@ -92,7 +92,7 @@ void TPointerSimpleType::translate_to_cpp_cleanup (const std::string &net_name, 
 /// We translate it into a special array holder. We assume that we _DO NOT OWN THE DATA_ so if this is going
 /// to cause a memory leak... then it will cause a memory leak. :(
 ///
-void TPointerSimpleType::translate_to_net (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter) const
+void TPointerSimpleType::translate_to_net (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter, bool use_interface) const
 {
   emitter.start_line() << net_return_type_name() << " " << net_name << " = gcnew " << net_return_type_name_object() << "(" << cpp_name << ");" << endl;
 }

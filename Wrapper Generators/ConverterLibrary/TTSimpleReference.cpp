@@ -56,7 +56,7 @@ void TTSimpleReference::translate_to_cpp_cleanup(const std::string &net_name, co
 /// Translate back. This is werid -- really we would need to hold onto the object if this was non-const. So, since
 /// I don't know what to do, I'm just going to print out a warning!
 ///
-void TTSimpleReference::translate_to_net(const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter) const
+void TTSimpleReference::translate_to_net(const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter, bool use_interface) const
 {
   if (!_is_const) {
     emitter.start_line() << "/// WARNING: Don't really translate a non-const reference correctly!" << endl;

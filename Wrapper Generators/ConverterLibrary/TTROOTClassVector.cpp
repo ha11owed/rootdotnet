@@ -46,7 +46,7 @@ void TTROOTClassVector::translate_to_cpp (const std::string &net_name, const std
 /// Generate the code so that someone in the .NET world can deal with this
 /// object.
 ///
-void TTROOTClassVector::translate_to_net (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter) const
+void TTROOTClassVector::translate_to_net (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter, bool use_interface) const
 {
 	emitter.start_line() << "auto " << net_name << " = gcnew ROOTNET::Utility::VectorObject<"
 		<< CPPNetTypeMapper::instance()->GetNetInterfaceTypename(_object_name) << ">("

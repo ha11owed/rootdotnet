@@ -140,15 +140,23 @@ string TTROOTClass::cpp_core_typename() const
 /// will look a lot like a TObject from the signature. For this to be useful
 /// we need to create a TH1F object, and return the interface to TObject from
 /// Get. Then the user can re-cast the object as they expect.
+//
+// TODO: check to see if there is a subtle error here. The type we use get best object on
+// might not be the same though the objects are the same depending on use_interface. For now
+// the use case makes it ok, but...
 ///
-void TTROOTClass::translate_to_net (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter) const
+void TTROOTClass::translate_to_net (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter, bool use_interface) const
 {
 	RootClassInfo info (RootClassInfoCollection::GetRootClassInfo(_class_name));
-	emitter.start_line() << "ROOTNET::Interface::" << info.NETName() << " ^"
+	string tname ("ROOTNET::Interface::" + info.NETName());
+	if (!use_interface)
+		tname = "ROOTNET::" + info.NETName();
+
+	emitter.start_line() << tname << " ^"
 		<< net_name;
 
 	if (_inherits_from_TObject) {
-		emitter() << " = ROOTNET::Utility::ROOTObjectServices::GetBestObject<ROOTNET::Interface::" <<  info.NETName() <<"^>"
+		emitter() << " = ROOTNET::Utility::ROOTObjectServices::GetBestObject<" << tname <<"^>"
 			<< "(";
 
 		if (_modifiers == "&") {

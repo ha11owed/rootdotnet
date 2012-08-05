@@ -35,7 +35,7 @@ public:
   /// Do the translation...
   void translate_to_cpp (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter) const;
   void translate_to_cpp_cleanup (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter) const;
-  void translate_to_net (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter) const;
+  void translate_to_net (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter, bool use_interface = true) const;
 
   /// We want to write out a small customized array accessor type
   void write_out_clr_types (SourceEmitter &output);
