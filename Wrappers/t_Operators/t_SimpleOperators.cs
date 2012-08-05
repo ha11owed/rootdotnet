@@ -14,11 +14,23 @@ namespace t_Operators
     public class t_SimpleOperators
     {
         [TestMethod]
-        public void TestAdditionWithObjects()
+        public void TestAdditionWithObjects1()
         {
             var a1 = new ROOTNET.NTLorentzVector(1.0, 2.0, 3.0, 4.0);
             var a2 = new ROOTNET.NTLorentzVector(0.5, 0.5, 0.5, 0.5);
             var a3 = a1 + a2;
+            Assert.AreEqual(1.5, a3.X(), "X");
+            Assert.AreEqual(2.5, a3.Y(), "Y");
+            Assert.AreEqual(3.5, a3.Z(), "Z");
+            Assert.AreEqual(4.5, a3.T(), "T");
+        }
+
+        [TestMethod]
+        public void TestAdditionWithObjects2()
+        {
+            var a1 = new ROOTNET.NTLorentzVector(1.0, 2.0, 3.0, 4.0);
+            var a2 = new ROOTNET.NTLorentzVector(0.5, 0.5, 0.5, 0.5);
+            var a3 = a2 + a1;
             Assert.AreEqual(1.5, a3.X(), "X");
             Assert.AreEqual(2.5, a3.Y(), "Y");
             Assert.AreEqual(3.5, a3.Z(), "Z");
@@ -35,6 +47,41 @@ namespace t_Operators
             Assert.AreEqual(2.5, a3.Y(), "Y");
             Assert.AreEqual(3.5, a3.Z(), "Z");
             Assert.AreEqual(4.5, a3.T(), "T");
+        }
+
+        [TestMethod]
+        public void TestSubtraction1()
+        {
+            var a1 = new ROOTNET.NTLorentzVector(1.0, 2.0, 3.0, 4.0);
+            var a2 = new ROOTNET.NTLorentzVector(0.5, 0.5, 0.5, 0.5);
+            var a3 = a1 - a2;
+            Assert.AreEqual(0.5, a3.X(), "X");
+            Assert.AreEqual(1.5, a3.Y(), "Y");
+            Assert.AreEqual(2.5, a3.Z(), "Z");
+            Assert.AreEqual(3.5, a3.T(), "T");
+        }
+
+        [TestMethod]
+        public void TestSubtraction2()
+        {
+            var a1 = new ROOTNET.NTLorentzVector(1.0, 2.0, 3.0, 4.0);
+            var a2 = new ROOTNET.NTLorentzVector(0.5, 0.5, 0.5, 0.5);
+            var a3 = a2 - a1;
+            Assert.AreEqual(-0.5, a3.X(), "X");
+            Assert.AreEqual(-1.5, a3.Y(), "Y");
+            Assert.AreEqual(-2.5, a3.Z(), "Z");
+            Assert.AreEqual(-3.5, a3.T(), "T");
+        }
+
+        [TestMethod]
+        public void TestUnary()
+        {
+            var a1 = new ROOTNET.NTLorentzVector(1.0, 2.0, 3.0, 4.0);
+            var a3 = -a1;
+            Assert.AreEqual(-1.0, a3.X(), "X");
+            Assert.AreEqual(-2.0, a3.Y(), "Y");
+            Assert.AreEqual(-3.0, a3.Z(), "Z");
+            Assert.AreEqual(-4.0, a3.T(), "T");
         }
 
 #if false

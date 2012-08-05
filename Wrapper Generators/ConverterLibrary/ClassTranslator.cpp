@@ -1261,12 +1261,12 @@ namespace {
 	}
 
 	/// Emit code to issue a "return" statement of some sort
-	void emit_return (const CPPNetTypeMapper::TypeTranslator *return_translator, const std::string &return_var, SourceEmitter &emitter)
+	void emit_return (const CPPNetTypeMapper::TypeTranslator *return_translator, const std::string &return_var, SourceEmitter &emitter, bool use_interface = false)
 	{
 		string return_var_name (return_var);
 		if (return_translator->requires_translation_to_net()) {
 			auto dotnet_return_var = clean_up_net_name ("dotnet_" + return_var);
-			return_translator->translate_to_net (dotnet_return_var, return_var, emitter);
+			return_translator->translate_to_net (dotnet_return_var, return_var, emitter, use_interface);
 			return_var_name = dotnet_return_var;
 		}
 		emitter.start_line() << "return " << return_var_name << ";" << endl;
@@ -1540,7 +1540,7 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 			}
 			emitter() << ";" << endl;
 
-			emit_return (return_translator, return_var, emitter);
+			emit_return (return_translator, return_var, emitter, false);
 
 			emitter.brace_close();
 			emitter() << endl;
