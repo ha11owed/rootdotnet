@@ -815,6 +815,8 @@ namespace {
 
 		int max_count = 2;
 		const RootClassInfo &cInfo (method.OwnerClass());
+		if (method.arguments().size() == 0)
+			max_count = 1;
 		if (method.arguments().size() > 0 && method.arguments()[0].RawCPPTypeName() == cInfo.CPPName())
 			max_count = 1;
 
@@ -1520,12 +1522,25 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 			const vector<RootClassMethodArg> &args = itr->arguments();
 			vector<string> cpp_argnames (emit_cpp_args(args, emitter));
 
-			// Now, return the result!
+			// Now, do the calc
 			auto op (parse_nonassign_operator(*itr));
-			emitter.start_line() << "return "
-				<< "ROOTNET::Utility::ROOTObjectServices::GetBestObject<" << itr->OwnerClass().NETName() << "^> "
-				<< "(new ::" << itr->OwnerClass().CPPName()
-				<< "( *(base_obj_a1->_instance) " << op << " " << cpp_argnames[0] << "));" << endl;
+
+			string return_var ("f_abc_return");
+			const CPPNetTypeMapper::TypeTranslator *return_translator = itr->get_return_type_translator();
+			if (return_translator != 0) {
+				emitter.start_line() << return_translator->cpp_code_typename() << " " << return_var << " = ";
+			} else {
+				emitter.start_line();
+			}
+
+			if (cpp_argnames.size() == 0) { // Unary operator
+				emitter() << op << " *(base_obj_a1->_instance)";
+			} else { // Binary operator
+				emitter() << "*(base_obj_a1->_instance) " << op << " " << cpp_argnames[0];
+			}
+			emitter() << ";" << endl;
+
+			emit_return (return_translator, return_var, emitter);
 
 			emitter.brace_close();
 			emitter() << endl;

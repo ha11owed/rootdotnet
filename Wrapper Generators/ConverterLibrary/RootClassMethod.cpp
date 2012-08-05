@@ -253,7 +253,18 @@ bool RootClassMethod::IsOperator(void) const
 bool RootClassMethod::IsMathOperator(void) const
 {
 	string name (_root_method_info->GetName());
-	return name == "operator+";
+	if (name.find("operator") != name.npos)
+	{
+		string op (name.substr(8));
+		if (
+			op == "+"
+			|| op == "-"
+			|| op == "/"
+			|| op == "*"
+			)
+			return true;
+	}
+	return false;
 }
 
 /// Simple test to see if this method is an array lookup operator
