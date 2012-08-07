@@ -10,9 +10,11 @@
 #include "RootClassMethodArg.hpp"
 #include "ConverterErrorLog.hpp"
 #include "ROOTHelpers.h"
+
 #include "FeatureManager.hpp"
 #include "FeatureTIterEnumerable.hpp"
 #include "FeatureTCollectionEnumerable.hpp"
+#include "FeatureTreeIterator.hpp"
 
 #include "TTSimpleType.hpp"
 #include "TPointerSimpleType.hpp"
@@ -374,6 +376,7 @@ void WrapperConfigurationInfo::InitTypeTranslators()
 
 	FeatureManager::AddFeature(new FeatureTIterEnumerable());
 	FeatureManager::AddFeature(new FeatureTCollectionEnumerable());
+	FeatureManager::AddFeature(new FeatureTreeIterator());
 }
 
 void DefineTypeDef (const string &typedef_name, const string &base_name)
