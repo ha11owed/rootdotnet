@@ -70,10 +70,15 @@ int main()
 	///
 
 	/// The below lines are used during debugging in order to build a single (problem) class.
-	/// The below lines are used during debugging in order to build a single (problem) class.
+
+#define UNIT_TEST
+#ifdef UNIT_TEST
+	// These are the classes needed for all the Wrapper unit tests to succeed.
 	asked_for_class_list.push_back ("TLorentzVector");
+#else
 	asked_for_class_list.push_back ("TFitResultPtr");
 	asked_for_class_list.push_back ("TFitResult");
+#endif
 
 	/// Make sure the libraries that are going to be needed are loaded!
 	libraries_to_load.push_back ("libCore");
