@@ -17,3 +17,10 @@ syntax: glob
 *.user
 *.res
 *.rc
+*.opensdf
+syntax: regexp
+.*/Debug/.*
+.*/Release/.*
+.*/ipch/.*
+.*/TestResults/.*
+.*/ROOTSource/*
