@@ -252,14 +252,26 @@ bool RootClassMethod::IsOperator(void) const
 /// Is this a math like operator?
 bool RootClassMethod::IsMathOperator(void) const
 {
+	// Binary or unary only. If something else is going on, then get
+	// out of here!
+	if (_args.size() > 2)
+		return false;
+
 	string name (_root_method_info->GetName());
 	if (name.find("operator") != name.npos)
 	{
 		string op (name.substr(8));
+
+		// If operator is -, we can deal with both binary and unary.
+		if (op == "-"
+			|| op == "+")
+			return true;
+
+		// If binary operator, then we are a go!
+		if (_args.size() < 2)
+			return false;
 		if (
-			op == "+"
-			|| op == "-"
-			|| op == "/"
+			op == "/"
 			|| op == "*"
 			)
 			return true;
