@@ -71,8 +71,9 @@ int main()
 
 	/// The below lines are used during debugging in order to build a single (problem) class.
 	/// The below lines are used during debugging in order to build a single (problem) class.
-	asked_for_class_list.push_back ("TFitResult");
+	asked_for_class_list.push_back ("TLorentzVector");
 	asked_for_class_list.push_back ("TFitResultPtr");
+	asked_for_class_list.push_back ("TFitResult");
 
 	/// Make sure the libraries that are going to be needed are loaded!
 	libraries_to_load.push_back ("libCore");

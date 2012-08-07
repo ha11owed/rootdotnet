@@ -116,6 +116,7 @@
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="ROOTSource\NTFitResult.cpp" />
     <ClCompile Include="ROOTSource\NTFitResultPtr.cpp" />
+    <ClCompile Include="ROOTSource\NTLorentzVector.cpp" />
     <ClCompile Include="ROOTSource\NTNamed.cpp" />
     <ClCompile Include="ROOTSource\NTObject.cpp" />
     <ClCompile Include="ROOTSource\root_type_helpers.cpp" />
@@ -124,9 +125,11 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="ROOTSource\libCore-make_public.hpp" />
     <ClInclude Include="ROOTSource\libHist-make_public.hpp" />
+    <ClInclude Include="ROOTSource\libPhysics-make_public.hpp" />
     <ClInclude Include="ROOTSource\libTree-make_public.hpp" />
     <ClInclude Include="ROOTSource\NTFitResult.hpp" />
     <ClInclude Include="ROOTSource\NTFitResultPtr.hpp" />
+    <ClInclude Include="ROOTSource\NTLorentzVector.hpp" />
     <ClInclude Include="ROOTSource\NTNamed.hpp" />
     <ClInclude Include="ROOTSource\NTObject.hpp" />
     <ClInclude Include="ROOTSource\root_type_helpers.hpp" />
