@@ -262,18 +262,30 @@ bool RootClassMethod::IsMathOperator(void) const
 	{
 		string op (name.substr(8));
 
+		// Unary only operators: !, ~, ++, --
+		if (_args.size() <= 1
+			&& (op == "!" || op == "~" || op == "++" || op == "--"))
+			return true;
+
 		// The operator- can have no arguments - so it is just applied to itself. It can
 		// also have 1 or 2 arguments...
 		if (op == "-"
 			|| op == "+")
 			return true;
 
-		// If binary operator, then we are a go!
+		// If binary operator, then we are a go! +, -, *, /, %, &, |, ^, <<, >>
+		// (+, - taken care of above).
 		if (_args.size() < 1)
 			return false;
 		if (
 			op == "/"
 			|| op == "*"
+			|| op == "%"
+			|| op == "&"
+			|| op == "|"
+			|| op == "^"
+			|| op == "<<"
+			|| op == ">>"
 			)
 			return true;
 	}
