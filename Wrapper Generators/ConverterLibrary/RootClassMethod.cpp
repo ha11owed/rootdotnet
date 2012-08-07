@@ -262,13 +262,14 @@ bool RootClassMethod::IsMathOperator(void) const
 	{
 		string op (name.substr(8));
 
-		// If operator is -, we can deal with both binary and unary.
+		// The operator- can have no arguments - so it is just applied to itself. It can
+		// also have 1 or 2 arguments...
 		if (op == "-"
 			|| op == "+")
 			return true;
 
 		// If binary operator, then we are a go!
-		if (_args.size() < 2)
+		if (_args.size() < 1)
 			return false;
 		if (
 			op == "/"
