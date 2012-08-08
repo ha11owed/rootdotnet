@@ -25,9 +25,8 @@ namespace t_Dynamic
         [TestMethod]
         public void TestGetStrippedPropertyName()
         {
-            var tlz = new ROOTNET.NTLorentzVector(1.0, 2.0, 3.0, 4.0);
-            var dtlz = (dynamic)tlz;
-            Assert.AreEqual(1.0, dtlz.X, "X property");
+            dynamic  h1 = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TH1F("hi", "there", 100, 0.0, 10.0);
+            Assert.AreEqual(100, h1.GetNbinsX, "x bins");
         }
 
         [TestMethod]

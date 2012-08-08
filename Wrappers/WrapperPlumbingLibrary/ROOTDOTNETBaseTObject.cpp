@@ -118,11 +118,11 @@ namespace ROOTNET
 
 			string method_name ("Get" + method_name_net);
 			array<Object^> ^empty_args = gcnew array<Object^>(0);
-			auto caller = DynamicHelpers::GetFunctionCaller(classSpec, (string) method_name, empty_args);
+			auto caller = DynamicHelpers::GetFunctionCaller(classSpec, method_name, empty_args);
 			if (caller == nullptr)
 			{
-				string method_name (method_name_net);
-				auto caller = DynamicHelpers::GetFunctionCaller(classSpec, (string) method_name, empty_args);
+				method_name = method_name_net;
+				caller = DynamicHelpers::GetFunctionCaller(classSpec, method_name, empty_args);
 			}
 			if (caller == nullptr)
 				return false;
