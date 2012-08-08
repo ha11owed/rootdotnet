@@ -21,6 +21,10 @@ using namespace System;
 using namespace System::Reflection;
 using namespace System::Collections::Generic;
 
+#ifdef nullptr
+#undef nullptr
+#endif
+
 namespace ROOTNET {
 	namespace Utility {
 
@@ -59,6 +63,8 @@ namespace ROOTNET {
 			///
 
 			Type ^class_type = root_type_holder::GetBestMatchType (cls);
+			if (class_type == nullptr)
+				throw gcnew System::InvalidOperationException("ROOT.NET can't find a good class to match this object - which should be impossible!");
 
 			///
 			/// Next find a ctor that takes only the C++ pointer as an argument. This is the ctor
