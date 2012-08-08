@@ -25,7 +25,7 @@ namespace t_Tree
             {
                 count++;
             }
-            Assert.AreEqual(300, count, "# of events in the tree");
+            Assert.AreEqual(100, count, "# of events in the tree");
         }
 
         [TestMethod]
@@ -35,7 +35,7 @@ namespace t_Tree
             // Open and get the tree
             var tree = OpenAndGet("btag-slim.root", "vtuple");
             int count = tree.Count();
-            Assert.AreEqual(300, count, "# of events in the tree");
+            Assert.AreEqual(100, count, "# of events in the tree");
         }
 
         /// <summary>

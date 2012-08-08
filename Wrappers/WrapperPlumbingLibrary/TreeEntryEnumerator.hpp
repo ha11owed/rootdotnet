@@ -15,19 +15,25 @@ namespace ROOTNET
 {
 	namespace Utility
 	{
-
+		///
+		/// This is the main enumerator for a Tree. Its responsibility is actually quite simple, in that it
+		/// keeps track of all the various data. It will correctly handle the symantics of jumping around 
+		/// in entries, but that just isn't a very efficient thing!
+		/// This is an opinionated run-through:
+		///
+		///  - All branches are disabled upon first fetch of the enumerator! (but only there, so you can change it
+		///    if you wish by getting the enumerator and then using it).
+		///
 		public ref class TreeEntryEnumerator : System::Collections::Generic::IEnumerator<ROOTNET::Utility::TreeEntry^>
 		{
 		public:
-			TreeEntryEnumerator(::TTree *treePtr)
-				: _tree (treePtr)
-			{}
+			// Create an enumerator that will run through a tree.
+			TreeEntryEnumerator(::TTree *treePtr);
 
 			inline ~TreeEntryEnumerator (void)
 			{}
 
-			bool MoveNext (void)
-			{ return false; }
+			bool MoveNext (void);
 
 			virtual bool MoveNext2() sealed = System::Collections::IEnumerator::MoveNext
 			{ return MoveNext(); }
@@ -53,6 +59,7 @@ namespace ROOTNET
 		private:
 			// Pointer to the tree we need to be looking at.
 			::TTree *_tree;
+			unsigned long _current_entry;
 		};
 
 	}
