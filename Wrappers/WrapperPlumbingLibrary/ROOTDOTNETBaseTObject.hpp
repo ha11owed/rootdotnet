@@ -46,7 +46,7 @@ namespace ROOTNET
 
 			/// Dynamic implementions.
 			virtual bool TryInvokeMember (System::Dynamic::InvokeMemberBinder ^binder, array<Object^> ^args, Object^% result) override;
-			//virtual bool TreeEntry::TryGetMember (System::Dynamic::GetMemberBinder ^binder, Object^% result) override;
+			virtual bool TryGetMember (System::Dynamic::GetMemberBinder ^binder, Object^% result) override;
 
 			/// Destructors and finalizers. The finalizer will delete the ROOT memory.
 			/// The dtor will call the finalizer (so it doesn't happen twice!). Probably no
