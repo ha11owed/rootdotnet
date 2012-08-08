@@ -5,40 +5,30 @@
 
 #include "FeatureTreeIterator.hpp"
 #include "RootClassInfo.hpp"
+#include "SourceEmitter.hpp"
 
 #include <vector>
 #include <string>
 
 using std::vector;
 using std::string;
-
-FeatureTreeIterator::FeatureTreeIterator(void)
-{
-}
-
-
-FeatureTreeIterator::~FeatureTreeIterator(void)
-{
-}
+using std::endl;
 
 ///
-/// We want to work on any class that is TIter or sub-class of that guy.
+/// We want to work on any class that is a TTree.
 ///
 bool FeatureTreeIterator::is_applicable (const RootClassInfo &info)
 {
-	if (info.CPPName() == "TIter")
-		return true;
-
-	return false;
+	return info.CPPName() == "TTree";
 }
 
 ///
-/// If this is the TIter interface we are making, then we want to add enumerability to it. Everyone
-/// else will inherrit from it, so we don't need to do anything.
+/// Add enumerability to this, so we can do foreach and the like.
 ///
 std::vector<std::string> FeatureTreeIterator::get_additional_interfaces (const RootClassInfo &info)
 {
 	vector<string> result;
+	result.push_back("System::Collections::Generic::IEnumerable<ROOTNET::Utility::TreeEntry ^>");
 	return result;
 }
 
@@ -47,6 +37,9 @@ std::vector<std::string> FeatureTreeIterator::get_additional_interfaces (const R
 ///
 void FeatureTreeIterator::emit_header_method_definitions (const RootClassInfo &info, SourceEmitter &emitter)
 {
+	emitter.start_line() << "virtual System::Collections::IEnumerator ^GetEnumerator2() sealed = System::Collections::IEnumerable::GetEnumerator" << endl;
+	emitter.start_line() << "  { return GetEnumerator(); }" << endl;
+	emitter.start_line() << "virtual System::Collections::Generic::IEnumerator<ROOTNET::Utility::TreeEntry^> ^GetEnumerator();" << endl;
 }
 
 ///
@@ -54,4 +47,7 @@ void FeatureTreeIterator::emit_header_method_definitions (const RootClassInfo &i
 ///
 void FeatureTreeIterator::emit_class_methods (const RootClassInfo &info, SourceEmitter &emitter)
 {
+	emitter.start_line() << "System::Collections::Generic::IEnumerator<ROOTNET::Utility::TreeEntry^> ^NTTree::GetEnumerator()" << endl;
+	emitter.start_line() << "  { return gcnew ROOTNET::Utility::TreeEntryEnumerator (_instance); }" << endl;
+	emitter() << endl;
 }
