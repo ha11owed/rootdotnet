@@ -129,5 +129,41 @@ namespace ROOTNET
 
 			return caller->Call(GetTObjectPointer(), empty_args, result);
 		}
+
+		///
+		/// Attempt to set a property. We look for a SetXXX with a single argument of the proper type
+		/// to make sure things get set.
+		///
+		bool ROOTDOTNETBaseTObject::TrySetMember (System::Dynamic::SetMemberBinder ^binder, Object^ value)
+		{
+			//
+			// Get the TClass for our class pointer
+			//
+
+			if (GetTObjectPointer() == nullptr)
+				throw gcnew ROOTDynamicException("Attempt to call method on null ptr object!");
+			auto classSpec = GetTObjectPointer()->IsA();
+			if (classSpec == nullptr)
+				throw gcnew System::InvalidOperationException("Attempt to call method on ROOT object that has no class info - impossible!");
+
+			//
+			// See if we can find a method call "GetXXX()". If that fails, attempt to call "XXX()".
+			//
+
+		    ROOTNET::Utility::NetStringToConstCPP method_name_net(binder->Name);
+
+			string method_name ("Set" + method_name_net);
+			array<Object^> ^set_arg = gcnew array<Object^>(1);
+			set_arg[0] = value;
+			auto caller = DynamicHelpers::GetFunctionCaller(classSpec, method_name, set_arg);
+			if (caller == nullptr)
+			{
+				return false;
+			}
+
+			Object ^dummy;
+			return caller->Call(GetTObjectPointer(), set_arg, dummy);
+		}
+
 	}
 }

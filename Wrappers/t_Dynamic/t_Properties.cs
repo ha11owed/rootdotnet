@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace t_Dynamic
 {
@@ -32,14 +33,7 @@ namespace t_Dynamic
         }
 
         [TestMethod]
-        public void TestSetStrippedPropertyName()
-        {
-            dynamic h1 = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TH1F("hi", "there", 100, 0.0, 10.0);
-            h1.SetMaximum = 2.0;
-            Assert.AreEqual(2.0, h1.Maximum, "Maximum");
-        }
-
-        [TestMethod]
+        [ExpectedException(typeof(RuntimeBinderException))]
         public void TestGetBogusPropertyName()
         {
             var tlz = new ROOTNET.NTLorentzVector(1.0, 2.0, 3.0, 4.0);
@@ -48,6 +42,7 @@ namespace t_Dynamic
         }
 
         [TestMethod]
+        [ExpectedException(typeof(RuntimeBinderException))]
         public void TestSetBogusPropertyName()
         {
             var tlz = new ROOTNET.NTLorentzVector(1.0, 2.0, 3.0, 4.0);
