@@ -18,6 +18,7 @@ syntax: glob
 *.res
 *.rc
 *.opensdf
+Wrappers/t_Tree/junk.txt
 syntax: regexp
 .*/Debug/.*
 .*/Release/.*
