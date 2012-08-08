@@ -29,20 +29,24 @@ namespace ROOTNET
 		{
 		public:
 			tle_simple_type (::TBranch *b)
-				:_value (0), _branch(b)
+				:_value (0), _branch(b), _last_entry (-1)
 			{
 				_branch->SetAddress(&_value);
 			}
 
 			System::Object ^execute (unsigned long entry)
 			{
-				_branch->GetEntry(entry);
+				if (_last_entry != entry) {
+					_branch->GetEntry(entry);
+					_last_entry = entry;
+				}
 				return _value;
 			}
 
 		private:
 			ST _value;
 			::TBranch *_branch;
+			unsigned long _last_entry;
 		};
 
 		///
