@@ -16,7 +16,7 @@ namespace t_Tree
             // Open and get the tree
             var tree = Utils.OpenAndGet("btag-slim.root", "vtuple");
             int count = 0;
-            foreach (var evt in tree)
+            foreach (dynamic evt in tree)
             {
                 var r = evt.run;
                 Assert.IsInstanceOfType(r, typeof(int), "Run number type");

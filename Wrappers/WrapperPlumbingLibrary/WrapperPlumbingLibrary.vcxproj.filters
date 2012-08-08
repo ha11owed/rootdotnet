@@ -63,6 +63,9 @@
     <ClCompile Include="TreeEntryEnumerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TreeManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPPStringArray.hpp">
@@ -114,6 +117,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TreeEntryEnumerator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

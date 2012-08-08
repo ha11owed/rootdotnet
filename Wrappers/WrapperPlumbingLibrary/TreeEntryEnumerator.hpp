@@ -41,13 +41,13 @@ namespace ROOTNET
 			property ROOTNET::Utility::TreeEntry ^Current
 			{
 				virtual ROOTNET::Utility::TreeEntry ^get()
-				{ return nullptr; }
+				{ create_cached_ptr (); return _cached_ptr; }
 			}
 
 			property Object^ Current2
 			{
 				virtual Object^ get() sealed = System::Collections::IEnumerator::Current::get
-				{ return nullptr; }
+				{ create_cached_ptr (); return _cached_ptr; }
 			}
 
 			void Reset()
@@ -60,6 +60,10 @@ namespace ROOTNET
 			// Pointer to the tree we need to be looking at.
 			::TTree *_tree;
 			unsigned long _current_entry;
+			ROOTNET::Utility::TreeEntry ^_cached_ptr;
+			TreeManager ^_manager;
+
+			void create_cached_ptr (void);
 		};
 
 	}
