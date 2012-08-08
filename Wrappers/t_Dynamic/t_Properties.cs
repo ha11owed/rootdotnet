@@ -14,7 +14,9 @@ namespace t_Dynamic
     {
         // Force a reference to the monolithic wrapper guys - so that we can
         // make sure that the wrappers get loaded into memory.
+#pragma warning disable 0414
         static ROOTNET.NTObject _obj = null;
+#pragma warning restore 0414
 
         [TestInitialize]
         public void TestInit()
@@ -25,17 +27,16 @@ namespace t_Dynamic
         [TestMethod]
         public void TestGetStrippedPropertyName()
         {
-            dynamic  h1 = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TH1F("hi", "there", 100, 0.0, 10.0);
+            var h1 = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TH1F("hi", "there", 100, 0.0, 10.0);
             Assert.AreEqual(100, h1.GetNbinsX, "x bins");
         }
 
         [TestMethod]
         public void TestSetStrippedPropertyName()
         {
-            var tlz = new ROOTNET.NTLorentzVector(1.0, 2.0, 3.0, 4.0);
-            var dtlz = (dynamic)tlz;
-            dtlz.X = 5.0;
-            Assert.AreEqual(5.0, dtlz.X, "X property");
+            dynamic h1 = ((dynamic)ROOTNET.Utility.ROOTCreator.ROOT).TH1F("hi", "there", 100, 0.0, 10.0);
+            h1.SetMaximum = 2.0;
+            Assert.AreEqual(2.0, h1.Maximum, "Maximum");
         }
 
         [TestMethod]
