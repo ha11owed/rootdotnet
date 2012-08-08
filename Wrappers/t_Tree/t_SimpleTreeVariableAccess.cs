@@ -15,14 +15,21 @@ namespace t_Tree
         {
             // Open and get the tree
             var tree = Utils.OpenAndGet("btag-slim.root", "vtuple");
-            int count = 0;
             foreach (dynamic evt in tree)
             {
                 var r = evt.run;
-                Assert.IsInstanceOfType(r, typeof(int), "Run number type");
-                Assert.AreEqual(157037, r, "Run number");
+                Assert.IsInstanceOfType(r, typeof(uint), "Run number type");
+                Assert.AreEqual((uint) 155073, r, "Run number");
             }
-            Assert.AreEqual(100, count, "# of events in the tree");
+        }
+
+        [TestMethod]
+        [DeploymentItem("btag-slim.root")]
+        public void TestSimpleIntLINQ()
+        {
+            // Open and get the tree
+            var tree = Utils.OpenAndGet("btag-slim.root", "vtuple");
+            Assert.IsTrue(tree.Cast<dynamic>().All(evt => evt.run == 155073), "all with same run number");
         }
     }
 }

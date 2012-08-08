@@ -24,12 +24,6 @@
     <ClCompile Include="ROOTSource\root_type_helpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ROOTSource\NTLorentzVector.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
-    <ClCompile Include="ROOTSource\NTObject.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
     <ClCompile Include="ROOTSource\NTAttFill.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
@@ -48,7 +42,13 @@
     <ClCompile Include="ROOTSource\NTFile.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
+    <ClCompile Include="ROOTSource\NTLorentzVector.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
     <ClCompile Include="ROOTSource\NTNamed.cpp">
+      <Filter>ROOTSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ROOTSource\NTObject.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
     <ClCompile Include="ROOTSource\NTTree.cpp">
@@ -69,12 +69,6 @@
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\libPhysics-make_public.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTLorentzVector.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\root_type_helpers.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\libRIO-make_public.hpp">
@@ -98,10 +92,16 @@
     <ClInclude Include="ROOTSource\NTFile.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
+    <ClInclude Include="ROOTSource\NTLorentzVector.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
     <ClInclude Include="ROOTSource\NTNamed.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\NTTree.hpp">
+      <Filter>ROOTSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ROOTSource\root_type_helpers.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
   </ItemGroup>

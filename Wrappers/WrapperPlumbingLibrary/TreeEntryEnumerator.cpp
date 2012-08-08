@@ -12,10 +12,8 @@ namespace ROOTNET
 	namespace Utility
 	{
 			TreeEntryEnumerator::TreeEntryEnumerator(::TTree *treePtr)
-				: _tree (treePtr), _current_entry (-1), _cached_ptr(nullptr), _manager (gcnew TreeManager())
+				: _tree (treePtr), _current_entry (-1), _cached_ptr(nullptr), _manager (gcnew TreeManager(treePtr))
 			{
-				// We explicity read in each leaf as we need it.
-				_tree->SetBranchStatus ("*", false);
 			}
 
 			///
