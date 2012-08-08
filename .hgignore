@@ -1,0 +1,26 @@
+syntax: glob
+*.dll
+*.pdb
+*.suo
+*.sdf
+*.tlog
+*.obj
+*.log
+*.lastbuildstate
+*.cache
+*.idb
+*.lib
+*.ilk
+*.exe
+*.metagen
+*.manifest
+*.user
+*.res
+*.rc
+*.opensdf
+syntax: regexp
+.*/Debug/.*
+.*/Release/.*
+.*/ipch/.*
+.*/TestResults/.*
+.*/ROOTSource/*
