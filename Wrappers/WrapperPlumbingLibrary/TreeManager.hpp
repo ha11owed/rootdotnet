@@ -9,10 +9,16 @@ namespace ROOTNET
 	namespace Utility
 	{
 
-	ref class TreeManager
-	{
-	public:
-		TreeManager(void);
-	};
+		class TreeLeafExecutor;
+
+		ref class TreeManager
+		{
+		public:
+			TreeManager(void);
+
+			// Return an executor that will fetch the given leaf and return its value as a Root Dot Net object
+			// (or some sort of simple type).
+			TreeLeafExecutor *get_executor (System::Dynamic::GetMemberBinder ^binder);
+		};
 	}
 }

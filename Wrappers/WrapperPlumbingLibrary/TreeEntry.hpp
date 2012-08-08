@@ -22,6 +22,8 @@ namespace ROOTNET
 			{}
 
 			// The property override. This is the main way that a leaf is found in the TTree.
+			virtual bool TryGetMember (System::Dynamic::GetMemberBinder ^binder, Object^% result) override;
+
 		private:
 			TreeManager ^_mgr;
 			unsigned long _entry;
