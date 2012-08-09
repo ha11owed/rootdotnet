@@ -7,9 +7,11 @@
 
 #include <string>
 #include <vector>
+#include <sstream>
 
 using std::string;
 using std::vector;
+using std::ostringstream;
 
 class TTree;
 #pragma make_public(TTree)
@@ -315,7 +317,8 @@ namespace ROOTNET
 
 			//
 			// Now we are going to have to see if we can find the branch. If the branch isn't there, then
-			// we are done!
+			// we are done - this is just a case of the user not knowing what the leaf name is. We let the
+			// DLR deal with this error.
 			//
 
 			NetStringToConstCPP leaf_name_net (binder->Name);
@@ -348,10 +351,25 @@ namespace ROOTNET
 				result = gcnew tle_vector_string (branch);
 			}
 
-			// Cache it if it was good.
-			if (result != nullptr)
-				_executors[binder->Name] = result;
+			//
+			// If we couldn't match that means we have the proper leaf, but we don't know how to deal with
+			// the type. So we actually have a failing of this DLR section. Pop an error so the user doesn't
+			// get confused about what went wrong.
+			//
 
+			if (result == nullptr)
+			{
+				ostringstream err;
+				err << "TTree leaf '" << leaf_name << "' has type '" << leaf_type << "'; ROOT.NET's dynamic TTree infrastructure doesn't know how to deal with that type, unfortunately!";
+				throw gcnew System::InvalidOperationException(gcnew System::String(err.str().c_str()));
+			}
+
+			//
+			// We have a good reader if we make it here. Cache it so next time through this is fast
+			// (eventually the DLR will do the caching for us most of the time!).
+			//
+
+			_executors[binder->Name] = result;
 			return result;
 		}
 	}
