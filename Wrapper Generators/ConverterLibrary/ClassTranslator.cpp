@@ -915,7 +915,7 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	emitter.start_line() << info.NETName() << "(::" << info.CPPName() << " &instance);" << endl;
 
 	//
-	// Common method to get out the TObject pointer.
+	// Common method to get out the TObject and void pointer.
 	//
 
 	emitter.start_line() << "protected:" << endl;
@@ -924,6 +924,7 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	} else {
 		emitter.start_line() << "virtual ::TObject *GetTObjectPointer (void) override { return (::TObject*) 0; }" << endl;
 	}
+	emitter.start_line() << "virtual void *GetVoidPointer (void) override { return _instance; }" << endl;
 
 	///
 	/// And a guy to set the thing to null

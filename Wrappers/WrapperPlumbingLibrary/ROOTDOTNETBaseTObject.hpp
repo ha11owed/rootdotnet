@@ -58,6 +58,9 @@ namespace ROOTNET
 			/// So we can get at the pointer.
 			virtual ::TObject *GetTObjectPointer(void) = 0;
 
+			/// Get the base void* pointer. Mostly this is just a call to above.
+			virtual void* GetVoidPointer (void) = 0;
+
 		protected:
 			/// True if we are the owner and should delete the underlying C++ object
 			/// if this guy gets garbage collected.

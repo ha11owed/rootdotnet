@@ -71,7 +71,7 @@ namespace ROOTNET
 
 			static std::string resolveTypedefs(const std::string &type);
 
-			static DynamicCaller *GetFunctionCaller(::TClass *cls_info, const std::string &method_name, array<System::Object^> ^args);
+			static DynamicCaller *GetFunctionCaller(::TClass *cls_info, const std::string &method_name, array<System::Object^> ^args, bool is_ctor = false);
 		};
 	}
 }

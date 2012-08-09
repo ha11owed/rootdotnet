@@ -58,7 +58,8 @@ namespace ROOTNET
 			// Next parse through the ctor arguments, and see if we can find the constructor method.
 			//
 
-			auto caller = DynamicHelpers::GetFunctionCaller(c, (string) class_name, args);
+			auto cn = c->GetTitle();
+			auto caller = DynamicHelpers::GetFunctionCaller(c, (string) class_name, args, true);
 			if (caller == nullptr)
 				throw gcnew ROOTDynamicException("This ROOT Object does not have a ctor with these arguments");
 
