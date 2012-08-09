@@ -8,6 +8,7 @@
 #include "ROOTDOTNETBaseTObject.hpp"
 
 class TClass;
+#pragma make_public(TClass)
 
 namespace ROOTNET
 {

@@ -8,6 +8,7 @@ class TObject;
 #pragma make_public(TObject)
 
 class TClass;
+#pragma make_public(TClass)
 
 namespace ROOTNET
 {

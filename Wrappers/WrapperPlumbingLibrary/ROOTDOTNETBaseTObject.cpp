@@ -22,6 +22,10 @@ using std::ostringstream;
 #undef nullptr
 #endif
 
+#pragma make_public(TObject)
+#pragma make_public(TClass)
+
+
 namespace ROOTNET
 {
 	namespace Utility
