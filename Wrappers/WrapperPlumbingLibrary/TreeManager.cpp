@@ -62,12 +62,20 @@ namespace ROOTNET
 			unsigned long _last_entry;
 		};
 
-		ref class vector_accessor
+		public ref class vector_accessor
 		{
 		public:
+			size_t size() { return _array->size(); }
+
+		public protected:
 			vector_accessor ()
 				: _array(nullptr)
 			{}
+			void set_pointer (vector<int> *ar)
+			{
+				_array = ar;
+			}
+
 		private:
 			vector<int> *_array;
 		};
@@ -92,11 +100,15 @@ namespace ROOTNET
 				delete _value;
 			}
 
+			///
+			/// Read in the vector, and notify our accessor.
+			///
 			virtual System::Object ^execute (unsigned long entry) override
 			{
 				if (_last_entry != entry) {
 					_branch->GetEntry(entry);
 					_last_entry = entry;
+					_accessor->set_pointer(*_value);
 				}
 				return _accessor;
 			}
