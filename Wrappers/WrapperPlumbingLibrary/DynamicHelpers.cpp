@@ -485,8 +485,7 @@ namespace ROOTNET
 					if (gt->IsSubclassOf(ROOTNET::Utility::ROOTDOTNETBaseTObject::typeid))
 					{
 						auto robj = static_cast<ROOTNET::Utility::ROOTDOTNETBaseTObject^>(arg);
-						::TObject *tobj = robj->GetTObjectPointer();
-						string rootname = string(tobj->IsA()->GetName());
+						string rootname = string(robj->GetClassInfo()->GetName());
 						thisType = rootname + "*";
 					} else {
 						return "<>"; // Can't do it!

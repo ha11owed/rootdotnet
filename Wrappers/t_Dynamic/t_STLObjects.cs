@@ -30,7 +30,36 @@ namespace t_Dynamic
         [TestMethod]
         public void TestVectorCTorFullSpec()
         {
-            dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("vector<int,allocator<int> >");            
+            dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("vector<int,allocator<int> >");
+        }
+
+        [TestMethod]
+        public void TestVectorCTorAccess()
+        {
+            dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("vector<int,allocator<int> >");
+            Assert.AreEqual((uint) 0, vec.size(), "Size");
+            vec.push_back(5);
+            Assert.AreEqual((uint) 1, vec.size(), "size after push_back");
+        }
+
+        [TestMethod]
+        public void TestString()
+        {
+            dynamic str = ROOTNET.Utility.ROOTCreator.CreateByName("string", "hi");
+            Assert.AreEqual(2, str.size(), "Size of string");
+            Assert.AreEqual("hi", str.c_str(), "String contents");
+        }
+
+        [TestMethod]
+        public void TestVectorString()
+        {
+            dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("vector<string,allocator<string> >");
+            Assert.AreEqual((uint)0, vec.size(), "Size");
+            dynamic str = ROOTNET.Utility.ROOTCreator.CreateByName("string", "hi");
+            // vec.push_back(str);
+            //Assert.AreEqual((uint)1, vec.size(), "size after push_back");
+            // TODO: The argument type is "const string &" - we need to be able to deal with that
+            // kind of parsing in the dynamic guy. Ugh! :-)
         }
     }
 }
