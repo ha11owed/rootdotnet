@@ -285,15 +285,14 @@ namespace {
 			if (r == nullptr)
 				return false;
 
-			// Assume it is a TObject (we should be safe here)
-			throw gcnew System::InvalidOperationException ("Don't know what to do here!");
-#ifdef notyet
-			auto obj = reinterpret_cast<::TObject*>(r);
-			auto rdnobj = ROOTObjectServices::GetBestObject<ROOTDOTNETBaseTObject^>(obj);
+			//
+			// Get some sort of non-tobject guy back.
+			//
+
+			auto rdnobj = ROOTObjectServices::GetBestNonTObjectObject (r, _cls);
 			rdnobj->SetNativePointerOwner(true); // We track this and delete it when it is done!
 			result = rdnobj;
 			return true;
-#endif
 		}
 	private:
 		::TClass *_cls;

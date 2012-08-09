@@ -51,5 +51,17 @@ namespace t_Dynamic
             Assert.AreEqual(2.0, vec.LineWidth, "Line With");
         }
 
+        [TestMethod]
+        public void TestObjectTableLookup()
+        {
+            Assert.Fail("Make sure that the void pointer two ways gets back the same thing");
+        }
+
+        [TestMethod]
+        public void TestObjectTableDrop()
+        {
+            Assert.Fail("Make sure that the void point dropped gets a new wrapper");
+        }
+
     }
 }
