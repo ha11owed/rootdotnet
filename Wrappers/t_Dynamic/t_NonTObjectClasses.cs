@@ -52,18 +52,6 @@ namespace t_Dynamic
         }
 
         [TestMethod]
-        public void TestObjectTableLookup()
-        {
-            Assert.Fail("Make sure that the void pointer two ways gets back the same thing");
-        }
-
-        [TestMethod]
-        public void TestObjectTableDrop()
-        {
-            Assert.Fail("Make sure that the void point dropped gets a new wrapper");
-        }
-
-        [TestMethod]
         public void TestCTorWithKnownClass()
         {
             Assert.Fail("Create a non-TObject object whose wrapper is known.");

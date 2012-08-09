@@ -37,6 +37,8 @@ namespace ROOTNET {
 		///
 		///  NOTE: this only works if T is a pointer (i.e. TObject^).
 		///
+		///  This will always generate a new wrapper object.
+		///
 		generic<class T>
 		where T: ref class
 			T ROOTObjectServices::GetBestObject
@@ -102,6 +104,8 @@ namespace ROOTNET {
 
 		///
 		/// Do wrapper looking and registration for a non-TObject object type.
+		///
+		///  This will always generate a new wrapper object.
 		///
 		ROOTDOTNETBaseTObject ^ ROOTObjectServices::GetBestNonTObjectObject (const void *obj, ::TClass *cls)
 		{
