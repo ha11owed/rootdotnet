@@ -1,6 +1,8 @@
 #include "TreeManager.hpp"
 #include "NetStringToConstCPP.hpp"
 #include "TreeLeafExecutor.hpp"
+#include "ROOTDotNet.h"
+#include "ROOTDOTNETBaseTObject.hpp"
 
 #include "TTree.h"
 #include "TLeaf.h"
@@ -264,7 +266,7 @@ namespace ROOTNET
 		};
 
 		///
-		/// Template class to deal with a vector of a simple object
+		/// branch that is a vector of strings
 		///
 		ref class tle_vector_string : public TreeLeafExecutor
 		{
@@ -300,6 +302,58 @@ namespace ROOTNET
 			vector_accessor_string ^_accessor;
 			::TBranch *_branch;
 			unsigned long _last_entry;
+		};
+
+		///
+		/// No special wrapper - but this class is known to ROOT's dictionary, so, we'll just
+		/// do our best to use a wrapper!
+		///
+		ref class tle_root_object : public TreeLeafExecutor
+		{
+		public:
+			tle_root_object (::TBranch *b, ::TClass *classInfo)
+				:_value (0), _branch(b), _last_entry (-1), _class_info(classInfo)
+			{
+				_value = new void*();
+				_branch->SetAddress(_value);
+				_is_tobject = classInfo->InheritsFrom("TObject");
+			}
+
+			~tle_root_object()
+			{
+				delete _value;
+			}
+
+			///
+			/// Read in the vector, and notify our accessor.
+			///
+			virtual System::Object ^execute (unsigned long entry) override
+			{
+				if (_last_entry != entry) {
+					_branch->GetEntry(entry);
+					_last_entry = entry;
+				}
+
+				if (_is_tobject) {
+					auto obj = ROOTObjectServices::GetBestObject<ROOTDOTNETBaseTObject^>(reinterpret_cast<::TObject*>(*_value));
+					obj->SetNativePointerOwner (false); // TTree owns this!
+					return obj;
+#ifdef notyet
+					// TODO: fix this up as soon as we merge the branches
+				} else {
+					auto obj = ROOTObjectServices::GetBestVoidObject<ROOTDOTNETVoidObject^>(obj);
+					obj.SetOwner (false); // TTree owns this!
+					return obj;
+#endif
+				}
+			}
+
+		private:
+			void **_value;
+			::TBranch *_branch;
+			::TClass *_class_info;
+			unsigned long _last_entry;
+			bool _is_tobject;
 		};
 
 		///
@@ -349,6 +403,16 @@ namespace ROOTNET
 			if (leaf_type == "vector<string>")
 			{
 				result = gcnew tle_vector_string (branch);
+			}
+
+			//
+			// Is this something known to root?
+			//
+
+			auto cls_info = ::TClass::GetClass(leaf_type.c_str());
+			if (cls_info != nullptr)
+			{
+				result = gcnew tle_root_object (branch, cls_info);
 			}
 
 			//
