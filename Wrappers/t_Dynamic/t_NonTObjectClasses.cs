@@ -25,6 +25,8 @@ namespace t_Dynamic
         public void TestTAttLineCtor()
         {
             dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("TAttLine");
+            // This is not a known class. Make sure that we've not accidentally put this in.
+            Assert.AreNotEqual("NTAttLine", vec.GetType().Name, "wrapper object class");
         }
 
         [TestMethod]
@@ -54,7 +56,8 @@ namespace t_Dynamic
         [TestMethod]
         public void TestCTorWithKnownClass()
         {
-            Assert.Fail("Create a non-TObject object whose wrapper is known.");
+            dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("TAttFill");
+            Assert.AreEqual("NTAttFill", vec.GetType().Name, "wrapper object class");
         }
 
     }
