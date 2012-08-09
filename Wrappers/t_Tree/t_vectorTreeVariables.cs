@@ -46,5 +46,23 @@ namespace t_Tree
                 Assert.AreEqual(10, count, "counting everythign in here");
             }
         }
+
+        [TestMethod]
+        [DeploymentItem("vectorstring.root")]
+        public void TestVectorStringsIterator()
+        {
+            var t = Utils.OpenAndGet("vectorstring.root", "vectorsofstrings");
+            int cnt = t.Cast<dynamic>().SelectMany(evt => evt.strings as IEnumerable<string>).Where(s => s == "3").Count();
+            Assert.AreEqual(2, cnt, "# of times 3 appears");
+        }
+
+        [TestMethod]
+        [DeploymentItem("vectorstring.root")]
+        public void TestVectorStringsIndex()
+        {
+            var t = Utils.OpenAndGet("vectorstring.root", "vectorsofstrings");
+            int cnt = t.Cast<dynamic>().Where(evt => evt.strings[0] == "3").Count();
+            Assert.AreEqual(1, cnt, "# of times 3 appears in first slot");
+        }
     }
 }
