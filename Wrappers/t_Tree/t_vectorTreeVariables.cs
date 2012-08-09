@@ -20,5 +20,14 @@ namespace t_Tree
             Assert.AreEqual(5, t.Count(), "Count");
             Assert.AreEqual(5, t.Cast<dynamic>().Where(evt => evt.myvectorofint.size() == 10).Count(), "# of entries with 10 items in the vector");
         }
+
+        [TestMethod]
+        [DeploymentItem("vectorintonly_5.root")]
+        public void TestVectorIndexer()
+        {
+            var t = Utils.OpenAndGet("vectorintonly_5.root", "dude");
+            Assert.AreEqual(5, t.Count(), "Count");
+            Assert.AreEqual(5, t.Cast<dynamic>().Where(evt => evt.myvectorofint[2] == 2).Count(), "# of entries with 10 items in the vector");
+        }
     }
 }

@@ -66,6 +66,14 @@ namespace ROOTNET
 		{
 		public:
 			size_t size() { return _array->size(); }
+			property int default[int] {
+				virtual int get (int index)
+				{
+					if (index < 0 || index > _array->size())
+						throw gcnew System::IndexOutOfRangeException();
+					return (*_array)[index];
+				}
+		    }
 
 		public protected:
 			vector_accessor ()
