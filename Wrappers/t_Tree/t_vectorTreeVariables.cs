@@ -29,5 +29,22 @@ namespace t_Tree
             Assert.AreEqual(5, t.Count(), "Count");
             Assert.AreEqual(5, t.Cast<dynamic>().Where(evt => evt.myvectorofint[2] == 2).Count(), "# of entries with 10 items in the vector");
         }
+
+        [TestMethod]
+        [DeploymentItem("vectorintonly_5.root")]
+        public void TestVectorIEnumerable()
+        {
+            var t = Utils.OpenAndGet("vectorintonly_5.root", "dude");
+            Assert.AreEqual(5, t.Count(), "Count");
+            foreach (dynamic evt in t)
+            {
+                int count = 0;
+                foreach (var i in evt.myvectorofint)
+                {
+                    count++;
+                }
+                Assert.AreEqual(10, count, "counting everythign in here");
+            }
+        }
     }
 }

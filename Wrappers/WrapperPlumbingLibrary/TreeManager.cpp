@@ -62,7 +62,52 @@ namespace ROOTNET
 			unsigned long _last_entry;
 		};
 
-		public ref class vector_accessor
+		///
+		/// Allow for iteration through a vector array.
+		///
+		public ref class vector_accessor_enumerator : System::Collections::Generic::IEnumerator<int>
+		{
+		public:
+			inline vector_accessor_enumerator (vector<int> *ar)
+				: _array(ar), _index(-1)
+			{
+			}
+
+			inline ~vector_accessor_enumerator (void)
+			{}
+
+			bool MoveNext (void)
+			{
+				_index++;
+				return _index < _array->size();
+			}
+
+			virtual bool MoveNext2() sealed = System::Collections::IEnumerator::MoveNext
+			{ return MoveNext(); }
+
+			property int Current
+			{
+				virtual int get()
+				{ return _array->at(_index); }
+			}
+
+			property Object^ Current2
+			{
+				virtual Object^ get() sealed = System::Collections::IEnumerator::Current::get
+				{ return Current; }
+			}
+
+			void Reset()
+			{ _index = -1; }
+
+			virtual void Reset2 () sealed = System::Collections::IEnumerator::Reset
+			{ Reset(); }
+		private:
+			vector<int> *_array;
+			long _index;
+		};
+
+		public ref class vector_accessor : System::Collections::Generic::IEnumerable<int>
 		{
 		public:
 			size_t size() { return _array->size(); }
@@ -74,6 +119,16 @@ namespace ROOTNET
 					return (*_array)[index];
 				}
 		    }
+
+			virtual System::Collections::Generic::IEnumerator<int> ^GetEnumerator()
+			{
+				return gcnew vector_accessor_enumerator (_array);
+			}
+
+			virtual System::Collections::IEnumerator ^GetEnumerator2() sealed = System::Collections::IEnumerable::GetEnumerator
+			{
+				 return GetEnumerator();
+			}
 
 		public protected:
 			vector_accessor ()
