@@ -63,5 +63,11 @@ namespace t_Dynamic
             Assert.Fail("Make sure that the void point dropped gets a new wrapper");
         }
 
+        [TestMethod]
+        public void TestCTorWithKnownClass()
+        {
+            Assert.Fail("Create a non-TObject object whose wrapper is known.");
+        }
+
     }
 }

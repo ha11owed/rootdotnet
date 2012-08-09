@@ -655,7 +655,7 @@ namespace ROOTNET
 		//
 		// Do a call for a compiled in class.
 		//
-		bool DynamicCaller::Call(::TObject *ptr, array<System::Object^> ^args, System::Object^% result)
+		bool DynamicCaller::Call(void *ptr, array<System::Object^> ^args, System::Object^% result)
 		{
 			///
 			/// Get the calling function

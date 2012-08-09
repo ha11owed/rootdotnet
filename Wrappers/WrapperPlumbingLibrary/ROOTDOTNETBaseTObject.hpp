@@ -2,6 +2,7 @@
 
 #include <string>
 class TObject;
+class TClass;
 
 namespace ROOTNET
 {
@@ -60,6 +61,9 @@ namespace ROOTNET
 
 			/// Get the base void* pointer. Mostly this is just a call to above.
 			virtual void* GetVoidPointer (void) = 0;
+
+			/// Get the TClass for this guy. Usually used mostly by dynamic dudes.
+			virtual ::TClass *GetClassInfo (void) = 0;
 
 		protected:
 			/// True if we are the owner and should delete the underlying C++ object

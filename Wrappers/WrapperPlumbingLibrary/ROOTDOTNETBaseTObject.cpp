@@ -75,9 +75,7 @@ namespace ROOTNET
 			// Get the TClass for our class pointer
 			//
 
-			if (GetTObjectPointer() == nullptr)
-				throw gcnew ROOTDynamicException("Attempt to call method on null ptr object!");
-			auto classSpec = GetTObjectPointer()->IsA();
+			auto classSpec = GetClassInfo();
 			if (classSpec == nullptr)
 				throw gcnew System::InvalidOperationException("Attempt to call method on ROOT object that has no class info - impossible!");
 
@@ -89,7 +87,10 @@ namespace ROOTNET
 			auto caller = DynamicHelpers::GetFunctionCaller(classSpec, (string) method_name, args);
 			if (caller == nullptr)
 				return false;
-			return caller->Call(GetTObjectPointer(), args, result);
+			void *ptr = GetTObjectPointer();
+			if (ptr == nullptr)
+				ptr = GetVoidPointer();
+			return caller->Call(ptr, args, result);
 
 		}
 	}

@@ -43,7 +43,7 @@ namespace ROOTNET
 			bool IsValid() const;
 
 			System::Object^ CallCtor(::TClass *ptr, array<System::Object^> ^args);
-			bool Call (::TObject *ptr, array<System::Object^> ^args, System::Object^% result);
+			bool Call (void *ptr, array<System::Object^> ^args, System::Object^% result);
 
 		private:
 			std::vector<ROOTTypeConverter*> _arg_converters;

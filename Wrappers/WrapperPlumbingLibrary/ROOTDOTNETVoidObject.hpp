@@ -32,6 +32,9 @@ namespace ROOTNET
 			virtual void* GetVoidPointer (void) override
 			{return _instance;}
 
+			virtual ::TClass *GetClassInfo (void) override
+			{ return _class; }
+
 		private:
 			void *_instance;
 			::TClass *_class;

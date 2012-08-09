@@ -921,8 +921,18 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	emitter.start_line() << "protected:" << endl;
 	if (info.InheritsFromTObject() || info.CPPName() == "TObject") {
 		emitter.start_line() << "virtual ::TObject *GetTObjectPointer (void) override { return _instance; }" << endl;
+		emitter.start_line() << "virtual ::TClass *GetClassInfo (void) override" << endl;
+		emitter.brace_open();
+		emitter.start_line() << "if (_instance == nullptr)" << endl;
+		emitter.start_line() << "  throw gcnew System::InvalidOperationException (\"Unable to get class meta data from an object that is null!\");" << endl;
+		emitter.start_line() << "return _instance->IsA();" << endl;
+		emitter.brace_close();
 	} else {
 		emitter.start_line() << "virtual ::TObject *GetTObjectPointer (void) override { return (::TObject*) 0; }" << endl;
+		emitter.start_line() << "virtual ::TClass *GetClassInfo (void) override" << endl;
+		emitter.brace_open();
+		emitter.start_line() << "return " << info.CPPName() << "::Class();" << endl;
+		emitter.brace_close();
 	}
 	emitter.start_line() << "virtual void *GetVoidPointer (void) override { return _instance; }" << endl;
 
