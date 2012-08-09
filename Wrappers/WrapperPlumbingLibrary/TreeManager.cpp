@@ -6,45 +6,104 @@
 #include "TLeaf.h"
 
 #include <string>
+#include <vector>
 
 using std::string;
+using std::vector;
 
 class TTree;
 #pragma make_public(TTree)
+
+#ifdef nullptr
+#undef nullptr
+#endif
 
 namespace ROOTNET
 {
 	namespace Utility
 	{
 		TreeManager::TreeManager(::TTree *tree)
-			: _tree (tree), _data (new TreeManagerData())
+			: _tree (tree)
 		{
+			_executors = gcnew System::Collections::Generic::Dictionary<System::String^, TreeLeafExecutor ^>();
 		}
 
 		///
 		/// Template class to deal with a very simple type of object
 		///
-		template <class ST>
-		class tle_simple_type : public TreeLeafExecutor
+		generic <class ST>
+		ref class tle_simple_type : public TreeLeafExecutor
 		{
 		public:
 			tle_simple_type (::TBranch *b)
 				:_value (0), _branch(b), _last_entry (-1)
 			{
-				_branch->SetAddress(&_value);
+				_value = new UInt_t();
+				_branch->SetAddress(_value);
 			}
 
-			System::Object ^execute (unsigned long entry)
+			~tle_simple_type()
+			{
+				delete _value;
+			}
+
+			virtual System::Object ^execute (unsigned long entry) override
 			{
 				if (_last_entry != entry) {
 					_branch->GetEntry(entry);
 					_last_entry = entry;
 				}
-				return _value;
+				return *_value;
 			}
 
 		private:
-			ST _value;
+			UInt_t *_value;
+			::TBranch *_branch;
+			unsigned long _last_entry;
+		};
+
+		ref class vector_accessor
+		{
+		public:
+			vector_accessor ()
+				: _array(nullptr)
+			{}
+		private:
+			vector<int> *_array;
+		};
+
+		///
+		/// Template class to deal with a vector of a simple object
+		///
+		generic<class ST>
+		ref class tle_vector_type : public TreeLeafExecutor
+		{
+		public:
+			tle_vector_type (::TBranch *b)
+				:_value (0), _branch(b), _last_entry (-1)
+			{
+				_value = new vector<int>*();
+				_branch->SetAddress(_value);
+				_accessor = gcnew vector_accessor();
+			}
+
+			~tle_vector_type()
+			{
+				delete _value;
+			}
+
+			virtual System::Object ^execute (unsigned long entry) override
+			{
+				if (_last_entry != entry) {
+					_branch->GetEntry(entry);
+					_last_entry = entry;
+				}
+				return _accessor;
+			}
+
+		private:
+			vector<int> **_value;
+			vector_accessor ^_accessor;
 			::TBranch *_branch;
 			unsigned long _last_entry;
 		};
@@ -53,23 +112,22 @@ namespace ROOTNET
 		/// Our main job. Sort through everything we know about this leaf (if it exists) and attempt to find
 		/// or create an executor for it that will return the object.
 		///
-		TreeLeafExecutor *TreeManager::get_executor (System::Dynamic::GetMemberBinder ^binder)
+		TreeLeafExecutor ^TreeManager::get_executor (System::Dynamic::GetMemberBinder ^binder)
 		{
 			//
 			// Get the leaf name, see if we've already looked for one of these guys.
 			//
 
-			NetStringToConstCPP leaf_name_net (binder->Name);
-			string leaf_name (leaf_name_net);
-			auto itr = _data->_executors.find(leaf_name);
-			if (itr != _data->_executors.end())
-				return itr->second;
+			if (_executors->ContainsKey(binder->Name))
+				return _executors[binder->Name];
 
 			//
 			// Now we are going to have to see if we can find the branch. If the branch isn't there, then
 			// we are done!
 			//
 
+			NetStringToConstCPP leaf_name_net (binder->Name);
+			string leaf_name (leaf_name_net);
 			auto branch = _tree->GetBranch(leaf_name.c_str());
 			if (branch == nullptr)
 				return nullptr;
@@ -79,7 +137,7 @@ namespace ROOTNET
 				return nullptr;
 			string leaf_type (leaf->GetTypeName());
 
-			TreeLeafExecutor *result = nullptr;
+			TreeLeafExecutor ^result = nullptr;
 
 			//
 			// Next, we have to see if we can use the type to figure out what sort of executor we can use.
@@ -87,12 +145,16 @@ namespace ROOTNET
 
 			if (leaf_type == "UInt_t")
 			{
-				result = new tle_simple_type<UInt_t> (branch);
+				result = gcnew tle_simple_type<UInt_t> (branch);
+			}
+			if (leaf_type == "vector<int>")
+			{
+				result = gcnew tle_vector_type<int> (branch);
 			}
 
 			// Cache it if it was good.
 			if (result != nullptr)
-				_data->_executors[leaf_name] = result;
+				_executors[binder->Name] = result;
 
 			return result;
 		}

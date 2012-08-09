@@ -12,7 +12,7 @@ namespace ROOTNET
 {
 	namespace Utility
 	{
-		class TreeLeafExecutor
+		ref class TreeLeafExecutor abstract
 		{
 		public:
 			inline TreeLeafExecutor(void)

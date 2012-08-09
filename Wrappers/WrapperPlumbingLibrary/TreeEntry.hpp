@@ -16,11 +16,13 @@ namespace ROOTNET
 		///
 		public ref class TreeEntry : System::Dynamic::DynamicObject
 		{
-		public:
+			// Make sure this stays only inside the assembly.
+		public protected:
 			inline TreeEntry(TreeManager ^mgr, unsigned long entry)
 				: _mgr (mgr), _entry (entry)
 			{}
 
+		public:
 			// The property override. This is the main way that a leaf is found in the TTree.
 			virtual bool TryGetMember (System::Dynamic::GetMemberBinder ^binder, Object^% result) override;
 

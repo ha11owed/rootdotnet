@@ -70,6 +70,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="t_BasicTreeOperations.cs" />
     <Compile Include="t_SimpleTreeVariableAccess.cs" />
+    <Compile Include="t_vectorTreeVariables.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +87,11 @@
       <Project>{620832E1-A628-44F6-B5CE-80C0A86F20A9}</Project>
       <Name>WrapperPlumbingLibrary</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="vectorintonly_5.root">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
