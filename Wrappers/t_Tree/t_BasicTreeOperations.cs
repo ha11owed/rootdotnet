@@ -37,5 +37,17 @@ namespace t_Tree
             int count = tree.Count();
             Assert.AreEqual(100, count, "# of events in the tree");
         }
+
+        [TestMethod]
+        [DeploymentItem("btag-slim.root")]
+        public void TestCountEntriesLINQTwice()
+        {
+            // Open and get the tree
+            var tree = Utils.OpenAndGet("btag-slim.root", "vtuple");
+            int count = tree.Count();
+            Assert.AreEqual(100, count, "# of events in the tree");
+            count = tree.Count();
+            Assert.AreEqual(100, count, "# of events in the tree");
+        }
     }
 }
