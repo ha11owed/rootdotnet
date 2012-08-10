@@ -19,9 +19,16 @@ syntax: glob
 *.rc
 *.opensdf
 RDN-*
+*-errors.txt
+Wrappers/AutoBuild/ROOT Directories.props
+Wrapper Generators/solution_template.sln
+Wrapper Generators/cpp_template_project.vcxproj
+Wrapper Generators/bad_headers.txt
+Wrapper Generators/FindBadRootHeadersStatus.txt
 syntax: regexp
 .*/Debug/.*
 .*/Release/.*
 .*/ipch/.*
 .*/TestResults/.*
 .*/ROOTSource/*
+.*/AutoBuild/.*
