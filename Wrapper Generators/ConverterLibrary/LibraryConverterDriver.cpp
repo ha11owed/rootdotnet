@@ -590,6 +590,7 @@ void LibraryConverterDriver::translate(void)
 	}
 
 	cout << "Going to convert " << all_classes.size() << " classes." << endl;
+	cout << "Going ot convert " << all_enums.size() << " enums." << endl;
 
 	///
 	/// Create the holder that tracks all classes and enums we are translating.
