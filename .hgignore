@@ -18,6 +18,7 @@ syntax: glob
 *.res
 *.rc
 *.opensdf
+RDN-*
 syntax: regexp
 .*/Debug/.*
 .*/Release/.*
