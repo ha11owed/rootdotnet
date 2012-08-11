@@ -78,6 +78,9 @@ int main()
 	asked_for_class_list.push_back ("TAttFill");
 #else
 	asked_for_class_list.push_back ("TClass");
+	asked_for_class_list.push_back ("TMemberStreamer");
+	asked_for_class_list.push_back ("TClassRef");
+	asked_for_class_list.push_back ("TAttFill");
 #endif
 
 	/// Make sure the libraries that are going to be needed are loaded!

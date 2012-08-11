@@ -114,6 +114,15 @@ void ClassTranslator::translate(RootClassInfo &class_info)
 	_base_directories[class_info.LibraryName()] = _base_directory;
 
 	///
+	/// If we have a non-TObject, then we will be needing TClass...
+	///
+
+	if (!class_info.InheritsFromTObject() && class_info.CPPName() != "TObject")
+	{
+		hpp_emitter.include_file("TClass.h");
+	}
+
+	///
 	/// And the include files for all the interfaces that we will be referencing.
 	/// Mark these guys as a dependencies as well, as we will need them in order to
 	/// build!
@@ -935,7 +944,7 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 		emitter.start_line() << "virtual ::TObject *GetTObjectPointer (void) override { return (::TObject*) 0; }" << endl;
 		emitter.start_line() << "virtual ::TClass *GetAssociatedTClassInfo (void) override" << endl;
 		emitter.brace_open();
-		emitter.start_line() << "return " << info.CPPName() << "::Class();" << endl;
+		emitter.start_line() << "return TClass::GetClass(\"" << info.CPPName() << "\");" << endl;
 		emitter.brace_close();
 	}
 	emitter.start_line() << "virtual void *GetVoidPointer (void) override { return _instance; }" << endl;
