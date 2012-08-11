@@ -24,10 +24,7 @@
     <ClCompile Include="ROOTSource\root_type_helpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ROOTSource\NTLorentzVector.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
-    <ClCompile Include="ROOTSource\NTObject.cpp">
+    <ClCompile Include="ROOTSource\NTAtomicCount.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,13 +38,10 @@
     <ClInclude Include="ROOTSource\NTObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ROOTSource\libCore-make_public.hpp">
+    <ClInclude Include="ROOTSource\libThread-make_public.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
-    <ClInclude Include="ROOTSource\libPhysics-make_public.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTLorentzVector.hpp">
+    <ClInclude Include="ROOTSource\NTAtomicCount.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\root_type_helpers.hpp">

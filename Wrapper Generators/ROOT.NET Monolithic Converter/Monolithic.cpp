@@ -76,35 +76,13 @@ int main()
 	// These are the classes needed for all the Wrapper unit tests to succeed.
 	asked_for_class_list.push_back ("TLorentzVector");
 #else
-	asked_for_class_list.push_back ("TH1F");
-	asked_for_enum_list.push_back ("EAccessMode");
-	asked_for_enum_list.push_back ("EButtonState");
-	asked_for_enum_list.push_back ("EColor");
-	asked_for_enum_list.push_back ("ECursor");
-	asked_for_enum_list.push_back ("EDNDFlags");
-	asked_for_enum_list.push_back ("EDoubleSliderScale");
-	asked_for_enum_list.push_back ("EDragType");
-	asked_for_enum_list.push_back ("EEnvLevel");
-	asked_for_enum_list.push_back ("EErrorType");
-	asked_for_enum_list.push_back ("EEventType");
-	asked_for_enum_list.push_back ("EFSSortMode");
-	asked_for_enum_list.push_back ("EFileDialogMode");
-	asked_for_enum_list.push_back ("EFileModeMask");
-	asked_for_enum_list.push_back ("EFontSlant");
-	asked_for_enum_list.push_back ("EFontWeight");
-	asked_for_enum_list.push_back ("EFpeMask");
-	asked_for_enum_list.push_back ("EFrameCleanup");
-	asked_for_enum_list.push_back ("EFrameState");
-	asked_for_enum_list.push_back ("EFrameType");
-	asked_for_enum_list.push_back ("EGEventType");
-	asked_for_enum_list.push_back ("EGetLineMode");
-	asked_for_enum_list.push_back ("EGraphicsFunction");
+	asked_for_class_list.push_back ("TAtomicCount");
 #endif
 
 	/// Make sure the libraries that are going to be needed are loaded!
 	libraries_to_load.push_back ("libCore");
 	libraries_to_load.push_back ("libPhysics");
-	libraries_to_load.push_back ("libRooFitCore");
+	libraries_to_load.push_back ("libThread");
 
 	output_dir = "..\\..\\Wrappers\\MonolithicROOTWrapper\\ROOTSource";
 
