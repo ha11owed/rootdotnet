@@ -75,9 +75,10 @@ int main()
 #ifdef UNIT_TEST
 	// These are the classes needed for all the Wrapper unit tests to succeed.
 	asked_for_class_list.push_back ("TLorentzVector");
-	asked_for_class_list.push_back ("TFile");
 	asked_for_class_list.push_back ("TAttFill");
+
 	asked_for_class_list.push_back ("TTree");
+	asked_for_class_list.push_back ("TFile");
 #else
 	asked_for_class_list.push_back ("TAtomicCount");
 #endif

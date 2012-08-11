@@ -120,6 +120,8 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TreeEntry.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="ROOTDOTNETVoidObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
