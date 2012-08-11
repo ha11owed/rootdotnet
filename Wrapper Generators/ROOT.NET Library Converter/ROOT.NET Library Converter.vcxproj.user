@@ -5,7 +5,7 @@
 ROOTSYS=C:\Users\gwatts\Documents\rootbuilds\root_v5.30.01.win32.vc10.tar.gz\root
 $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-d C:\Users\gwatts\Documents\ATLAS\Projects\ROOT.NET\Wrappers\junktest</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-d $(SolutionDir)\..\Wrappers\AutoBuild</LocalDebuggerCommandArguments>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
     <LocalDebuggerMergeEnvironment>true</LocalDebuggerMergeEnvironment>
   </PropertyGroup>
