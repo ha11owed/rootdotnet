@@ -65,6 +65,19 @@ namespace ROOTNET
 			_owner = newIsOwner;
 		}
 
+		namespace {
+			// Get the pointer to the object's vtable - its instance pointer.
+			// Code hides the difference between a void* and a TObject based
+			// guy.
+			void *GetObjectPointer (ROOTDOTNETBaseTObject ^obj)
+			{
+				void *ptr = obj->GetTObjectPointer();
+				if (ptr == nullptr)
+					ptr = obj->GetVoidPointer();
+				return ptr;
+			}
+		}
+
 		///
 		/// Do a dynamic lookup of a method and see if we can't invoke it, and then use CINT to do the invokation.
 		/// This is a fairly expensive operation, but on the other hand, it means not having to link against
@@ -91,10 +104,8 @@ namespace ROOTNET
 			auto caller = DynamicHelpers::GetFunctionCaller(classSpec, (string) method_name, args);
 			if (caller == nullptr)
 				return false;
-			void *ptr = GetTObjectPointer();
-			if (ptr == nullptr)
-				ptr = GetVoidPointer();
-			return caller->Call(ptr, args, result);
+
+			return caller->Call(GetObjectPointer(this), args, result);
 		}
 
 		///
@@ -109,9 +120,7 @@ namespace ROOTNET
 			// Get the TClass for our class pointer
 			//
 
-			if (GetTObjectPointer() == nullptr)
-				throw gcnew ROOTDynamicException("Attempt to call method on null ptr object!");
-			auto classSpec = GetTObjectPointer()->IsA();
+			auto classSpec = GetClassInfo();
 			if (classSpec == nullptr)
 				throw gcnew System::InvalidOperationException("Attempt to call method on ROOT object that has no class info - impossible!");
 
@@ -132,7 +141,7 @@ namespace ROOTNET
 			if (caller == nullptr)
 				return false;
 
-			return caller->Call(GetTObjectPointer(), empty_args, result);
+			return caller->Call(GetObjectPointer(this), empty_args, result);
 		}
 
 		///
@@ -145,9 +154,7 @@ namespace ROOTNET
 			// Get the TClass for our class pointer
 			//
 
-			if (GetTObjectPointer() == nullptr)
-				throw gcnew ROOTDynamicException("Attempt to call method on null ptr object!");
-			auto classSpec = GetTObjectPointer()->IsA();
+			auto classSpec = GetClassInfo();
 			if (classSpec == nullptr)
 				throw gcnew System::InvalidOperationException("Attempt to call method on ROOT object that has no class info - impossible!");
 
@@ -167,7 +174,7 @@ namespace ROOTNET
 			}
 
 			Object ^dummy;
-			return caller->Call(GetTObjectPointer(), set_arg, dummy);
+			return caller->Call(GetObjectPointer(this), set_arg, dummy);
 		}
 
 	}
