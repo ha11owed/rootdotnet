@@ -27,7 +27,7 @@ using std::find_if;
 
 RootClassMethod::RootClassMethod(void)
 : _root_method_info (0), _args_good (false), _is_ambiguous(false), _is_hidden(false), _skip_method (false), _covar_method(false),
-  _parent(0), _superclass_ptr_good(false)
+  _parent(0), _superclass_ptr_good(false), _is_operator(false), _is_math_operator(false), _is_dtor (false)
 {
 }
 
@@ -40,6 +40,7 @@ _superclass_ptr_good(false)
 	} else {
 		_number_args = max_args;
 	}
+	ParseMethodInfo();
 }
 
 ///
@@ -238,58 +239,78 @@ bool RootClassMethod::IsOtherObjectCtor(void) const
 /// Simple test to see if we are a dtor
 bool RootClassMethod::IsDtor(void) const
 {
-	string name = _root_method_info->GetName();
-	return name[0] == '~';
+	return _is_dtor;
 }
 
 /// Simple test to see if this method is an operator
 bool RootClassMethod::IsOperator(void) const
 {
-	string name = _root_method_info->GetName();
-	return name.find("operator") == 0;
+	return _is_operator;
 }
 
-/// Is this a math like operator?
-bool RootClassMethod::IsMathOperator(void) const
+void RootClassMethod::ParseMethodInfo()
 {
+	// Operator?
+
+	string name = _root_method_info->GetName();
+	_is_operator = name.find("operator") == 0;
+
+	// dtor?
+	_is_dtor = name[0] == '~';
+
+	//
+	// We will need to examine the # of arguments, so...
+	//
+
+	arguments();
+
+	// Math operator
 	// Binary or unary only. If something else is going on, then get
 	// out of here!
-	if (_args.size() > 2)
-		return false;
-
-	string name (_root_method_info->GetName());
-	if (name.find("operator") != name.npos)
+	_is_math_operator = false;
+	if (_args.size() <= 2 && name.find("operator") != name.npos)
 	{
 		string op (name.substr(8));
 
 		// Unary only operators: !, ~, ++, --
 		if (_args.size() <= 1
 			&& (op == "!" || op == "~" || op == "++" || op == "--"))
-			return true;
+		{
+			_is_math_operator = true;
+		} else {
 
-		// The operator- can have no arguments - so it is just applied to itself. It can
-		// also have 1 or 2 arguments...
-		if (op == "-"
-			|| op == "+")
-			return true;
-
-		// If binary operator, then we are a go! +, -, *, /, %, &, |, ^, <<, >>
-		// (+, - taken care of above).
-		if (_args.size() < 1)
-			return false;
-		if (
-			op == "/"
-			|| op == "*"
-			|| op == "%"
-			|| op == "&"
-			|| op == "|"
-			|| op == "^"
-			|| op == "<<"
-			|| op == ">>"
-			)
-			return true;
+			// The operator- can have no arguments - so it is just applied to itself. It can
+			// also have 1 or 2 arguments...
+			if (op == "-"
+				|| op == "+") {
+					_is_math_operator = true;
+			} else {
+				// If binary operator, then we are a go! +, -, *, /, %, &, |, ^, <<, >>
+				// (+, - taken care of above).
+				if (_args.size() < 1) {
+					_is_math_operator = false;
+				} else {
+					if (
+						op == "/"
+						|| op == "*"
+						|| op == "%"
+						|| op == "&"
+						|| op == "|"
+						|| op == "^"
+						|| op == "<<"
+						|| op == ">>"
+						)
+						_is_math_operator = true;
+				}
+			}
+		}
 	}
-	return false;
+}
+
+/// Is this a math like operator?
+bool RootClassMethod::IsMathOperator(void) const
+{
+	return _is_math_operator;
 }
 
 /// Simple test to see if this method is an array lookup operator
