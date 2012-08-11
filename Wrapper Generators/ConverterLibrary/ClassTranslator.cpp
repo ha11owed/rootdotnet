@@ -417,14 +417,14 @@ namespace {
 	///
 	set<string> GetNonInherritedClasses(const RootClassInfo &info)
 	{
-		auto superClasses (info.GetDirectInheritedClasses());
+		auto &superClasses (info.GetDirectInheritedClasses());
 		auto directSuper (info.GetBestClassToInherrit());
 		set<string> inh_classes;
 		for_each(superClasses.begin(), superClasses.end(), [&] (const string &cname)
 		{
 			if (directSuper != cname) {
-				auto classInfo (RootClassInfoCollection::GetRootClassInfo(cname));
-				auto deepClasses (classInfo.GetInheritedClassesDeep());
+				auto &classInfo (RootClassInfoCollection::GetRootClassInfo(cname));
+				auto &deepClasses (classInfo.GetInheritedClassesDeep());
 				copy(deepClasses.begin(), deepClasses.end(), inserter(inh_classes, inh_classes.begin()));
 				inh_classes.insert(cname);
 			}
@@ -657,7 +657,7 @@ void ClassTranslator::generate_interface (RootClassInfo &class_info, SourceEmitt
 	/// Do the fields for this object
 	///
 
-	auto fields (class_info.GetAllDataFields(true));
+	auto &fields (class_info.GetAllDataFields(true));
 	for (int i = 0; i < fields.size(); i++) {
 		const RootClassField &f(fields[i]);
 		emitter.start_line() << "property " << f.NETType() << " " << f.NETName() << " {" << endl;
@@ -827,7 +827,11 @@ namespace {
 		vector<string> result;
 		for (int count = 0; count < max_count; count++) {
 			ostringstream header;
-			header << method.get_return_type_translator()->net_typename() << " ";
+			if (method.has_return_value()) {
+				header << method.get_return_type_translator()->net_typename() << " ";
+			} else {
+				header << "void ";
+			}
 
 			if (emit_class_method_name) {
 				header << method.OwnerClass().NETName() << "::";
@@ -863,7 +867,7 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	if (bestClassToInherrit.size() == 0) {
 		emitter.start_line() << "  : ROOTNET::Utility::ROOTDOTNETBaseTObject," << endl;
 	} else {
-		auto infoInherrit (RootClassInfoCollection::GetRootClassInfo(bestClassToInherrit));
+		auto &infoInherrit (RootClassInfoCollection::GetRootClassInfo(bestClassToInherrit));
 		emitter.start_line() << "  : ROOTNET::" << infoInherrit.NETName() << "," << endl;
 	}
 	emitter.start_line() << "    ROOTNET::Interface::" << info.NETName() << endl;
@@ -1090,7 +1094,7 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 	/// Do the fields for this object
 	///
 
-	auto fields (info.GetAllDataFields(true));
+	auto &fields (info.GetAllDataFields(true));
 	for (int i = 0; i < fields.size(); i++) {
 		const RootClassField &f(fields[i]);
 
@@ -1320,7 +1324,7 @@ void ClassTranslator::emit_function_body(const RootClassMethod &method, const Ro
 		// If this has a super-class, we need to set the instance there.
 		auto superInfo (info.GetBestClassToInherrit());
 		if (superInfo.size() != 0) {
-			auto superInfoPtr = RootClassInfoCollection::GetRootClassInfo(superInfo);
+			auto &superInfoPtr = RootClassInfoCollection::GetRootClassInfo(superInfo);
 			emitter.start_line() << superInfoPtr.NETName() << "::SetInstance(_instance);" << endl;
 		}
 
@@ -1540,7 +1544,8 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 			}
 			emitter() << ";" << endl;
 
-			emit_return (return_translator, return_var, emitter, false);
+			if (itr->has_return_value())
+				emit_return (return_translator, return_var, emitter, false);
 
 			emitter.brace_close();
 			emitter() << endl;

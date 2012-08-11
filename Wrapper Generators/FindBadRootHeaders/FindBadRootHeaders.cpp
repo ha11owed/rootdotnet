@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 	// Get all headers...
 	//
 
-	auto headers = ROOTHelpers::GetAllHeaders();
+	auto &headers = ROOTHelpers::GetAllHeaders();
 
 	///
 	/// Now, for each header, try it out. When we are done we'll have a list of bad ones! :-)
