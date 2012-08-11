@@ -208,10 +208,18 @@ namespace {
 			full_dir = string(b_current_dir) + "\\" + full_dir;
 		}
 
+		if (gSystem->AccessPathName(full_dir.c_str())) {
+			int err = gSystem->mkdir(full_dir.c_str(), true);
+			if (err != 0) {
+				throw runtime_error ("Error trying to create directory " + full_dir);
+			}
+		}
+#ifdef notnow
 		int err = SHCreateDirectoryExA (NULL, full_dir.c_str(), NULL);
 		if (err != ERROR_SUCCESS && err != ERROR_ALREADY_EXISTS && err != ERROR_FILE_EXISTS) {
 			throw runtime_error ("Error trying to create directory " + dir_name);
 		}
+#endif
 	}
 
 	class write_project_reference {
