@@ -26,6 +26,7 @@ Wrapper Generators/cpp_template_project.vcxproj
 Wrapper Generators/bad_headers.txt
 Wrapper Generators/FindBadRootHeadersStatus.txt
 Wrapper Generators/conversion_errors.txt
+*.nuspec
 syntax: regexp
 .*/Debug/.*
 .*/Release/.*

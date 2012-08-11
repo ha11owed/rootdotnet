@@ -114,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="ROOTSource\NTAttFill.cpp" />
     <ClCompile Include="ROOTSource\NTLorentzVector.cpp" />
     <ClCompile Include="ROOTSource\NTObject.cpp" />
     <ClCompile Include="ROOTSource\root_type_helpers.cpp" />
@@ -123,6 +124,7 @@
     <ClInclude Include="ROOTSource\libCore-make_public.hpp" />
     <ClInclude Include="ROOTSource\libPhysics-make_public.hpp" />
     <ClInclude Include="ROOTSource\libTree-make_public.hpp" />
+    <ClInclude Include="ROOTSource\NTAttFill.hpp" />
     <ClInclude Include="ROOTSource\NTLorentzVector.hpp" />
     <ClInclude Include="ROOTSource\NTObject.hpp" />
     <ClInclude Include="ROOTSource\root_type_helpers.hpp" />
