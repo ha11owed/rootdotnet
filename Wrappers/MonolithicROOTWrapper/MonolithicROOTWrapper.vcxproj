@@ -114,14 +114,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="ROOTSource\NTAtomicCount.cpp" />
+    <ClCompile Include="ROOTSource\NTLorentzVector.cpp" />
+    <ClCompile Include="ROOTSource\NTObject.cpp" />
     <ClCompile Include="ROOTSource\root_type_helpers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="ROOTSource\libThread-make_public.hpp" />
+    <ClInclude Include="ROOTSource\libCore-make_public.hpp" />
+    <ClInclude Include="ROOTSource\libPhysics-make_public.hpp" />
     <ClInclude Include="ROOTSource\libTree-make_public.hpp" />
-    <ClInclude Include="ROOTSource\NTAtomicCount.hpp" />
+    <ClInclude Include="ROOTSource\NTLorentzVector.hpp" />
     <ClInclude Include="ROOTSource\NTObject.hpp" />
     <ClInclude Include="ROOTSource\root_type_helpers.hpp" />
   </ItemGroup>
