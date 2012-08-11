@@ -56,7 +56,7 @@ copy release\solution_template.sln .
 
 REM Next, build the wrapers!
 echo Building the wrappers
-"release\ROOT.NET Library Converter" -d ..\Wrappers\%2 %RdNVersion%
+"release\ROOT.NET Library Converter" -d "%CD%\..\Wrappers\%2" %RdNVersion%
 
 REM Copy over the property sheet...
 copy "ROOT Directories.props" ..\Wrappers\%2\
