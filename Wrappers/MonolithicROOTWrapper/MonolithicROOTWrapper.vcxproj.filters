@@ -30,9 +30,6 @@
     <ClCompile Include="ROOTSource\NTObject.cpp">
       <Filter>ROOTSource</Filter>
     </ClCompile>
-    <ClCompile Include="ROOTSource\NTAttFill.cpp">
-      <Filter>ROOTSource</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -54,9 +51,6 @@
       <Filter>ROOTSource</Filter>
     </ClInclude>
     <ClInclude Include="ROOTSource\root_type_helpers.hpp">
-      <Filter>ROOTSource</Filter>
-    </ClInclude>
-    <ClInclude Include="ROOTSource\NTAttFill.hpp">
       <Filter>ROOTSource</Filter>
     </ClInclude>
   </ItemGroup>

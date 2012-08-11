@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <iterator>
 
 using std::string;
 using std::vector;
@@ -20,6 +21,21 @@ using std::for_each;
 using std::cout;
 using std::endl;
 using std::istringstream;
+using std::find_if;
+using std::ostringstream;
+using std::ostream_iterator;
+
+namespace {
+	// Split a string by a delimeter...
+	std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+		std::stringstream ss(s);
+		std::string item;
+		while(std::getline(ss, item, delim)) {
+			elems.push_back(item);
+		}
+		return elems;
+	}
+}
 
 int main(int argc, char* argv[])
 {
@@ -27,7 +43,7 @@ int main(int argc, char* argv[])
 	/// Parameters to be filled by the command line arguments
 	///
 
-	string ouput_base_directory;	// Where the solution and sub-projects will be written.
+	string output_base_directory;	// Where the solution and sub-projects will be written.
 	vector<string> libraries;		// List of libraries we will convert.
 	int v_maj = 0, v_min = 0;		// What is the major version and minor version?
 
@@ -35,13 +51,13 @@ int main(int argc, char* argv[])
 	/// Command line parsing
 	///
 
-	ouput_base_directory = "..\\..\\Wrappers\\ROOTDotNetByLib";
+	output_base_directory = "..\\..\\Wrappers\\ROOTDotNetByLib";
 
 	for (int i = 1; i < argc; i++) {
 	  string arg = argv[i];
 	  if (arg == "-d") { // Destination directory
 	    i++;
-	    ouput_base_directory = argv[i];
+	    output_base_directory = argv[i];
 	  }
 	  if (arg == "-v") { // Version number (x.y)
 		  i++;
@@ -62,6 +78,23 @@ int main(int argc, char* argv[])
 	}
 
 	///
+	/// Clean up the directory name, just in case. This is a lot of work for something pretty simple!
+	///
+
+	vector<string> subdirs;
+	split (output_base_directory, '\\', subdirs);
+	while (true)
+	{
+		auto backwards = find_if (subdirs.begin(), subdirs.end(), [] (const string &d) { return d == ".."; });
+		if (backwards == subdirs.end())
+			break;
+		subdirs.erase(backwards-1, backwards+1);
+	}
+	ostringstream newoutput;
+	copy (subdirs.begin(), subdirs.end(), ostream_iterator<string>(newoutput, "\\"));
+	output_base_directory = newoutput.str().substr(0, newoutput.str().size() - 1);
+
+	///
 	/// Tell the translation system what libraries to look at!
 	///
 
@@ -75,7 +108,7 @@ int main(int argc, char* argv[])
 	/// Set the output info
 	///
 
-	driver.set_output_solution_directory(ouput_base_directory);
+	driver.set_output_solution_directory(output_base_directory);
 	driver.write_solution(true);
 
 	///

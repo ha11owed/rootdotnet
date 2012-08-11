@@ -77,13 +77,13 @@ int main()
 	asked_for_class_list.push_back ("TLorentzVector");
 	asked_for_class_list.push_back ("TAttFill");
 #else
-	asked_for_class_list.push_back ("TFitResultPtr");
-	asked_for_class_list.push_back ("TFitResult");
+	asked_for_class_list.push_back ("TAtomicCount");
 #endif
 
 	/// Make sure the libraries that are going to be needed are loaded!
 	libraries_to_load.push_back ("libCore");
 	libraries_to_load.push_back ("libPhysics");
+	libraries_to_load.push_back ("libThread");
 
 	output_dir = "..\\..\\Wrappers\\MonolithicROOTWrapper\\ROOTSource";
 
@@ -157,9 +157,9 @@ int main()
 	///
 
 	for (unsigned int i = 0; i < all_classes.size(); i++) {
-		auto info = RootClassInfoCollection::GetRootClassInfo(all_classes[i]);
+		auto &info = RootClassInfoCollection::GetRootClassInfo(all_classes[i]);
 		for (unsigned ienum = 0; ienum < info.GetClassEnums().size(); ienum++) {
-			auto enumInfo = info.GetClassEnums()[ienum];
+			auto &enumInfo = info.GetClassEnums()[ienum];
 			if (enumInfo.NameUnqualified().size() > 0) {
 				rep_state.register_enum_translation(enumInfo.NameQualified());
 			}
