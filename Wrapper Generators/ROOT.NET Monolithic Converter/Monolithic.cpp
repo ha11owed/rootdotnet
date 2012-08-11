@@ -71,7 +71,7 @@ int main()
 
 	/// The below lines are used during debugging in order to build a single (problem) class.
 
-//#define UNIT_TEST
+#define UNIT_TEST
 #ifdef UNIT_TEST
 	// These are the classes needed for all the Wrapper unit tests to succeed.
 	asked_for_class_list.push_back ("TLorentzVector");

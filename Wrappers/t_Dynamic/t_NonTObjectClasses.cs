@@ -24,33 +24,33 @@ namespace t_Dynamic
         [TestMethod]
         public void TestTAttLineCtor()
         {
-            dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("TAttLine");
+            dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("TAttText");
             // This is not a known class. Make sure that we've not accidentally put this in.
-            Assert.AreNotEqual("NTAttLine", vec.GetType().Name, "wrapper object class");
+            Assert.AreNotEqual("NTAxis", vec.GetType().Name, "wrapper object class");
         }
 
         [TestMethod]
         public void TestCallTAttLine()
         {
-            dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("TAttLine");
-            vec.SetLineWidth(1);
-            Assert.AreEqual(1.0, vec.GetLineWidth(), "Line With");
+            dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("TAttText");
+            vec.SetTextAngle(45.0);
+            Assert.AreEqual(45.0, vec.GetTextAngle(), "Line With");
         }
 
         [TestMethod]
         public void TestGetPropertyTAttLine()
         {
-            dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("TAttLine");
-            vec.SetLineWidth(1);
-            Assert.AreEqual(1.0, vec.LineWidth, "Line With");
+            dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("TAttText");
+            vec.SetTextAngle(50.0);
+            Assert.AreEqual(50.0, vec.TextAngle, "Line With");
         }
 
         [TestMethod]
         public void TestSetPropertyTAttLine()
         {
-            dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("TAttLine");
-            vec.LineWidth = 2.0;
-            Assert.AreEqual(2.0, vec.LineWidth, "Line With");
+            dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("TAttText");
+            vec.TextAngle = 2.0;
+            Assert.AreEqual(2.0, vec.GetTextAngle, "Line With");
         }
 
         [TestMethod]
