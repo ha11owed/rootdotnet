@@ -827,7 +827,11 @@ namespace {
 		vector<string> result;
 		for (int count = 0; count < max_count; count++) {
 			ostringstream header;
-			header << method.get_return_type_translator()->net_typename() << " ";
+			if (method.has_return_value()) {
+				header << method.get_return_type_translator()->net_typename() << " ";
+			} else {
+				header << "void ";
+			}
 
 			if (emit_class_method_name) {
 				header << method.OwnerClass().NETName() << "::";
@@ -1540,7 +1544,8 @@ void ClassTranslator::generate_class_methods (RootClassInfo &info, SourceEmitter
 			}
 			emitter() << ";" << endl;
 
-			emit_return (return_translator, return_var, emitter, false);
+			if (itr->has_return_value())
+				emit_return (return_translator, return_var, emitter, false);
 
 			emitter.brace_close();
 			emitter() << endl;
