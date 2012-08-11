@@ -25,6 +25,7 @@ Wrapper Generators/solution_template.sln
 Wrapper Generators/cpp_template_project.vcxproj
 Wrapper Generators/bad_headers.txt
 Wrapper Generators/FindBadRootHeadersStatus.txt
+Wrapper Generators/conversion_errors.txt
 syntax: regexp
 .*/Debug/.*
 .*/Release/.*
