@@ -101,7 +101,7 @@ string RootClassInfo::GetBestClassToInherrit(void) const
 		return _best_class_to_inherrit;
 	_best_class_to_inherrit_good = true;
 
-	auto myParents (GetDirectInheritedClasses());
+	auto &myParents (GetDirectInheritedClasses());
 	if (myParents.size() == 0) {
 		_best_class_to_inherrit = "";
 		return "";
@@ -117,7 +117,7 @@ string RootClassInfo::GetBestClassToInherrit(void) const
 
 	for_each (myParents.begin(), myParents.end(), [&] (string superName)
 	{
-		auto cSuperInfo (RootClassInfoCollection::GetRootClassInfo(superName));
+		auto &cSuperInfo (RootClassInfoCollection::GetRootClassInfo(superName));
 		int numMethods = cSuperInfo.GetAllPrototypesForThisClass(true).size();
 		if (numMethods > bestNumberMethods)
 		{
@@ -804,9 +804,9 @@ void RootClassInfo::init_referenced_items() const
 	/// And get everything from the data fields
 	///
 
-	auto fields (GetAllDataFields(true));
+	auto &fields (GetAllDataFields(true));
 	for (unsigned int i = 0; i < fields.size(); i++) {
-		auto f (fields[i]);
+		auto &f (fields[i]);
 		auto used_classes (f.get_all_referenced_root_types());
 		all_types.insert(used_classes.begin(), used_classes.end());
 	}
@@ -956,9 +956,9 @@ const vector<RootEnum> &RootClassInfo::GetClassEnums() const
 ///
 vector<string> RootClassInfo::OtherReferencedLibraries() const
 {
-	auto enums = GetReferencedEnums();
+	auto &enums = GetReferencedEnums();
 	vector<string> libraries;
-	for_each(enums.begin(), enums.end(), [&libraries, this] (string &enum_name) {
+	for_each(enums.begin(), enums.end(), [&libraries, this] (const string &enum_name) {
 		RootEnum aEnum (enum_name);
 		if (aEnum.IsClassDefined()) {
 			if (aEnum.LibraryName() != LibraryName()) {
@@ -1194,7 +1194,7 @@ const std::vector<RootClassProperty> &RootClassInfo::GetProperties(void) const
 ///
 bool RootClassInfo::has_method (const std::string &method_name) const
 {
-	auto m = this->GetAllPrototypesForThisClass(true);
+	auto &m = this->GetAllPrototypesForThisClass(true);
 	if (m.end() != std::find_if (m.begin(), m.end(),
 		[&method_name] (const RootClassMethod &meth) { return meth.NETName() == method_name; }))
 	{
@@ -1209,7 +1209,7 @@ bool RootClassInfo::has_method (const std::string &method_name) const
 vector<RootClassMethod> RootClassInfo::methods_of_name(const std::string &method_name) const
 {
 	vector<RootClassMethod> result;
-	auto m = GetAllPrototypesForThisClass(true);
+	auto &m = GetAllPrototypesForThisClass(true);
 	copy_if(m.begin(), m.end(), back_inserter(result), [&] (const RootClassMethod &m) { return m.NETName() == method_name;});
 	return result;
 }

@@ -615,9 +615,10 @@ void LibraryConverterDriver::translate(void)
 	///
 
 	for (unsigned int i = 0; i < all_classes.size(); i++) {
-		auto info = RootClassInfoCollection::GetRootClassInfo(all_classes[i]);
-		for (unsigned ienum = 0; ienum < info.GetClassEnums().size(); ienum++) {
-			auto enumInfo = info.GetClassEnums()[ienum];
+		auto &info = RootClassInfoCollection::GetRootClassInfo(all_classes[i]);
+		auto &enums = info.GetClassEnums();
+		for (unsigned ienum = 0; ienum < enums.size(); ienum++) {
+			auto &enumInfo = enums[ienum];
 			if (enumInfo.NameUnqualified().size() > 0) {
 				rep_state.register_enum_translation(enumInfo.NameQualified());
 			}
