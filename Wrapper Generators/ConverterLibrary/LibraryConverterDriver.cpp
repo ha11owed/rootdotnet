@@ -208,10 +208,18 @@ namespace {
 			full_dir = string(b_current_dir) + "\\" + full_dir;
 		}
 
+		if (gSystem->AccessPathName(full_dir.c_str())) {
+			int err = gSystem->mkdir(full_dir.c_str(), true);
+			if (err != 0) {
+				throw runtime_error ("Error trying to create directory " + full_dir);
+			}
+		}
+#ifdef notnow
 		int err = SHCreateDirectoryExA (NULL, full_dir.c_str(), NULL);
 		if (err != ERROR_SUCCESS && err != ERROR_ALREADY_EXISTS && err != ERROR_FILE_EXISTS) {
 			throw runtime_error ("Error trying to create directory " + dir_name);
 		}
+#endif
 	}
 
 	class write_project_reference {
@@ -590,6 +598,7 @@ void LibraryConverterDriver::translate(void)
 	}
 
 	cout << "Going to convert " << all_classes.size() << " classes." << endl;
+	cout << "Going to convert " << all_enums.size() << " enums." << endl;
 
 	///
 	/// Create the holder that tracks all classes and enums we are translating.
@@ -614,9 +623,10 @@ void LibraryConverterDriver::translate(void)
 	///
 
 	for (unsigned int i = 0; i < all_classes.size(); i++) {
-		auto info = RootClassInfoCollection::GetRootClassInfo(all_classes[i]);
-		for (unsigned ienum = 0; ienum < info.GetClassEnums().size(); ienum++) {
-			auto enumInfo = info.GetClassEnums()[ienum];
+		auto &info = RootClassInfoCollection::GetRootClassInfo(all_classes[i]);
+		auto &enums = info.GetClassEnums();
+		for (unsigned ienum = 0; ienum < enums.size(); ienum++) {
+			auto &enumInfo = enums[ienum];
 			if (enumInfo.NameUnqualified().size() > 0) {
 				rep_state.register_enum_translation(enumInfo.NameQualified());
 			}

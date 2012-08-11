@@ -2,6 +2,8 @@
 
 #include <string>
 class TObject;
+class TClass;
+#pragma make_public(TClass)
 
 namespace ROOTNET
 {
@@ -46,6 +48,8 @@ namespace ROOTNET
 
 			/// Dynamic implementions.
 			virtual bool TryInvokeMember (System::Dynamic::InvokeMemberBinder ^binder, array<Object^> ^args, Object^% result) override;
+			virtual bool TryGetMember (System::Dynamic::GetMemberBinder ^binder, Object^% result) override;
+			virtual bool TrySetMember (System::Dynamic::SetMemberBinder ^binder, Object^ value) override;
 
 			/// Destructors and finalizers. The finalizer will delete the ROOT memory.
 			/// The dtor will call the finalizer (so it doesn't happen twice!). Probably no
@@ -57,6 +61,12 @@ namespace ROOTNET
 		public protected:
 			/// So we can get at the pointer.
 			virtual ::TObject *GetTObjectPointer(void) = 0;
+
+			/// Get the base void* pointer. Mostly this is just a call to above.
+			virtual void* GetVoidPointer (void) = 0;
+
+			/// Get the TClass for this guy. Usually used mostly by dynamic dudes.
+			virtual ::TClass *GetClassInfo (void) = 0;
 
 		protected:
 			/// True if we are the owner and should delete the underlying C++ object

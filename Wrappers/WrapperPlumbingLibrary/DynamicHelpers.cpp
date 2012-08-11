@@ -140,7 +140,7 @@ namespace {
 	};
 
 	//
-	// Pointer to an object.
+	// Pointer to a ROOT TObject based object.
 	//
 	class RTCROOTType : public ROOTTypeConverter
 	{
@@ -188,6 +188,56 @@ namespace {
 		::TClass *_cls;
 	};
 
+	//
+	// Pointer to a non-TObject object, but one in ROOT's dictionaries.
+	//
+	class RTCNonTObjectType : public ROOTTypeConverter
+	{
+	public:
+		inline RTCNonTObjectType (TClass *cls)
+			: _cls(cls)
+		{}
+
+		string GetArgType() const { return string(_cls->GetName()) + "*"; }
+
+		//
+		// Do the object pointer. We are making a basic assumption here that there
+		// is no multiple inherritance. Which is going to be wrong sometimes and cause
+		// a crash!
+		// TODO: fix this calling.
+		// 
+		void SetArg (System::Object ^obj, Cint::G__CallFunc *func)
+		{
+
+			auto rdnobj = (ROOTDOTNETBaseTObject^) obj;
+			auto robj = rdnobj->GetVoidPointer();
+
+			func->SetArg(reinterpret_cast<long>(robj));
+		}
+
+		//
+		// Go get an object. A null pointer is ok to come back. But we can't
+		// do much about its type in this dynamic area.
+		// Ownership is not ours - the ROOT system (or someone else) is responsible.
+		bool Call (G__CallFunc *func, void *ptr, System::Object^% result)
+		{
+			void *r = (void*) func->ExecInt(ptr);
+			if (r == nullptr)
+			{
+				return true;
+			}
+
+			throw gcnew System::InvalidOperationException ("do not know how to call the Get Best Object here");
+#ifdef notyet
+			auto rdnobj = ROOTObjectServices::GetBestObject<ROOTDOTNETBaseTObject^>(obj);
+			result = rdnobj;
+			return true;
+#endif
+		}
+	private:
+		::TClass *_cls;
+	};
+
 	// Direct object, no pointer. we own the thing now.
 	class RTCROOTTypeCtorObject : public ROOTTypeConverter
 	{
@@ -209,6 +259,37 @@ namespace {
 			// Assume it is a TObject (we should be safe here)
 			auto obj = reinterpret_cast<::TObject*>(r);
 			auto rdnobj = ROOTObjectServices::GetBestObject<ROOTDOTNETBaseTObject^>(obj);
+			rdnobj->SetNativePointerOwner(true); // We track this and delete it when it is done!
+			result = rdnobj;
+			return true;
+		}
+	private:
+		::TClass *_cls;
+	};
+
+	// Direct object, no pointer. we own the thing, further, this is for creating these guys!
+	class RTCNonTObjectTypeCtorObject : public ROOTTypeConverter
+	{
+	public:
+		inline RTCNonTObjectTypeCtorObject (TClass *cls)
+			: _cls (cls)
+		{}
+
+		string GetArgType() const { return string(_cls->GetName()); }
+		void SetArg (System::Object ^obj, Cint::G__CallFunc *func) {}
+
+		// We own the memory we come back with.
+		bool Call (G__CallFunc *func, void *ptr, System::Object^% result)
+		{
+			void *r = (void*) func->ExecInt(ptr);
+			if (r == nullptr)
+				return false;
+
+			//
+			// Get some sort of non-tobject guy back.
+			//
+
+			auto rdnobj = ROOTObjectServices::GetBestNonTObjectObject (r, _cls);
 			rdnobj->SetNativePointerOwner(true); // We track this and delete it when it is done!
 			result = rdnobj;
 			return true;
@@ -299,7 +380,9 @@ namespace {
 		auto cls_info = DynamicHelpers::ExtractROOTClassInfoPtr(resolvedName);
 		if (cls_info != nullptr)
 		{
-			return new RTCROOTType(cls_info);
+			if (cls_info->InheritsFrom("TObject"))
+				return new RTCROOTType(cls_info);
+			return new RTCNonTObjectType (cls_info);
 		}
 
 		return nullptr;
@@ -315,7 +398,9 @@ namespace {
 		auto cls_info = TClass::GetClass(resolvedName.c_str());
 		if (cls_info != nullptr)
 		{
-			return new RTCROOTTypeCtorObject(cls_info); // Ctor return...
+			if (cls_info->InheritsFrom("TObject"))
+				return new RTCROOTTypeCtorObject(cls_info); // Ctor return...
+			return new RTCNonTObjectTypeCtorObject(cls_info);
 		}
 		return nullptr;
 	}
@@ -400,8 +485,7 @@ namespace ROOTNET
 					if (gt->IsSubclassOf(ROOTNET::Utility::ROOTDOTNETBaseTObject::typeid))
 					{
 						auto robj = static_cast<ROOTNET::Utility::ROOTDOTNETBaseTObject^>(arg);
-						::TObject *tobj = robj->GetTObjectPointer();
-						string rootname = string(tobj->IsA()->GetName());
+						string rootname = string(robj->GetClassInfo()->GetName());
 						thisType = rootname + "*";
 					} else {
 						return "<>"; // Can't do it!
@@ -455,7 +539,7 @@ namespace ROOTNET
 		///
 		/// We will put together a caller for this list of arguments.
 		///
-		DynamicCaller *DynamicHelpers::GetFunctionCaller(::TClass *cls_info, const std::string &method_name, array<System::Object^> ^args)
+		DynamicCaller *DynamicHelpers::GetFunctionCaller(::TClass *cls_info, const std::string &method_name, array<System::Object^> ^args, bool is_ctor)
 		{
 			//
 			// See if we can get the method that we will be calling for this function.
@@ -490,7 +574,7 @@ namespace ROOTNET
 			//
 
 			ROOTTypeConverter *rtn_converter;
-			if (method_name == cls_info->GetName()) {
+			if (is_ctor) {
 				rtn_converter = FindConverterROOTCtor(method->GetReturnTypeName());
 			} else {
 				rtn_converter = FindConverter(method->GetReturnTypeName(), nullptr);
@@ -570,7 +654,7 @@ namespace ROOTNET
 		//
 		// Do a call for a compiled in class.
 		//
-		bool DynamicCaller::Call(::TObject *ptr, array<System::Object^> ^args, System::Object^% result)
+		bool DynamicCaller::Call(void *ptr, array<System::Object^> ^args, System::Object^% result)
 		{
 			///
 			/// Get the calling function

@@ -9,6 +9,7 @@
 #include <vector>
 
 class TClass;
+#pragma make_public(TClass)
 class TMethod;
 class TObject;
 namespace Cint {
@@ -43,7 +44,7 @@ namespace ROOTNET
 			bool IsValid() const;
 
 			System::Object^ CallCtor(::TClass *ptr, array<System::Object^> ^args);
-			bool Call (::TObject *ptr, array<System::Object^> ^args, System::Object^% result);
+			bool Call (void *ptr, array<System::Object^> ^args, System::Object^% result);
 
 		private:
 			std::vector<ROOTTypeConverter*> _arg_converters;
@@ -71,7 +72,7 @@ namespace ROOTNET
 
 			static std::string resolveTypedefs(const std::string &type);
 
-			static DynamicCaller *GetFunctionCaller(::TClass *cls_info, const std::string &method_name, array<System::Object^> ^args);
+			static DynamicCaller *GetFunctionCaller(::TClass *cls_info, const std::string &method_name, array<System::Object^> ^args, bool is_ctor = false);
 		};
 	}
 }

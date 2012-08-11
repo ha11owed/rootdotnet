@@ -57,6 +57,9 @@
     <ClCompile Include="ROOTDynamicException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ROOTDOTNETVoidObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="TreeEntry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -117,6 +120,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TreeEntry.hpp">
+    <ClInclude Include="ROOTDOTNETVoidObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TreeEntryEnumerator.hpp">

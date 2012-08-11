@@ -159,6 +159,12 @@ private:
 	mutable bool _superclass_ptr_good;
 	mutable RootClassInfo *_superclass_ptr;
 
+	// Some fairly expensive, but often called, items that we calc ahead of time.
+	bool _is_operator;
+	bool _is_math_operator;
+	bool _is_dtor;
+	void ParseMethodInfo (void);
+
 	/// Returns true if this looks like a root class...
 	bool is_root_class (const std::string &class_name) const;
 

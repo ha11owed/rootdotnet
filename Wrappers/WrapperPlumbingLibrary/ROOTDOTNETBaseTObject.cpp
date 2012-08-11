@@ -22,6 +22,10 @@ using std::ostringstream;
 #undef nullptr
 #endif
 
+#pragma make_public(TObject)
+#pragma make_public(TClass)
+
+
 namespace ROOTNET
 {
 	namespace Utility
@@ -61,6 +65,19 @@ namespace ROOTNET
 			_owner = newIsOwner;
 		}
 
+		namespace {
+			// Get the pointer to the object's vtable - its instance pointer.
+			// Code hides the difference between a void* and a TObject based
+			// guy.
+			void *GetObjectPointer (ROOTDOTNETBaseTObject ^obj)
+			{
+				void *ptr = obj->GetTObjectPointer();
+				if (ptr == nullptr)
+					ptr = obj->GetVoidPointer();
+				return ptr;
+			}
+		}
+
 		///
 		/// Do a dynamic lookup of a method and see if we can't invoke it, and then use CINT to do the invokation.
 		/// This is a fairly expensive operation, but on the other hand, it means not having to link against
@@ -75,9 +92,7 @@ namespace ROOTNET
 			// Get the TClass for our class pointer
 			//
 
-			if (GetTObjectPointer() == nullptr)
-				throw gcnew ROOTDynamicException("Attempt to call method on null ptr object!");
-			auto classSpec = GetTObjectPointer()->IsA();
+			auto classSpec = GetClassInfo();
 			if (classSpec == nullptr)
 				throw gcnew System::InvalidOperationException("Attempt to call method on ROOT object that has no class info - impossible!");
 
@@ -89,8 +104,78 @@ namespace ROOTNET
 			auto caller = DynamicHelpers::GetFunctionCaller(classSpec, (string) method_name, args);
 			if (caller == nullptr)
 				return false;
-			return caller->Call(GetTObjectPointer(), args, result);
 
+			return caller->Call(GetObjectPointer(this), args, result);
 		}
+
+		///
+		/// Property access. Here is how we work. First, we look for
+		///  GetXXX with no arguments. If that fails, then we look for "XXX" with no
+		/// arguments. If all of that fails, then we fail. Otherwise, we call that method
+		/// to get the result.
+		///
+		bool ROOTDOTNETBaseTObject::TryGetMember (System::Dynamic::GetMemberBinder ^binder, Object^% result)
+		{
+			//
+			// Get the TClass for our class pointer
+			//
+
+			auto classSpec = GetClassInfo();
+			if (classSpec == nullptr)
+				throw gcnew System::InvalidOperationException("Attempt to call method on ROOT object that has no class info - impossible!");
+
+			//
+			// See if we can find a method call "GetXXX()". If that fails, attempt to call "XXX()".
+			//
+
+		    ROOTNET::Utility::NetStringToConstCPP method_name_net(binder->Name);
+
+			string method_name ("Get" + method_name_net);
+			array<Object^> ^empty_args = gcnew array<Object^>(0);
+			auto caller = DynamicHelpers::GetFunctionCaller(classSpec, method_name, empty_args);
+			if (caller == nullptr)
+			{
+				method_name = method_name_net;
+				caller = DynamicHelpers::GetFunctionCaller(classSpec, method_name, empty_args);
+			}
+			if (caller == nullptr)
+				return false;
+
+			return caller->Call(GetObjectPointer(this), empty_args, result);
+		}
+
+		///
+		/// Attempt to set a property. We look for a SetXXX with a single argument of the proper type
+		/// to make sure things get set.
+		///
+		bool ROOTDOTNETBaseTObject::TrySetMember (System::Dynamic::SetMemberBinder ^binder, Object^ value)
+		{
+			//
+			// Get the TClass for our class pointer
+			//
+
+			auto classSpec = GetClassInfo();
+			if (classSpec == nullptr)
+				throw gcnew System::InvalidOperationException("Attempt to call method on ROOT object that has no class info - impossible!");
+
+			//
+			// See if we can find a method call "GetXXX()". If that fails, attempt to call "XXX()".
+			//
+
+		    ROOTNET::Utility::NetStringToConstCPP method_name_net(binder->Name);
+
+			string method_name ("Set" + method_name_net);
+			array<Object^> ^set_arg = gcnew array<Object^>(1);
+			set_arg[0] = value;
+			auto caller = DynamicHelpers::GetFunctionCaller(classSpec, method_name, set_arg);
+			if (caller == nullptr)
+			{
+				return false;
+			}
+
+			Object ^dummy;
+			return caller->Call(GetObjectPointer(this), set_arg, dummy);
+		}
+
 	}
 }

@@ -11,7 +11,9 @@ namespace t_Dynamic
     {
         // Force a reference to the monolithic wrapper guys - so that we can
         // make sure that the wrappers get loaded into memory.
+#pragma warning disable 0414
         static ROOTNET.NTObject _obj = null;
+#pragma warning restore 0414
 
         [TestInitialize]
         public void TestInit()

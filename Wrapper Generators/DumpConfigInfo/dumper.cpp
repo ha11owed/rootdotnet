@@ -39,7 +39,7 @@ void dumpList (const vector<string> &list, const string &title)
 	}
 	cout << endl;
 
-	for each (auto item in list)
+	for each (auto &item in list)
 	{
 		cout << item << endl;
 	}

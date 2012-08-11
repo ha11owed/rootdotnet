@@ -54,14 +54,12 @@ namespace ROOTNET
 			if (c == nullptr)
 				throw gcnew ROOTDynamicException("ROOT does not know about the class");
 
-			if (!c->InheritsFrom("TObject"))
-				throw gcnew ROOTDynamicException("The class does not inherit from TObject and so can't be handled by ROOT.NET");
-
 			//
 			// Next parse through the ctor arguments, and see if we can find the constructor method.
 			//
 
-			auto caller = DynamicHelpers::GetFunctionCaller(c, (string) class_name, args);
+			auto cn = c->GetTitle();
+			auto caller = DynamicHelpers::GetFunctionCaller(c, (string) class_name, args, true);
 			if (caller == nullptr)
 				throw gcnew ROOTDynamicException("This ROOT Object does not have a ctor with these arguments");
 

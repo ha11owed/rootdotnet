@@ -677,7 +677,7 @@ void WrapperConfigurationInfo::FixUpMethodArguments (const RootClassInfo *class_
 	/// TTree::Process and anything below it use Process(void *selector...) when they really mean "Process(TSelector *...).
 	///
 
-	auto inher = class_info->GetInheritedClassesDeep();
+	auto &inher = class_info->GetInheritedClassesDeep();
 	if (method_name == "Process"
 		&& (class_info->CPPName() == "TTree"
 		|| find(inher.begin(), inher.end(), "TTree") != inher.end())) {
