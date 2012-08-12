@@ -937,7 +937,7 @@ void ClassTranslator::generate_class_header (RootClassInfo &info, SourceEmitter 
 		emitter.start_line() << "virtual ::TClass *GetAssociatedTClassInfo (void) override" << endl;
 		emitter.brace_open();
 		emitter.start_line() << "if (_instance == nullptr)" << endl;
-		emitter.start_line() << "  throw gcnew System::InvalidOperationException (\"Unable to get class meta data from an object that is null!\");" << endl;
+		emitter.start_line() << "  return nullptr;" << endl;
 		emitter.start_line() << "return _instance->IsA();" << endl;
 		emitter.brace_close();
 	} else {
