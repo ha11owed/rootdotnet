@@ -71,17 +71,16 @@ int main()
 
 	/// The below lines are used during debugging in order to build a single (problem) class.
 
-//#define UNIT_TEST
+#define UNIT_TEST
 #ifdef UNIT_TEST
 	// These are the classes needed for all the Wrapper unit tests to succeed.
 	asked_for_class_list.push_back ("TLorentzVector");
 	asked_for_class_list.push_back ("TAttFill");
+
+	asked_for_class_list.push_back ("TTree");
+	asked_for_class_list.push_back ("TFile");
 #else
-	asked_for_class_list.push_back ("TClass");
-	asked_for_class_list.push_back ("TMemberStreamer");
-	asked_for_class_list.push_back ("TClassRef");
-	asked_for_class_list.push_back ("TAttFill");
-	asked_for_class_list.push_back ("TView");
+	asked_for_class_list.push_back ("TAtomicCount");
 #endif
 
 	/// Make sure the libraries that are going to be needed are loaded!

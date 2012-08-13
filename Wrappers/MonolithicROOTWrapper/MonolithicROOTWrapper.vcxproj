@@ -64,7 +64,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4244;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>w32pragma.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
@@ -86,7 +86,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4244;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>w32pragma.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
@@ -116,29 +116,32 @@
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="ROOTSource\NTAttFill.cpp" />
     <ClCompile Include="ROOTSource\NTAttLine.cpp" />
-    <ClCompile Include="ROOTSource\NTClass.cpp" />
-    <ClCompile Include="ROOTSource\NTClassRef.cpp" />
-    <ClCompile Include="ROOTSource\NTDictionary.cpp" />
-    <ClCompile Include="ROOTSource\NTMemberStreamer.cpp" />
+    <ClCompile Include="ROOTSource\NTAttMarker.cpp" />
+    <ClCompile Include="ROOTSource\NTDirectory.cpp" />
+    <ClCompile Include="ROOTSource\NTDirectoryFile.cpp" />
+    <ClCompile Include="ROOTSource\NTFile.cpp" />
+    <ClCompile Include="ROOTSource\NTLorentzVector.cpp" />
     <ClCompile Include="ROOTSource\NTNamed.cpp" />
     <ClCompile Include="ROOTSource\NTObject.cpp" />
-    <ClCompile Include="ROOTSource\NTView.cpp" />
+    <ClCompile Include="ROOTSource\NTTree.cpp" />
     <ClCompile Include="ROOTSource\root_type_helpers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="ROOTSource\libCore-make_public.hpp" />
-    <ClInclude Include="ROOTSource\libGpad-make_public.hpp" />
+    <ClInclude Include="ROOTSource\libPhysics-make_public.hpp" />
+    <ClInclude Include="ROOTSource\libRIO-make_public.hpp" />
     <ClInclude Include="ROOTSource\libTree-make_public.hpp" />
     <ClInclude Include="ROOTSource\NTAttFill.hpp" />
     <ClInclude Include="ROOTSource\NTAttLine.hpp" />
-    <ClInclude Include="ROOTSource\NTClass.hpp" />
-    <ClInclude Include="ROOTSource\NTClassRef.hpp" />
-    <ClInclude Include="ROOTSource\NTDictionary.hpp" />
-    <ClInclude Include="ROOTSource\NTMemberStreamer.hpp" />
+    <ClInclude Include="ROOTSource\NTAttMarker.hpp" />
+    <ClInclude Include="ROOTSource\NTDirectory.hpp" />
+    <ClInclude Include="ROOTSource\NTDirectoryFile.hpp" />
+    <ClInclude Include="ROOTSource\NTFile.hpp" />
+    <ClInclude Include="ROOTSource\NTLorentzVector.hpp" />
     <ClInclude Include="ROOTSource\NTNamed.hpp" />
     <ClInclude Include="ROOTSource\NTObject.hpp" />
-    <ClInclude Include="ROOTSource\NTView.hpp" />
+    <ClInclude Include="ROOTSource\NTTree.hpp" />
     <ClInclude Include="ROOTSource\root_type_helpers.hpp" />
   </ItemGroup>
   <ItemGroup>

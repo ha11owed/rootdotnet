@@ -128,6 +128,10 @@
     <ClCompile Include="ROOTDOTNETBaseTObject.cpp" />
     <ClCompile Include="ROOTObjectInfo.cpp" />
     <ClCompile Include="ROOTObjectManager.cpp" />
+    <ClCompile Include="TreeEntry.cpp" />
+    <ClCompile Include="TreeEntryEnumerator.cpp" />
+    <ClCompile Include="TreeLeafExecutor.cpp" />
+    <ClCompile Include="TreeManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPPStringArray.hpp" />
@@ -145,6 +149,10 @@
     <ClInclude Include="ROOTDOTNETBaseTObject.hpp" />
     <ClInclude Include="ROOTObjectInfo.h" />
     <ClInclude Include="ROOTObjectManager.h" />
+    <ClInclude Include="TreeEntry.hpp" />
+    <ClInclude Include="TreeEntryEnumerator.hpp" />
+    <ClInclude Include="TreeLeafExecutor.hpp" />
+    <ClInclude Include="TreeManager.hpp" />
     <ClInclude Include="VectorObject.hpp" />
   </ItemGroup>
   <ItemGroup>

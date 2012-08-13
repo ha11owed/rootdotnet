@@ -152,6 +152,9 @@
     <ClCompile Include="RootGlobalVariable.cpp">
       <Filter>Source Files\ROOTClassWrappers</Filter>
     </ClCompile>
+    <ClCompile Include="FeatureTreeIterator.cpp">
+      <Filter>Source Files\Features</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassInterfaceRepositoryState.hpp">
@@ -261,6 +264,9 @@
     </ClInclude>
     <ClInclude Include="RootGlobalVariable.hpp">
       <Filter>Header Files\ROOTClassWrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureTreeIterator.hpp">
+      <Filter>Header Files\Features</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

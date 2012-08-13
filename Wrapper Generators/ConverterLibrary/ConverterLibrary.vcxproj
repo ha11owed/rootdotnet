@@ -88,6 +88,7 @@
     <ClCompile Include="FeatureManager.cpp" />
     <ClCompile Include="FeatureTCollectionEnumerable.cpp" />
     <ClCompile Include="FeatureTIterEnumerable.cpp" />
+    <ClCompile Include="FeatureTreeIterator.cpp" />
     <ClCompile Include="FieldHandlingUtils.cpp" />
     <ClCompile Include="LibraryClassTranslator.cpp" />
     <ClCompile Include="LibraryConverterDriver.cpp" />
@@ -126,6 +127,7 @@
     <ClInclude Include="FeatureManager.hpp" />
     <ClInclude Include="FeatureTCollectionEnumerable.hpp" />
     <ClInclude Include="FeatureTIterEnumerable.hpp" />
+    <ClInclude Include="FeatureTreeIterator.hpp" />
     <ClInclude Include="FieldHandlingUtils.hpp" />
     <ClInclude Include="LibraryClassTranslator.hpp" />
     <ClInclude Include="LibraryConverterDriver.h" />
