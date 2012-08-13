@@ -395,24 +395,25 @@ namespace ROOTNET
 			if (leaf_type == "UInt_t")
 			{
 				result = gcnew tle_simple_type<UInt_t> (branch);
-			}
+			} else
 			if (leaf_type == "vector<int>")
 			{
 				result = gcnew tle_vector_type<int> (branch);
-			}
+			} else
 			if (leaf_type == "vector<string>")
 			{
 				result = gcnew tle_vector_string (branch);
-			}
+			} else {
 
-			//
-			// Is this something known to root?
-			//
+				//
+				// Is this something known to root?
+				//
 
-			auto cls_info = ::TClass::GetClass(leaf_type.c_str());
-			if (cls_info != nullptr)
-			{
-				result = gcnew tle_root_object (branch, cls_info);
+				auto cls_info = ::TClass::GetClass(leaf_type.c_str());
+				if (cls_info != nullptr)
+				{
+					result = gcnew tle_root_object (branch, cls_info);
+				}
 			}
 
 			//
