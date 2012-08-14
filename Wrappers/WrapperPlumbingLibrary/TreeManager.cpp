@@ -39,52 +39,58 @@ namespace ROOTNET
 		class TreeLeafExecutorRaw
 		{
 		public:
-			TreeLeafExecutorRaw (void)
-				: _last_entry(-1), _last_entry_good(false)
+			TreeLeafExecutorRaw (::TBranch *b)
+				: _last_entry(-1), _last_entry_good(false), _branch(b)
 			{}
 
-			System::Object^ execute (unsigned long entry)
+			void update (unsigned long entry)
 			{
 				if (_last_entry != entry)
 					_last_entry_good = false;
 				if (!_last_entry_good) {
-					update_entry (entry);
+					_branch->GetEntry(entry);
 					_last_entry_good = true;
 					_last_entry = entry;
 				}
-				return value();
 			}
-
-			virtual void update_entry (unsigned long entry) = 0;
-			virtual System::Object ^value (void) = 0;
 		private:
 			unsigned long _last_entry;
 			bool _last_entry_good;
+			::TBranch *_branch;
+		};
+
+		class TreeLeafExecutorSingleValueRaw : public TreeLeafExecutorRaw
+		{
+		public:
+			TreeLeafExecutorSingleValueRaw (::TBranch *b)
+				: TreeLeafExecutorRaw (b)
+			{}
+
+			virtual System::Object^ execute (unsigned long entry)
+			{
+				update(entry);
+				return value();
+			}
+			virtual System::Object ^value (void) = 0;
 		};
 
 		template <class ValueType>
-		class tle_simple_type_accessor : public TreeLeafExecutorRaw
+		class tle_simple_type_accessor : public TreeLeafExecutorSingleValueRaw
 		{
 		public:
 			tle_simple_type_accessor (::TBranch *b)
-				: _branch(b)
+				: TreeLeafExecutorSingleValueRaw (b)
 			{
-				_branch->SetAddress(&_value);
+				b->SetAddress(&_value);
 			}
 			~tle_simple_type_accessor (void)
 			{
 				_branch->SetAddress(nullptr);
 			}
-
-			void update_entry (unsigned long entry)
-			{
-				_branch->GetEntry(entry);
-			}
 			System::Object ^value (void) {return _value;}
 
 		public:
 			ValueType _value;
-			::TBranch *_branch;
 		};
 
 		generic <class ST>
@@ -92,7 +98,7 @@ namespace ROOTNET
 		{
 		public:
 			// Init and take ownership of the executor
-			tle_simple_type (TreeLeafExecutorRaw *exe)
+			tle_simple_type (TreeLeafExecutorSingleValueRaw *exe)
 				: _exe(exe)
 			{
 			}
@@ -104,21 +110,32 @@ namespace ROOTNET
 
 			virtual System::Object ^execute (unsigned long entry) override
 			{
-				return _exe->execute (entry);
+				_exe->update(entry);
+				return _exe->value();
 			}
 
 		private:
-			TreeLeafExecutorRaw *_exe;
+			TreeLeafExecutorSingleValueRaw *_exe;
 		};
 
 		///
 		/// Allow for iteration through a vector array.
 		///
-		public ref class vector_accessor_enumerator : System::Collections::Generic::IEnumerator<int>
+		class TreeLeafExecutorVectorRaw : public TreeLeafExecutorRaw
 		{
 		public:
-			inline vector_accessor_enumerator (vector<int> *ar)
-				: _array(ar), _index(-1)
+			TreeLeafExecutorVectorRaw (::TBranch *b)
+				: TreeLeafExecutorRaw(b)
+			{}
+			virtual size_t size(void) = 0;
+			virtual System::Object^ at (size_t index) = 0;
+		};
+
+		public ref class vector_accessor_enumerator : System::Collections::Generic::IEnumerator<System::Object^>
+		{
+		public:
+			inline vector_accessor_enumerator (TreeLeafExecutorVectorRaw *exe)
+				: _exe (exe), _index (-1)
 			{
 			}
 
@@ -128,16 +145,19 @@ namespace ROOTNET
 			bool MoveNext (void)
 			{
 				_index++;
-				return _index < _array->size();
+				return _index < _exe->size();
 			}
 
 			virtual bool MoveNext2() sealed = System::Collections::IEnumerator::MoveNext
 			{ return MoveNext(); }
 
-			property int Current
+			property System::Object^ Current
 			{
-				virtual int get()
-				{ return _array->at(_index); }
+				virtual System::Object^ get() {
+					if (_index < 0 || _index >= _exe->size())
+						throw gcnew System::IndexOutOfRangeException();
+					return _exe->at(_index);
+				}
 			}
 
 			property Object^ Current2
@@ -152,26 +172,26 @@ namespace ROOTNET
 			virtual void Reset2 () sealed = System::Collections::IEnumerator::Reset
 			{ Reset(); }
 		private:
-			vector<int> *_array;
+			TreeLeafExecutorVectorRaw *_exe;
 			long _index;
 		};
 
-		public ref class vector_accessor : System::Collections::Generic::IEnumerable<int>
+		public ref class vector_accessor_enumerable : System::Collections::Generic::IEnumerable<System::Object^>
 		{
 		public:
-			size_t size() { return _array->size(); }
-			property int default[int] {
-				virtual int get (int index)
+			size_t size() { return _exe->size(); }
+			property System::Object ^default[int] {
+				virtual System::Object ^get (int index)
 				{
-					if (index < 0 || index > _array->size())
+					if (index < 0 || index > _exe->size())
 						throw gcnew System::IndexOutOfRangeException();
-					return (*_array)[index];
+					return _exe->at(index);
 				}
 		    }
 
-			virtual System::Collections::Generic::IEnumerator<int> ^GetEnumerator()
+			virtual System::Collections::Generic::IEnumerator<System::Object^> ^GetEnumerator()
 			{
-				return gcnew vector_accessor_enumerator (_array);
+				return gcnew vector_accessor_enumerator (_exe);
 			}
 
 			virtual System::Collections::IEnumerator ^GetEnumerator2() sealed = System::Collections::IEnumerable::GetEnumerator
@@ -180,36 +200,50 @@ namespace ROOTNET
 			}
 
 		public protected:
-			vector_accessor ()
-				: _array(nullptr)
+			vector_accessor_enumerable (TreeLeafExecutorVectorRaw *exe)
+				: _exe (exe)
 			{}
-			void set_pointer (vector<int> *ar)
-			{
-				_array = ar;
-			}
 
 		private:
-			vector<int> *_array;
+			TreeLeafExecutorVectorRaw *_exe;
 		};
 
 		///
 		/// Template class to deal with a vector of a simple object
 		///
-		generic<class ST>
+
+		template <class ValueType>
+		class tle_vector_type_exe : public TreeLeafExecutorVectorRaw
+		{
+		public:
+			tle_vector_type_exe (::TBranch *b)
+				: TreeLeafExecutorVectorRaw(b), _value(nullptr)
+			{
+				b->SetAddress (&_value);
+			}
+			~tle_vector_type_exe (void)
+			{
+				_branch->SetAddress (nullptr);
+			}
+
+			size_t size(void) { return _value->size(); }
+			System::Object ^at (size_t index) { return _value->at(index); }
+
+		private:
+			vector<ValueType> *_value;
+		};
+
 		ref class tle_vector_type : public TreeLeafExecutor
 		{
 		public:
-			tle_vector_type (::TBranch *b)
-				:_value (0), _branch(b), _last_entry (-1)
+			tle_vector_type (TreeLeafExecutorVectorRaw *exe)
+				: _exe (exe)
 			{
-				_value = new vector<int>*();
-				_branch->SetAddress(_value);
-				_accessor = gcnew vector_accessor();
 			}
 
 			~tle_vector_type()
 			{
-				delete _value;
+				delete _exe;
 			}
 
 			///
@@ -217,19 +251,12 @@ namespace ROOTNET
 			///
 			virtual System::Object ^execute (unsigned long entry) override
 			{
-				if (_last_entry != entry) {
-					_branch->GetEntry(entry);
-					_last_entry = entry;
-					_accessor->set_pointer(*_value);
-				}
-				return _accessor;
+				_exe->update(entry);
+				return gcnew vector_accessor_enumerable(_exe);
 			}
 
 		private:
-			vector<int> **_value;
-			vector_accessor ^_accessor;
-			::TBranch *_branch;
-			unsigned long _last_entry;
+			TreeLeafExecutorVectorRaw *_exe;
 		};
 
 		public ref class vector_accessor_enumerator_string : System::Collections::Generic::IEnumerator<System::String ^>
@@ -447,7 +474,11 @@ namespace ROOTNET
 			} else
 			if (leaf_type == "vector<int>")
 			{
-				result = gcnew tle_vector_type<int> (branch);
+				result = gcnew tle_vector_type (new tle_vector_type_exe<int>(branch));
+			} else
+			if (leaf_type == "vector<float>")
+			{
+				result = gcnew tle_vector_type (new tle_vector_type_exe<float>(branch));
 			} else
 			if (leaf_type == "vector<string>")
 			{
