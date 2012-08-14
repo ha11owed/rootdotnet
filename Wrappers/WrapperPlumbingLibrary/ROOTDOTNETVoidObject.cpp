@@ -39,7 +39,6 @@ namespace ROOTNET
 		///
 		/// Delete the held object. Really, no idea how to do this!
 		///
-		/// TODO: Figure this out!
 		void ROOTDOTNETVoidObject::DeleteHeldObject (void)
 		{
 		}

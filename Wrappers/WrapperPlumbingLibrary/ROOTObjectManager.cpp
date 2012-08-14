@@ -88,7 +88,6 @@ namespace ROOTNET
 		{
 			///
 			/// I would never expect this to happen.
-			// TODO: Does this ever happen?
 			///
 
 			if (obj == 0) {

@@ -25,7 +25,6 @@ namespace t_Dynamic
         public void TestVectorCTor()
         {
             //dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("vector<int>");
-            // TODO: Make our code able to deal with this guy
         }
 
         [TestMethod]
@@ -59,7 +58,7 @@ namespace t_Dynamic
             dynamic str = ROOTNET.Utility.ROOTCreator.CreateByName("string", "hi");
             // vec.push_back(str);
             //Assert.AreEqual((uint)1, vec.size(), "size after push_back");
-            // TODO: The argument type is "const string &" - we need to be able to deal with that
+            // Needed: The argument type is "const string &" - we need to be able to deal with that
             // kind of parsing in the dynamic guy. Ugh! :-)
         }
     }

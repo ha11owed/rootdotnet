@@ -204,7 +204,7 @@ namespace {
 		// Do the object pointer. We are making a basic assumption here that there
 		// is no multiple inherritance. Which is going to be wrong sometimes and cause
 		// a crash!
-		// TODO: fix this calling.
+		// WARNING: this does not deal correctly with multiple inherritance!
 		// 
 		void SetArg (System::Object ^obj, Cint::G__CallFunc *func)
 		{

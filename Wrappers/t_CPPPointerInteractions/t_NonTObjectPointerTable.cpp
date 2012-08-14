@@ -44,7 +44,7 @@ namespace t_CPPPointerInteractions
 			auto wrapper1 = ROOTNET::Utility::ROOTObjectServices::GetBestNonTObjectObject (p, cls);
 			auto wrapper2 = ROOTNET::Utility::ROOTObjectServices::GetBestNonTObjectObject (p, cls);
 
-			// TODO: Get the wrapper lookup stuff working here!
+			// Warning: Get the wrapper lookup stuff working here!
 			//Assert::AreEqual (wrapper1, wrapper2, "two wrappers equal");
 		};
 
@@ -61,7 +61,7 @@ namespace t_CPPPointerInteractions
 			wrapper1->DropObjectFromTables();
 			auto wrapper2 = ROOTNET::Utility::ROOTObjectServices::GetBestNonTObjectObject (p, cls);
 
-			// TODO: Get the wrapper lookup stuff working here!
+			// Warning: Get the wrapper lookup stuff working here!
 			//Assert::AreNotEqual (wrapper1, wrapper2, "two wrappers equal");
 		}
 	};
