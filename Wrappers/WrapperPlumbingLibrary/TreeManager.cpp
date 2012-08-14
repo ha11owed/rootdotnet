@@ -35,35 +35,80 @@ namespace ROOTNET
 		///
 		/// Template class to deal with a very simple type of object
 		///
+
+		class TreeLeafExecutorRaw
+		{
+		public:
+			TreeLeafExecutorRaw (void)
+				: _last_entry(-1), _last_entry_good(false)
+			{}
+
+			System::Object^ execute (unsigned long entry)
+			{
+				if (_last_entry != entry)
+					_last_entry_good = false;
+				if (!_last_entry_good) {
+					update_entry (entry);
+					_last_entry_good = true;
+					_last_entry = entry;
+				}
+				return value();
+			}
+
+			virtual void update_entry (unsigned long entry) = 0;
+			virtual System::Object ^value (void) = 0;
+		private:
+			unsigned long _last_entry;
+			bool _last_entry_good;
+		};
+
+		template <class ValueType>
+		class tle_simple_type_accessor : public TreeLeafExecutorRaw
+		{
+		public:
+			tle_simple_type_accessor (::TBranch *b)
+				: _branch(b)
+			{
+				_branch->SetAddress(&_value);
+			}
+			~tle_simple_type_accessor (void)
+			{
+				_branch->SetAddress(nullptr);
+			}
+
+			void update_entry (unsigned long entry)
+			{
+				_branch->GetEntry(entry);
+			}
+			System::Object ^value (void) {return _value;}
+
+		public:
+			ValueType _value;
+			::TBranch *_branch;
+		};
+
 		generic <class ST>
 		ref class tle_simple_type : public TreeLeafExecutor
 		{
 		public:
-			tle_simple_type (::TBranch *b)
-				:_value (0), _branch(b), _last_entry (-1)
+			// Init and take ownership of the executor
+			tle_simple_type (TreeLeafExecutorRaw *exe)
+				: _exe(exe)
 			{
-				_value = new UInt_t();
-				_branch->SetAddress(_value);
 			}
 
 			~tle_simple_type()
 			{
-				delete _value;
+				delete _exe;
 			}
 
 			virtual System::Object ^execute (unsigned long entry) override
 			{
-				if (_last_entry != entry) {
-					_branch->GetEntry(entry);
-					_last_entry = entry;
-				}
-				return *_value;
+				return _exe->execute (entry);
 			}
 
 		private:
-			UInt_t *_value;
-			::TBranch *_branch;
-			unsigned long _last_entry;
+			TreeLeafExecutorRaw *_exe;
 		};
 
 		///
@@ -394,7 +439,11 @@ namespace ROOTNET
 
 			if (leaf_type == "UInt_t")
 			{
-				result = gcnew tle_simple_type<UInt_t> (branch);
+				result = gcnew tle_simple_type<UInt_t> (new tle_simple_type_accessor<UInt_t> (branch));
+			} else
+			if (leaf_type == "float")
+			{
+				result = gcnew tle_simple_type<float> (new tle_simple_type_accessor<float> (branch));
 			} else
 			if (leaf_type == "vector<int>")
 			{
