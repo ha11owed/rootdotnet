@@ -52,7 +52,7 @@ namespace t_Tree
         public void TestVectorStringsIterator()
         {
             var t = Utils.OpenAndGet("vectorstring.root", "vectorsofstrings");
-            int cnt = t.Cast<dynamic>().SelectMany(evt => evt.strings as IEnumerable<string>).Where(s => s == "3").Count();
+            int cnt = t.Cast<dynamic>().SelectMany(evt => evt.strings as IEnumerable<Object>).Where(s => s as string == "3").Count();
             Assert.AreEqual(2, cnt, "# of times 3 appears");
         }
 

@@ -3,6 +3,7 @@
 #include "TreeLeafExecutor.hpp"
 #include "ROOTDotNet.h"
 #include "ROOTDOTNETBaseTObject.hpp"
+#include "ROOTDOTNETVoidObject.hpp"
 
 #include "TTree.h"
 #include "TLeaf.h"
@@ -56,6 +57,8 @@ namespace ROOTNET
 		private:
 			unsigned long _last_entry;
 			bool _last_entry_good;
+
+		protected:
 			::TBranch *_branch;
 		};
 
@@ -233,6 +236,26 @@ namespace ROOTNET
 			vector<ValueType> *_value;
 		};
 
+		class tle_vector_string_type_exe : public TreeLeafExecutorVectorRaw
+		{
+		public:
+			tle_vector_string_type_exe (::TBranch *b)
+				: TreeLeafExecutorVectorRaw(b), _value(nullptr)
+			{
+				b->SetAddress (&_value);
+			}
+			~tle_vector_string_type_exe (void)
+			{
+				_branch->SetAddress (nullptr);
+			}
+
+			size_t size(void) { return _value->size(); }
+			System::Object ^at (size_t index) { return gcnew System::String(_value->at(index).c_str()); }
+
+		private:
+			vector<string> *_value;
+		};
+
 		ref class tle_vector_type : public TreeLeafExecutor
 		{
 		public:
@@ -257,123 +280,6 @@ namespace ROOTNET
 
 		private:
 			TreeLeafExecutorVectorRaw *_exe;
-		};
-
-		public ref class vector_accessor_enumerator_string : System::Collections::Generic::IEnumerator<System::String ^>
-		{
-		public:
-			inline vector_accessor_enumerator_string (vector<string> *ar)
-				: _array(ar), _index(-1)
-			{
-			}
-
-			inline ~vector_accessor_enumerator_string (void)
-			{}
-
-			bool MoveNext (void)
-			{
-				_index++;
-				return _index < _array->size();
-			}
-
-			virtual bool MoveNext2() sealed = System::Collections::IEnumerator::MoveNext
-			{ return MoveNext(); }
-
-			property System::String ^Current
-			{
-				virtual System::String ^get()
-				{ return gcnew System::String(_array->at(_index).c_str()); }
-			}
-
-			property Object^ Current2
-			{
-				virtual Object^ get() sealed = System::Collections::IEnumerator::Current::get
-				{ return Current; }
-			}
-
-			void Reset()
-			{ _index = -1; }
-
-			virtual void Reset2 () sealed = System::Collections::IEnumerator::Reset
-			{ Reset(); }
-		private:
-			vector<string> *_array;
-			long _index;
-		};
-
-		public ref class vector_accessor_string : System::Collections::Generic::IEnumerable<System::String^>
-		{
-		public:
-			size_t size() { return _array->size(); }
-			property System::String ^default[int] {
-				virtual System::String ^get (int index)
-				{
-					if (index < 0 || index > _array->size())
-						throw gcnew System::IndexOutOfRangeException();
-					return gcnew System::String ((*_array)[index].c_str());
-				}
-		    }
-
-			virtual System::Collections::Generic::IEnumerator<System::String^> ^GetEnumerator()
-			{
-				return gcnew vector_accessor_enumerator_string (_array);
-			}
-
-			virtual System::Collections::IEnumerator ^GetEnumerator2() sealed = System::Collections::IEnumerable::GetEnumerator
-			{
-				 return GetEnumerator();
-			}
-
-		public protected:
-			vector_accessor_string ()
-				: _array(nullptr)
-			{}
-			void set_pointer (vector<string> *ar)
-			{
-				_array = ar;
-			}
-
-		private:
-			vector<string> *_array;
-		};
-
-		///
-		/// branch that is a vector of strings
-		///
-		ref class tle_vector_string : public TreeLeafExecutor
-		{
-		public:
-			tle_vector_string (::TBranch *b)
-				:_value (0), _branch(b), _last_entry (-1)
-			{
-				_value = new vector<string>*();
-				_branch->SetAddress(_value);
-				_accessor = gcnew vector_accessor_string();
-			}
-
-			~tle_vector_string()
-			{
-				delete _value;
-			}
-
-			///
-			/// Read in the vector, and notify our accessor.
-			///
-			virtual System::Object ^execute (unsigned long entry) override
-			{
-				if (_last_entry != entry) {
-					_branch->GetEntry(entry);
-					_last_entry = entry;
-					_accessor->set_pointer(*_value);
-				}
-				return _accessor;
-			}
-
-		private:
-			vector<string> **_value;
-			vector_accessor_string ^_accessor;
-			::TBranch *_branch;
-			unsigned long _last_entry;
 		};
 
 		///
@@ -410,13 +316,10 @@ namespace ROOTNET
 					auto obj = ROOTObjectServices::GetBestObject<ROOTDOTNETBaseTObject^>(reinterpret_cast<::TObject*>(*_value));
 					obj->SetNativePointerOwner (false); // TTree owns this!
 					return obj;
-#ifdef notyet
-					// TODO: fix this up as soon as we merge the branches
 				} else {
-					auto obj = ROOTObjectServices::GetBestVoidObject<ROOTDOTNETVoidObject^>(obj);
-					obj.SetOwner (false); // TTree owns this!
+					auto obj = ROOTObjectServices::GetBestNonTObjectObject(*_value, _class_info);
+					obj->SetNativePointerOwner (false); // TTree owns this!
 					return obj;
-#endif
 				}
 			}
 
@@ -482,7 +385,7 @@ namespace ROOTNET
 			} else
 			if (leaf_type == "vector<string>")
 			{
-				result = gcnew tle_vector_string (branch);
+				result = gcnew tle_vector_type (new tle_vector_string_type_exe(branch));
 			} else {
 
 				//
