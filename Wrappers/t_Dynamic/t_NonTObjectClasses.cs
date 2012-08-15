@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.IO;
 
 namespace t_Dynamic
 {
@@ -67,6 +68,55 @@ namespace t_Dynamic
         {
             dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("TAttFill");
             Assert.AreEqual("NTAttFill", vec.GetType().Name, "wrapper object class");
+        }
+
+        // In order for this test to work you have to have run devenv from a cmd prompt
+        // that has the location of the compiler defined!
+        // Also add the following lines to monolithic to make it work:
+        //asked_for_class_list.push_back ("TClass");
+        //asked_for_class_list.push_back ("TSystem");
+        //asked_for_class_list.push_back ("TInterpreter");
+
+        [TestMethod]
+        public void TestTParameterArgument()
+        {
+            var tlz = new ROOTNET.NTLorentzVector(1.0, 2.0, 3.0, 4.0);
+
+            //
+            // Make sure to create the TParameter guy.
+            // NOTE: this program must be run in an environment that knows where cl.exe is!
+            //
+
+            var interp = ROOTNET.NTInterpreter.Instance();
+            var gSystem = ROOTNET.NTSystem.gSystem;
+
+            using (var output = File.CreateText("tlzemitter.h"))
+            {
+                output.WriteLine("#include \"TLorentzVector.h\"");
+                output.WriteLine("ostream& operator << (ostream &os, const TLorentzVector &v) {");
+                output.WriteLine(" os << \"TLZ\";");
+                output.WriteLine(" return os;");
+                output.WriteLine("}");
+                output.WriteLine("TLorentzVector operator*= (const TLorentzVector &v1, const TLorentzVector &v2) {");
+                output.WriteLine("return TLorentzVector();");
+                output.WriteLine("}");
+            }
+
+            interp.GenerateDictionary("TParameter<TLorentzVector>", "tlzemitter.h;TParameter.h;TLorentzVector.h");
+
+            //
+            // Now that dict is created, can we use dynamic crap to actually go after it? :-)
+            //
+
+            var c = ROOTNET.NTClass.GetClass("TParameter<TLorentzVector>");
+            Assert.IsNotNull(c, "not tclass got defined");
+
+            dynamic param = ROOTNET.Utility.ROOTCreator.CreateByName("TParameter<TLorentzVector>", new object[] { "Dude", tlz });
+            Assert.IsNotNull(param, "Unable to create TParameter");
+
+            Assert.AreEqual("Dude", param.Name, "Name of param");
+            var tlzback = param.Val;
+            Assert.AreEqual(2.0, tlzback.Y, "Y value of tlz we stashed in teh parameter");
         }
 
     }
