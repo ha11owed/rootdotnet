@@ -152,6 +152,7 @@
     <ClInclude Include="TreeEntry.hpp" />
     <ClInclude Include="TreeEntryEnumerator.hpp" />
     <ClInclude Include="TreeLeafExecutor.hpp" />
+    <ClInclude Include="TreeLeafExecutorRaw.h" />
     <ClInclude Include="TreeManager.hpp" />
     <ClInclude Include="VectorObject.hpp" />
   </ItemGroup>

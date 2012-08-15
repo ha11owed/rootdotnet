@@ -4,6 +4,7 @@
 #include "ROOTDotNet.h"
 #include "ROOTDOTNETBaseTObject.hpp"
 #include "ROOTDOTNETVoidObject.hpp"
+#include "TreeLeafExecutorRaw.h"
 
 #include "TTree.h"
 #include "TLeaf.h"
@@ -37,31 +38,6 @@ namespace ROOTNET
 		/// Template class to deal with a very simple type of object
 		///
 
-		class TreeLeafExecutorRaw
-		{
-		public:
-			TreeLeafExecutorRaw (::TBranch *b)
-				: _last_entry(-1), _last_entry_good(false), _branch(b)
-			{}
-
-			void update (unsigned long entry)
-			{
-				if (_last_entry != entry)
-					_last_entry_good = false;
-				if (!_last_entry_good) {
-					_branch->GetEntry(entry);
-					_last_entry_good = true;
-					_last_entry = entry;
-				}
-			}
-		private:
-			unsigned long _last_entry;
-			bool _last_entry_good;
-
-		protected:
-			::TBranch *_branch;
-		};
-
 		class TreeLeafExecutorSingleValueRaw : public TreeLeafExecutorRaw
 		{
 		public:
@@ -86,10 +62,7 @@ namespace ROOTNET
 			{
 				b->SetAddress(&_value);
 			}
-			~tle_simple_type_accessor (void)
-			{
-				_branch->SetAddress(nullptr);
-			}
+
 			System::Object ^value (void) {return _value;}
 
 		public:
@@ -224,10 +197,6 @@ namespace ROOTNET
 			{
 				b->SetAddress (&_value);
 			}
-			~tle_vector_type_exe (void)
-			{
-				_branch->SetAddress (nullptr);
-			}
 
 			size_t size(void) { return _value->size(); }
 			System::Object ^at (size_t index) { return _value->at(index); }
@@ -243,10 +212,6 @@ namespace ROOTNET
 				: TreeLeafExecutorVectorRaw(b), _value(nullptr)
 			{
 				b->SetAddress (&_value);
-			}
-			~tle_vector_string_type_exe (void)
-			{
-				_branch->SetAddress (nullptr);
 			}
 
 			size_t size(void) { return _value->size(); }

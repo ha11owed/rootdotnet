@@ -134,6 +134,9 @@
     <ClInclude Include="TreeLeafExecutor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TreeLeafExecutorRaw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.ico">
