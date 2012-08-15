@@ -10,6 +10,7 @@
 
 #include "TTree.h"
 #include "TLeaf.h"
+#include "TClassEdit.h"
 
 #include <string>
 #include <vector>
@@ -69,12 +70,18 @@ namespace ROOTNET
 				return nullptr;
 			string leaf_type (leaf->GetTypeName());
 
-			TreeLeafExecutor ^result = nullptr;
+			//
+			// Simplify everything if we can
+			//
+
+			leaf_type = TClassEdit::ResolveTypedef (leaf_type.c_str(), true);
+			leaf_type = TClassEdit::ShortType (leaf_type.c_str(), TClassEdit::kDropStlDefault);
 
 			//
 			// Now we look for a leaf executor. First, is this a type we can just "deal with"?
 			//
 
+			TreeLeafExecutor ^result = nullptr;
 			auto leaf_type_net (gcnew System::String(leaf_type.c_str()));
 			if (_executor_factories->ContainsKey(leaf_type_net)) {
 				result = _executor_factories[leaf_type_net]->Generate(branch);
