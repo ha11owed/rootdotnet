@@ -56,10 +56,8 @@ namespace t_Dynamic
             dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("vector<string,allocator<string> >");
             Assert.AreEqual((uint)0, vec.size(), "Size");
             dynamic str = ROOTNET.Utility.ROOTCreator.CreateByName("string", "hi");
-            // vec.push_back(str);
-            //Assert.AreEqual((uint)1, vec.size(), "size after push_back");
-            // Needed: The argument type is "const string &" - we need to be able to deal with that
-            // kind of parsing in the dynamic guy. Ugh! :-)
+            vec.push_back(str);
+            Assert.AreEqual((uint)1, vec.size(), "size after push_back");
         }
     }
 }

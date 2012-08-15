@@ -147,11 +147,11 @@ namespace {
 	class RTCROOTType : public ROOTTypeConverter
 	{
 	public:
-		inline RTCROOTType (TClass *cls)
-			: _cls(cls)
+		inline RTCROOTType (TClass *cls, const string &type_spec)
+			: _cls(cls), _type_spec (type_spec)
 		{}
 
-		string GetArgType() const { return string(_cls->GetName()) + "*"; }
+		string GetArgType() const { return _type_spec; }
 
 		//
 		// Do the object pointer.
@@ -188,6 +188,7 @@ namespace {
 		}
 	private:
 		::TClass *_cls;
+		const string _type_spec;
 	};
 
 	//
@@ -196,11 +197,11 @@ namespace {
 	class RTCNonTObjectType : public ROOTTypeConverter
 	{
 	public:
-		inline RTCNonTObjectType (TClass *cls)
-			: _cls(cls)
+		inline RTCNonTObjectType (TClass *cls, const string &fully_qualified_type)
+			: _cls(cls), _type_spec(fully_qualified_type)
 		{}
 
-		string GetArgType() const { return string(_cls->GetName()) + "*"; }
+		string GetArgType() const { return _type_spec; }
 
 		//
 		// Do the object pointer. We are making a basic assumption here that there
@@ -238,6 +239,7 @@ namespace {
 		}
 	private:
 		::TClass *_cls;
+		const string _type_spec;
 	};
 
 	// Direct object, no pointer. we own the thing now.
@@ -383,8 +385,8 @@ namespace {
 		if (cls_info != nullptr)
 		{
 			if (cls_info->InheritsFrom("TObject"))
-				return new RTCROOTType(cls_info);
-			return new RTCNonTObjectType (cls_info);
+				return new RTCROOTType(cls_info, resolvedName);
+			return new RTCNonTObjectType (cls_info, resolvedName);
 		}
 
 		return nullptr;
@@ -507,6 +509,7 @@ namespace ROOTNET
 				} else if (gt == System::String::typeid)
 				{
 					thisType.push_back("const char*");
+					thisType.push_back("string");
 				} else {
 					// See if this is a class ptr that is part of the ROOT system.
 					if (gt->IsSubclassOf(ROOTNET::Utility::ROOTDOTNETBaseTObject::typeid))
@@ -530,16 +533,41 @@ namespace ROOTNET
 		}
 
 		///
-		/// Look for a root pointer
+		/// Look to see if the fully qualified class name (that has had all typedef's resolved)
+		/// refers to a ROOT class. If so, return it, stripping it of all modifiers. Return null
+		/// if we can't find a known class.
 		///
 		::TClass *DynamicHelpers::ExtractROOTClassInfoPtr (const string &tname)
 		{
-			int ptr = tname.rfind("*");
-			if (ptr == tname.npos)
-				return nullptr;
+			//
+			// Is there a const at the front?
+			//
 
-			auto nameonly = tname.substr(0, ptr);
-			return ::TClass::GetClass(nameonly.c_str());
+			auto cname (tname);
+			if (cname.find("const ") == 0) {
+				cname = cname.substr(6);
+			}
+
+			//
+			// Remove any trailing pointer things
+			//
+
+			while (true)
+			{
+				int ptr = cname.rfind("*");
+				if (ptr != cname.npos) {
+					cname = cname.substr(0, ptr);
+					continue;
+				}
+				ptr = cname.rfind("&");
+				if (ptr != cname.npos) {
+					cname = cname.substr(0, ptr);
+					continue;
+				}
+				break;
+			}
+
+			return ::TClass::GetClass(cname.c_str());
 		}
 
 		//
