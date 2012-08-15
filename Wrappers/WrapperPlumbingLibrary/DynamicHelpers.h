@@ -66,7 +66,7 @@ namespace ROOTNET
 			DynamicHelpers(void);
 
 			// Given a list of arguments, generate an argument list.
-			static std::string GeneratePrototype(array<System::Object^> ^args);
+			static std::vector<std::string> GeneratePrototype(array<System::Object^> ^args);
 
 			static ::TClass *ExtractROOTClassInfoPtr (const std::string &tname);
 

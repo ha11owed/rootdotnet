@@ -14,6 +14,7 @@
 
 #include <typeinfo>
 #include <algorithm>
+#include <iterator>
 #include <sstream>
 
 #pragma make_public(TObject)
@@ -22,6 +23,7 @@ using std::string;
 using std::vector;
 using std::ostringstream;
 using std::max;
+using std::back_inserter;
 
 #ifdef nullptr
 #undef nullptr
@@ -430,6 +432,28 @@ namespace {
 		current = type.substr(0, index);
 		modifiers = type.substr(index) + modifiers;
 	}
+
+	vector<string> do_all_arg_possibilities (const string &inital_args,
+		const vector<vector<string>>::const_iterator &next_arg,
+		const vector<vector<string>>::const_iterator &last_arg
+		)
+	{
+		vector<string> result;
+		if (next_arg == last_arg)
+		{
+			result.push_back(inital_args);
+		} else {
+			for (int i = 0; i < next_arg->size(); i++) {
+				auto new_initial_args (inital_args);
+				if (new_initial_args.size() != 0)
+					new_initial_args += ",";
+				new_initial_args += (*next_arg)[i];
+				auto possibles (do_all_arg_possibilities(new_initial_args, next_arg+1, last_arg));
+				copy (possibles.begin(), possibles.end(), back_inserter(result));
+			}
+		}
+		return result;
+	}
 }
 
 namespace ROOTNET
@@ -442,64 +466,67 @@ namespace ROOTNET
 
 		//
 		// Given the list of arguments, generate a prototype string
-		// that CINT can understand for argument lookup.
+		// that CINT can understand for argument lookup. Some things have more
+		// than one way we can hand them in. So we return a list of items in that
+		// case.
 		//
-		string DynamicHelpers::GeneratePrototype(array<System::Object^> ^args)
+		vector<string> DynamicHelpers::GeneratePrototype(array<System::Object^> ^args)
 		{
 			string result = "";
 
+			vector<vector<string>> all_arg_possibilities;
 			for (int index = 0; index < args->Length; index++)
 			{
+				vector<string> thisType;
 				auto arg = args[index];
-				string thisType = "";
 				auto gt = arg->GetType();
 				if (gt == int::typeid)
 				{
-					thisType = "int";
+					thisType.push_back("int");
 				} else if (gt == long::typeid)
 				{
-					thisType = "long";
+					thisType.push_back("long");
 				} else if (gt == short::typeid)
 				{
-					thisType = "short";
+					thisType.push_back("short");
 				} else if (gt == unsigned int::typeid)
 				{
-					thisType = "unsigned int";
+					thisType.push_back("unsigned int");
 				} else if (gt == unsigned long::typeid)
 				{
-					thisType = "unsigned long";
+					thisType.push_back("unsigned long");
 				} else if (gt == unsigned short::typeid)
 				{
-					thisType = "unsigned short";
+					thisType.push_back("unsigned short");
 				} else if (gt == float::typeid)
 				{
-					thisType = "float";
+					thisType.push_back("float");
 				} else if (gt == double::typeid)
 				{
-					thisType = "double";
+					thisType.push_back("double");
 				} else if (gt == System::String::typeid)
 				{
-					thisType = "const char*";
+					thisType.push_back("const char*");
 				} else {
 					// See if this is a class ptr that is part of the ROOT system.
 					if (gt->IsSubclassOf(ROOTNET::Utility::ROOTDOTNETBaseTObject::typeid))
 					{
 						auto robj = static_cast<ROOTNET::Utility::ROOTDOTNETBaseTObject^>(arg);
 						string rootname = string(robj->GetAssociatedTClassInfo()->GetName());
-						thisType = rootname + "*";
+						thisType.push_back(rootname);
+						thisType.push_back(rootname + "*");
 					} else {
-						return "<>"; // Can't do it!
+						return vector<string>();
 					}
 				}
-
-				if (result.size() == 0) {
-					result = thisType;
-				} else {
-					result += "," + thisType;
-				}
+				all_arg_possibilities.push_back(thisType);
 			}
 
-			return result;
+			//
+			// Now, go through all the possibilities and see if we can't create a bunch of prototype strings.
+			//
+
+			return do_all_arg_possibilities ("", all_arg_possibilities.begin(), all_arg_possibilities.end());
 		}
 
 		///
@@ -542,11 +569,17 @@ namespace ROOTNET
 		DynamicCaller *DynamicHelpers::GetFunctionCaller(::TClass *cls_info, const std::string &method_name, array<System::Object^> ^args, bool is_ctor)
 		{
 			//
-			// See if we can get the method that we will be calling for this function.
+			// See if we can get the method that we will be calling for this function. Just go through the prototyupes until
+			// one of them works!
 			//
 
-			auto proto = DynamicHelpers::GeneratePrototype(args);
-			auto method = cls_info->GetMethodWithPrototype(method_name.c_str(), proto.c_str());
+			auto protos = DynamicHelpers::GeneratePrototype(args);
+			::TMethod *method (nullptr);
+			for (int i = 0; i < protos.size(); i++) {
+				method = cls_info->GetMethodWithPrototype(method_name.c_str(), protos[i].c_str());
+				if (method != nullptr)
+					break;
+			}
 			if (method == nullptr)
 				return nullptr;
 
