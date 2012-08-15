@@ -9,6 +9,7 @@
 #include <vector>
 
 class TTree;
+class TBranch;
 
 namespace ROOTNET
 {
@@ -16,6 +17,12 @@ namespace ROOTNET
 	{
 
 		ref class TreeLeafExecutor;
+
+		ref class TreeLeafExecutorFactory abstract
+		{
+		public:
+			virtual TreeLeafExecutor ^Generate (::TBranch *b) = 0;
+		};
 
 		ref class TreeManager
 		{
@@ -29,6 +36,7 @@ namespace ROOTNET
 		private:
 			// Keep most of our data in here. We have to do this b/c this is a managed class.
 			System::Collections::Generic::Dictionary<System::String^, TreeLeafExecutor ^> ^_executors;
+			static System::Collections::Generic::Dictionary<System::String^, TreeLeafExecutorFactory ^> ^_executor_factories;
 
 			// Track the tree.
 			::TTree *_tree;

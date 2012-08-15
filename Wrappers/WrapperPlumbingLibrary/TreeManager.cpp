@@ -6,8 +6,7 @@
 #include "ROOTDOTNETVoidObject.hpp"
 
 #include "TreeROOTValueExecutor.h"
-#include "TreeVectorValueExecutor.h"
-#include "TreeSimpleValueExecutor.h"
+#include "TreeLeafExecutorFactories.h"
 
 #include "TTree.h"
 #include "TLeaf.h"
@@ -35,6 +34,9 @@ namespace ROOTNET
 			: _tree (tree)
 		{
 			_executors = gcnew System::Collections::Generic::Dictionary<System::String^, TreeLeafExecutor ^>();
+			if (_executor_factories == nullptr) {
+				_executor_factories = CreateKnownLeafFactories();
+			}
 		}
 
 		///
@@ -70,34 +72,19 @@ namespace ROOTNET
 			TreeLeafExecutor ^result = nullptr;
 
 			//
-			// Next, we have to see if we can use the type to figure out what sort of executor we can use.
+			// Now we look for a leaf executor. First, is this a type we can just "deal with"?
 			//
 
-			if (leaf_type == "UInt_t")
-			{
-				result = gcnew tle_simple_type<UInt_t> (new tle_simple_type_accessor<UInt_t> (branch));
-			} else
-			if (leaf_type == "float")
-			{
-				result = gcnew tle_simple_type<float> (new tle_simple_type_accessor<float> (branch));
-			} else
-			if (leaf_type == "vector<int>")
-			{
-				result = gcnew tle_vector_type (new tle_vector_type_exe<int>(branch));
-			} else
-			if (leaf_type == "vector<float>")
-			{
-				result = gcnew tle_vector_type (new tle_vector_type_exe<float>(branch));
-			} else
-			if (leaf_type == "vector<string>")
-			{
-				result = gcnew tle_vector_type (new tle_vector_string_type_exe(branch));
-			} else {
+			auto leaf_type_net (gcnew System::String(leaf_type.c_str()));
+			if (_executor_factories->ContainsKey(leaf_type_net)) {
+				result = _executor_factories[leaf_type_net]->Generate(branch);
+			}
 
-				//
-				// Is this something known to root?
-				//
+			//
+			// Perhaps it is a ROOT object that we can then translate as we please?
+			//
 
+			if (result == nullptr) {
 				auto cls_info = ::TClass::GetClass(leaf_type.c_str());
 				if (cls_info != nullptr)
 				{

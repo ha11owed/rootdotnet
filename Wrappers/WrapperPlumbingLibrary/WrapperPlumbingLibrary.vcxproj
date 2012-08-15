@@ -131,6 +131,7 @@
     <ClCompile Include="TreeEntry.cpp" />
     <ClCompile Include="TreeEntryEnumerator.cpp" />
     <ClCompile Include="TreeLeafExecutor.cpp" />
+    <ClCompile Include="TreeLeafExecutorFactories.cpp" />
     <ClCompile Include="TreeManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +153,7 @@
     <ClInclude Include="TreeEntry.hpp" />
     <ClInclude Include="TreeEntryEnumerator.hpp" />
     <ClInclude Include="TreeLeafExecutor.hpp" />
+    <ClInclude Include="TreeLeafExecutorFactories.h" />
     <ClInclude Include="TreeLeafExecutorRaw.h" />
     <ClInclude Include="TreeManager.hpp" />
     <ClInclude Include="TreeROOTValueExecutor.h" />
