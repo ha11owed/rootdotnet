@@ -152,6 +152,7 @@
     <ClInclude Include="ROOTObjectManager.h" />
     <ClInclude Include="TreeEntry.hpp" />
     <ClInclude Include="TreeEntryEnumerator.hpp" />
+    <ClInclude Include="TreeExecutorObjectConverters.h" />
     <ClInclude Include="TreeLeafExecutor.hpp" />
     <ClInclude Include="TreeLeafExecutorFactories.h" />
     <ClInclude Include="TreeLeafExecutorRaw.h" />

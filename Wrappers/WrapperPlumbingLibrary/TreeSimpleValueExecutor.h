@@ -4,6 +4,7 @@
 ///
 
 #include "TreeLeafExecutorRaw.h"
+#include "TreeExecutorObjectConverters.h"
 
 namespace ROOTNET {
 	namespace Utility {
@@ -38,7 +39,7 @@ namespace ROOTNET {
 				b->SetAddress(&_value);
 			}
 
-			System::Object ^value (void) {return _value;}
+			System::Object ^value (void) {return ConvertToObject<ValueType>::Convert(_value);}
 
 		public:
 			ValueType _value;

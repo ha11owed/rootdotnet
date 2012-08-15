@@ -19,9 +19,9 @@
 ///
 
 #include "TreeLeafExecutorRaw.h"
+#include "TreeExecutorObjectConverters.h"
 
 #include <vector>
-#include <string>
 
 namespace ROOTNET {
 	namespace Utility {
@@ -145,29 +145,10 @@ namespace ROOTNET {
 			}
 
 			size_t size(void) { return _value->size(); }
-			System::Object ^at (size_t index) { return _value->at(index); }
+			System::Object ^at (size_t index) { return ConvertToObject<ValueType>::Convert(_value->at(index)); }
 
 		private:
 			std::vector<ValueType> *_value;
-		};
-
-		/// Specific implementation of the accessor when we have a vector<string>. We go
-		/// the extra mile here to change the string into a .NET string to make it easy to
-		/// use outside here.
-		class tle_vector_string_type_exe : public TreeLeafExecutorVectorRaw
-		{
-		public:
-			tle_vector_string_type_exe (::TBranch *b)
-				: TreeLeafExecutorVectorRaw(b), _value(nullptr)
-			{
-				b->SetAddress (&_value);
-			}
-
-			size_t size(void) { return _value->size(); }
-			System::Object ^at (size_t index) { return gcnew System::String(_value->at(index).c_str()); }
-
-		private:
-			std::vector<std::string> *_value;
 		};
 
 		/// Hold onto a vector type for some simple type (string, or int, etc.).
