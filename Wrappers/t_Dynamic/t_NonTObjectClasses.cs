@@ -34,7 +34,7 @@ namespace t_Dynamic
         {
             dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("TAttText");
             vec.SetTextAngle(45.0);
-            Assert.AreEqual(45.0, vec.GetTextAngle(), "Line With");
+            Assert.AreEqual(45.0, vec.GetTextAngle(), "Text Angle");
         }
 
         [TestMethod]
@@ -42,7 +42,7 @@ namespace t_Dynamic
         {
             dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("TAttText");
             vec.SetTextAngle(50.0);
-            Assert.AreEqual(50.0, vec.TextAngle, "Line With");
+            Assert.AreEqual(50.0, vec.TextAngle, "Text Angle");
         }
 
         [TestMethod]
@@ -50,7 +50,16 @@ namespace t_Dynamic
         {
             dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("TAttText");
             vec.TextAngle = 2.0;
-            Assert.AreEqual(2.0, vec.GetTextAngle, "Line With");
+            Assert.AreEqual(2.0, vec.GetTextAngle, "Text Angle");
+        }
+
+        [TestMethod]
+        public void TestPassByReference()
+        {
+            dynamic a1 = ROOTNET.Utility.ROOTCreator.CreateByName("TAttText");
+            a1.TextAngle = 2.0;
+            dynamic a2 = ROOTNET.Utility.ROOTCreator.CreateByName("TAttText", a1);
+            Assert.AreEqual(2.0, a2.TextAngle, "Text Angle");
         }
 
         [TestMethod]
