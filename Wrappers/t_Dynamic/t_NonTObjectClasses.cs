@@ -70,6 +70,7 @@ namespace t_Dynamic
             Assert.AreEqual("NTAttFill", vec.GetType().Name, "wrapper object class");
         }
 
+#if false
         // In order for this test to work you have to have run devenv from a cmd prompt
         // that has the location of the compiler defined!
         // Also add the following lines to monolithic to make it work:
@@ -118,6 +119,7 @@ namespace t_Dynamic
             var tlzback = param.Val;
             Assert.AreEqual(2.0, tlzback.Y, "Y value of tlz we stashed in teh parameter");
         }
+#endif
 
     }
 }
