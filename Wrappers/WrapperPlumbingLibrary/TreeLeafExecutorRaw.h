@@ -24,14 +24,14 @@ namespace ROOTNET {
 			// Make sure that this branch is no longer pointing to some
 			// data when it goes away. This is more safe programming (with ROOT!!)
 			// than anything else.
-			virtual ~TreeLeafExecutorRaw (void)
+			inline virtual ~TreeLeafExecutorRaw (void)
 			{
 				_branch->SetAddress(nullptr);
 			}
 
 			// Called to update the branch to the current entry. Done only
 			// if the entry has changed.
-			void update (unsigned long entry)
+			inline void update (unsigned long entry)
 			{
 				if (_last_entry != entry)
 					_last_entry_good = false;

@@ -154,6 +154,9 @@
     <ClInclude Include="TreeLeafExecutor.hpp" />
     <ClInclude Include="TreeLeafExecutorRaw.h" />
     <ClInclude Include="TreeManager.hpp" />
+    <ClInclude Include="TreeROOTValueExecutor.h" />
+    <ClInclude Include="TreeSimpleValueExecutor.h" />
+    <ClInclude Include="TreeVectorValueExecutor.h" />
     <ClInclude Include="VectorObject.hpp" />
   </ItemGroup>
   <ItemGroup>

@@ -137,6 +137,15 @@
     <ClInclude Include="TreeLeafExecutorRaw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TreeSimpleValueExecutor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeVectorValueExecutor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeROOTValueExecutor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.ico">
