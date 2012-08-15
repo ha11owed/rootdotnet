@@ -11,6 +11,7 @@
 #include <TMethodArg.h>
 #include <TROOT.h>
 #include <TDataType.h>
+#include "TClassEdit.h"
 
 #include <typeinfo>
 #include <algorithm>
@@ -417,24 +418,6 @@ namespace {
 		return FindConverter(arg->GetFullTypeName(), argv);
 	}
 
-	//
-	// Parse a type - removing the modifiers, etc. If the modifiers are already set, keep
-	// pushing stuff on the front.
-	//
-	void parse_type (const string &type, string &current, string &modifiers)
-	{
-		int ptr_index = type.find("*");
-		int ref_index = type.find("&");
-		int index = max(ptr_index, ref_index);
-		if (index == type.npos) {
-			current = type;
-			return;
-		}
-
-		current = type.substr(0, index);
-		modifiers = type.substr(index) + modifiers;
-	}
-
 	vector<string> do_all_arg_possibilities (const string &inital_args,
 		const vector<vector<string>>::const_iterator &next_arg,
 		const vector<vector<string>>::const_iterator &last_arg
@@ -575,19 +558,17 @@ namespace ROOTNET
 		//
 		string DynamicHelpers::resolveTypedefs(const std::string &type)
 		{
-			string current, modifiers;
-			parse_type (type, current, modifiers);
+			string current (type);
 			while (true)
 			{
+				current = TClassEdit::ResolveTypedef(current.c_str(), true);
 				auto dtinfo = gROOT->GetType(current.c_str());
 				if (dtinfo == nullptr)
-					return current + modifiers;
-
-				string newname = dtinfo->GetTypeName();
-				if (newname == current)
-					return current + modifiers;
-
-				parse_type (newname, current, modifiers);
+					return current;
+				auto newcurrent = dtinfo->GetTypeName();
+				if (newcurrent == current)
+					return current;
+				current = newcurrent;
 			}
 		}
 
