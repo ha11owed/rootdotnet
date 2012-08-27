@@ -575,8 +575,31 @@ namespace ROOTNET
 		///
 		/// We will put together a caller for this list of arguments.
 		///
-		DynamicCaller *DynamicHelpers::GetFunctionCaller(::TClass *cls_info, const std::string &method_name, array<System::Object^> ^args, bool is_ctor)
+		DynamicCaller *DynamicHelpers::GetFunctionCaller(::TClass *cls_info, const std::string &method_name_bg, array<System::Object^> ^args, bool is_ctor)
 		{
+			//
+			// If this is a ctor, then there is a chance that the method name isn't our actual class name. This is because
+			// we have to deal with vector<int> and vector<int, allocator<int>>... :-) Good old ROOT!
+			//
+
+			string method_name (method_name_bg);
+			if (is_ctor)
+			{
+				if (cls_info->GetMethodAny(method_name.c_str()) == nullptr)
+				{
+					TIter iM(cls_info->GetListOfMethods());
+					TMethod *m (nullptr);
+					while ((m = (TMethod*) iM()))
+					{
+						if (TClass::GetClass(m->GetName()) == cls_info)
+						{
+							method_name = m->GetName();
+							break;
+						}
+					}
+				}
+			}
+
 			//
 			// See if we can get the method that we will be calling for this function. Just go through the prototyupes until
 			// one of them works!

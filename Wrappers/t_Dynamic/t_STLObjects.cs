@@ -24,7 +24,7 @@ namespace t_Dynamic
         [TestMethod]
         public void TestVectorCTor()
         {
-            //dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("vector<int>");
+            dynamic vec = ROOTNET.Utility.ROOTCreator.CreateByName("vector<int>");
         }
 
         [TestMethod]
