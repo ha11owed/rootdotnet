@@ -22,7 +22,6 @@ using namespace System;
 using namespace System::Text;
 using namespace System::Collections::Generic;
 using namespace	Microsoft::VisualStudio::TestTools::UnitTesting;
-using namespace TestUtilities;
 
 namespace t_RootClassInfo
 {

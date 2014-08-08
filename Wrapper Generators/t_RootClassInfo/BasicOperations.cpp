@@ -1,5 +1,3 @@
-#include "stdafx.h"
-
 #pragma unmanaged
 #include "RootClassInfo.hpp"
 #include "RootClassMethod.hpp"
@@ -30,7 +28,6 @@ using std::find_if;
 using namespace System;
 using namespace System::Text;
 using namespace System::Collections::Generic;
-using namespace	Microsoft::VisualStudio::TestTools::UnitTesting;
 
 namespace {
 	class findmethodname {

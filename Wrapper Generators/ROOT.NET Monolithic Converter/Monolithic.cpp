@@ -30,6 +30,8 @@
 #include "TSystem.h"
 #include "TApplication.h"
 #include "TDataType.h"
+#include "TInterpreter.h"
+#include "TClass.h"
 
 #include <vector>
 #include <set>
@@ -113,6 +115,20 @@ int main()
 	///
 	/// Get the type system up and running
 	///
+	if (gInterpreter == NULL) {
+		cout << "Error with thie interpreter" << endl;
+	}
+	auto c = TClass::GetClass("TApplication");
+	if (c != nullptr) {
+		cout << "Got it" << endl;
+		auto sl = c->GetSharedLibs();
+		if (sl == nullptr) {
+			cout << "no" << endl;
+		}
+		else {
+			cout << "libs: " << sl << endl;
+		}
+	}
 
 	WrapperConfigurationInfo::InitTypeTranslators();
 	RootClassInfoCollection::SetBadMethods(WrapperConfigurationInfo::GetListOfBadMethods());

@@ -19,6 +19,7 @@
 #include <iostream>
 #include <algorithm>
 #include <sstream>
+#include <functional>
 
 using std::string;
 using std::vector;

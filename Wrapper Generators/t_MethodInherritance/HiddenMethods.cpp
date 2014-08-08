@@ -23,7 +23,6 @@ using std::string;
 using namespace System;
 using namespace System::Text;
 using namespace System::Collections::Generic;
-using namespace	Microsoft::VisualStudio::TestTools::UnitTesting;
 
 ///
 /// Test the method hiding logic. These are usually methods that
