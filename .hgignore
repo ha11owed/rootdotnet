@@ -27,6 +27,11 @@ Wrapper Generators/bad_headers.txt
 Wrapper Generators/FindBadRootHeadersStatus.txt
 Wrapper Generators/conversion_errors.txt
 *.nuspec
+Wrapper Generators/etc/*
+Wrapper Generators/fonts/*
+Wrapper Generators/icons/*
+Wrapper Generators/lib/*
+Wrapper Generators/packages/*
 syntax: regexp
 .*/Debug/.*
 .*/Release/.*
