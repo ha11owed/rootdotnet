@@ -32,6 +32,8 @@ Wrapper Generators/fonts/*
 Wrapper Generators/icons/*
 Wrapper Generators/lib/*
 Wrapper Generators/packages/*
+Wrapper Generators/include/*
+Wrapper Generators/cint/*
 syntax: regexp
 .*/Debug/.*
 .*/Release/.*
