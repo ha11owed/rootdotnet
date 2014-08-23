@@ -104,20 +104,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Reference Include="System">
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </Reference>
-    <Reference Include="System.Data">
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </Reference>
-    <Reference Include="System.Xml">
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="t_ROOTHelpers.cpp" />
     <ClCompile Include="t_WrapperConfigurationInfo.cpp" />
@@ -135,7 +121,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ConverterLibrary\ConverterLibrary.vcxproj">
       <Project>{03433c15-e459-4c8c-a7a5-3d2d63c7e655}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
