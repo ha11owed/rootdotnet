@@ -161,6 +161,7 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\rootbuild\libCore\libCoreWrapper.vcxproj" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">
