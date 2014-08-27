@@ -1,6 +1,6 @@
 @ECHO OFF
 REM Build the root wrappers
-REM argument 1: where ROOTSYS should point
+REM argument 1: The name of the ROOT nuget package to base this build on
 REM argument 2: The output directory name
 REM argument 3: Where to copy the results. If blank, no copy is done.
 REM
@@ -30,8 +30,15 @@ REM
 REM Setup the environment
 REM
 
-set "ROOTSYS=%1"
-set "PATH=%1\bin;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE;%PATH%"
+REM This should not be needed any longer, we are using a specific version of ROOT installed via nuget
+REM set "ROOTSYS=%1"
+REM set "PATH=%1\bin;C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE;%PATH%"
+
+exit
+
+REM Remove the ROOT nuget packages.
+
+REM Add in the new ROOT nuget package.
 
 REM Build everything so we can actually run programs! :-)
 echo Building code to do the translation...
@@ -39,6 +46,8 @@ devenv /nologo "Wrapper Generators.sln" /project "FindBadRootHeaders" /build "Re
 devenv /nologo "Wrapper Generators.sln" /project "ROOT.NET Library Converter" /build "Release|Win32"
 devenv /nologo "Wrapper Generators.sln" /project "ROOT.NET Addon Library Converter" /build "Release|Win32"
 devenv /nologo "Wrapper Generators.sln" /project "DumpConfigInfo" /build "Release|Win32"
+
+exit
 
 REM Find all bad headers in this distro of ROOT.
 
