@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BuildROOTWrappers.bat" />
+    <None Include="new-wrapper.ps1" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5292C5CA-FE39-455E-9A06-2542B66CB698}</ProjectGuid>
