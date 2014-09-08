@@ -3,18 +3,25 @@
 #	Create a new version of the ROOT wrappers
 #.Description
 #   Invoking this command will build a new set of ROOT .NET Wrappers. This command can take hours to run!
-#.Parameter $ROOTNugetPackageName
-#    The nuget name of the version of ROOT to build against. For example, ROOT_5_34_19. This
-#    most recent version is used.
 #.Parameter $WrapperBuildDirectory
 #    Where the wrappers should be built. The directory does not have to be there already.
 #.Example
-#	new-wrapper ROOT_5_34_19 D:\rootresults
+#	new-wrapper D:\rootresults
 ##>
 param (
-	[Parameter(Mandatory=$True)][string] $ROOTNugetPackageName,
 	[Parameter(Mandatory=$True)][string] $WrapperBuildDirectory
 )
+
+# NOTE:
+# It would be nice to pass in the ROOT package name that we are going to build this against,
+# however, the only way to make that work is if we can invoke VS to run the nuget add/remove, as
+# it must alter the solution and project files. This is not possible from the raw nuget command line.
+#
+# See: https://nuget.codeplex.com/discussions/562283 for where i attempt to find help.
+#
+# As a result we can only use what is currently checked in - so the config must have been done
+# previously.
+#
 
 # Look for the output directory
 if (-not $(test-path $WrapperBuildDirectory)) {
@@ -33,4 +40,21 @@ if (-not $(test-path $nuget_path)) {
 	nuget update -self
 }
 
-# Great. Next, copy 
+# Great. Next make sure that everything to build the wrappers is properly built.
+
+$dotNetFrameworkVersion = "v4.0.30319"
+$dotNetFrameworkPath = "${env:SystemRoot}\Microsoft.NET\Framework\$dotNetFrameworkVersion"
+if (-not $(test-path $dotNetFrameworkPath)) {
+  Write-Host "Can't find .NET framework version $dotNetFrameworkVersion."
+  return
+}
+set-alias msbuild "$dotNetFrameworkPath\msbuild.exe"
+
+$wrapperGenerateSolutionPath = "$WrapperBuildDirectory\Wrapper Generators.sln"
+msbuild $wrapperGenerateSolutionPath /project "FindBadRootHeaders" /t:build /p:Configuration=Release
+#devenv /nologo $wrapperGenerateSolutionPath /project "FindBadRootHeaders" /build "Release|Win32"
+#devenv /nologo $wrapperGenerateSolutionPath /project "ROOT.NET Library Converter" /build "Release|Win32"
+#devenv /nologo $wrapperGenerateSolutionPath /project "ROOT.NET Addon Library Converter" /build "Release|Win32"
+#devenv /nologo $wrapperGenerateSolutionPath /project "DumpConfigInfo" /build "Release|Win32"
+
+
