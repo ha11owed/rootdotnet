@@ -45,6 +45,7 @@ function Uncompress($path, $logDir)
         
         & "$SevenZipExe" x -y $path | out-file -filepath $logFile -append
       }
+      Write-Host $tarfileName
       if (-not (test-path $tarfileName)) {
         throw "Could not find the tar file $tarfile after uncompressoing $path"
       }
@@ -195,6 +196,12 @@ function ReleaseBuild($buildDir, $ROOTURL, $version)
 #
 function Build-ROOT-Dot-Net($Version, $BuildLocation, $ROOTURL, $showLog = $false, $nugetDir = "", $NuGetApiKey = "", [switch] $Publish)
 {
+    # Sanity check. Mostly needed when we run from the command line to test
+    if (-not (Test-Path "./Wrapper Generators")) {
+        throw "Not in the ROOT.NET main directory. Aborting"
+    }
+
+    # Build the directories, load what we need.
     $baseDirName = ($ROOTURL -split {$_ -eq "/" -or $_ -eq "\"})[-1]
     $baseDir = "$BuildLocation\RDN-$Version-$baseDirName"
 	Import-Module -DisableNameChecking -Force ./GenerateReport
@@ -219,3 +226,5 @@ function Build-ROOT-Dot-Net($Version, $BuildLocation, $ROOTURL, $showLog = $fals
 }
 
 Export-ModuleMember -Function Build-ROOT-Dot-Net
+# Example:
+# Build-ROOT-Dot-Net -Version v5.24.20 -BuildLocation ${PWD} -ROOTURL ftp://root.cern.ch/root/root_v5.34.20.win32.vc11.tar.gz -showLog $true
