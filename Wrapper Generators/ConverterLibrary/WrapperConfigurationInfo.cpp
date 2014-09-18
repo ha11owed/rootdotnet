@@ -575,6 +575,7 @@ vector<string> WrapperConfigurationInfo::GetListOfBadLibraries(void)
 	bad_libs.push_back("libGviz");
 	bad_libs.push_back("libRCastor");
 	bad_libs.push_back("libRFIO");
+	bad_libs.push_back("libFITSIO"); // Fit library is not distributed with ROOT, so this just fails.
 	return bad_libs;
 }
 
