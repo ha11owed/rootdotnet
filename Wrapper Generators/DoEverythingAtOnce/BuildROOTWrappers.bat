@@ -31,7 +31,8 @@ REM Setup the environment
 REM
 
 set "ROOTSYS=%1"
-set "PATH=%1\bin;C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE;%PATH%"
+set "PATH=%1\bin;%PATH%"
+call "C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\Tools\vsvars32.bat"
 
 REM Build everything so we can actually run programs! :-)
 echo Building code to do the translation...
@@ -43,7 +44,7 @@ devenv /nologo "Wrapper Generators.sln" /project "DumpConfigInfo" /build "Releas
 REM Find all bad headers in this distro of ROOT.
 
 if not exist FindBadRootHeadersStatus.txt (
-  echo Looking for bad ROOT headers - this will take a few minuts...
+  echo Looking for bad ROOT headers - this will take a few minutes...
   release\FindBadRootHeaders > FindBadRootheaders.log
   echo Done with finding headers > FindBadRootHeadersStatus.txt
 ) else (
