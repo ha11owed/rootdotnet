@@ -227,4 +227,4 @@ function Build-ROOT-Dot-Net($Version, $BuildLocation, $ROOTURL, $showLog = $fals
 
 Export-ModuleMember -Function Build-ROOT-Dot-Net
 # Example:
-# Build-ROOT-Dot-Net -Version v2.7 -BuildLocation ${PWD} -ROOTURL ftp://root.cern.ch/root/root_v5.34.20.win32.vc11.tar.gz -showLog $true
+# Build-ROOT-Dot-Net -Version 2.7 -BuildLocation ${PWD} -ROOTURL ftp://root.cern.ch/root/root_v5.34.20.win32.vc11.tar.gz -showLog $true
