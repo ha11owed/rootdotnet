@@ -214,7 +214,7 @@ function Build-ROOT-Dot-Net($Version, $BuildLocation, $ROOTURL, $showLog = $fals
 
 	Write-Host "Generating nuget packages..."
     $isDebug = $baseDirName.Contains(".debug.")
-    $packages = Build-NuGet-Pacakges $BuildLocation "$baseDir\logs" $Version $baseDir  -KeepPDB:$isDebug -CopyTo $nugetDir -Publish:($Publish) -NuGetApiKey $NuGetApiKey
+    $packages = Build-NuGet-Pacakges $BuildLocation "$baseDir\logs" $Version -KeepPDB:$isDebug -CopyTo $nugetDir -Publish:($Publish) -NuGetApiKey $NuGetApiKey
 	
 	if ($showLog)
 	{
