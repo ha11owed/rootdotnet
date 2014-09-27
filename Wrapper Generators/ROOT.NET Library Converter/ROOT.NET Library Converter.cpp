@@ -66,7 +66,8 @@ int main(int argc, char* argv[])
 		  if (index == string::npos)
 		  {
 			  cout << "Version number must be <int>.<int> for major and minor versions" << endl;
-			  return 1;
+			  cout << "  Assuming the version number is " << temp << ".0" << endl;
+			  temp += ".0";
 		  }
 		  string major = temp.substr(0, index);
 		  string minor = temp.substr(index+1);
