@@ -11,11 +11,11 @@
 <Target Name="FindROOTVersion" BeforeTargets="ResolveReferences">
 	<GetInstalledROOTVersion>
 		<Output TaskParameter="Version"  PropertyName="ROOTInstalledVersion"/>
-		<Output TaskParameter="ROOTSYS" PropertyName="ROOTSYSValue" />
+		<Output TaskParameter="ROOTSYS" PropertyName="ROOTSYSPath" />
 	</GetInstalledROOTVersion>
 </Target>
-<Target Name="DownloadAndUnpack" AfterTargets="FindROOTVersion" Condition="$(ROOTInstalledVersion) != $(ROOTVersion)">
-  <DownloadAndUnpackROOT Version="$(ROOTVersion)" InstallationPath="$(SolutionDir)\root" VCVersion="vc11">
+<Target Name="DownloadAndUnpack" AfterTargets="FindROOTVersion">
+  <DownloadAndUnpackROOT Version="$(ROOTVersion)" InstallationPath="$(SolutionDir)\root" VCVersion="vc11" Condition="$(ROOTInstalledVersion) != $(ROOTVersion)">
     <Output TaskParameter="ROOTSYS" PropertyName="ROOTSYSPath"/>
   </DownloadAndUnpackROOT>
 </Target>
