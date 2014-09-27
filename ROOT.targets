@@ -19,7 +19,11 @@
     <Output TaskParameter="ROOTSYS" PropertyName="ROOTSYSPath"/>
   </DownloadAndUnpackROOT>
 </Target>
-<Target Name="VerifyROOTSYS" AfterTargets="DownloadAndUnpack">
-	<Warning Text="ROOTSYS is not set to the proper value! Please exit and restart devenv with the .bat file called XXX" Condition="$(ROOTSYSPath) != $(ROOTSYS)" />
+<Target Name="WriteStartupFile" AfterTargets="DownloadAndUnpack">
+	<Warning Text="ROOTSYS is not set to the proper value! Please exit and restart devenv with the .bat file called start_$(SolutionName).bat" Condition="$(ROOTSYSPath) != $(ROOTSYS)" />
+	<WriteLinesToFile File="$(SolutionDir)\start_$(SolutionName).bat" Lines="@REM Use to start devenv" Overwrite="true"/>
+	<WriteLinesToFile File="$(SolutionDir)\start_$(SolutionName).bat" Lines="@set ROOTSYS=$(ROOTSYSPath)"/>
+	<WriteLinesToFile File="$(SolutionDir)\start_$(SolutionName).bat" Lines="@set PATH=$(ROOTSYSPath)\bin%3B%PATH%"/>
+	<WriteLinesToFile File="$(SolutionDir)\start_$(SolutionName).bat" Lines="@$(SolutionPath)"/>
 </Target>
 </Project>
