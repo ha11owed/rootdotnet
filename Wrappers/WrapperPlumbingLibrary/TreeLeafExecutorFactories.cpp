@@ -80,7 +80,7 @@ namespace {
 	MAKE_UTLEVF(long);
 
 	MAKE_TLEF(bool, bool);
-	MAKE_TLEVF(bool, bool);
+	MAKE_TLEVF(bool);
 
 	MAKE_TLEF(float,float);
 	MAKE_TLEVF(float);

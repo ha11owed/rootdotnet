@@ -24,7 +24,7 @@ namespace ROOTNET
 			virtual TreeLeafExecutor ^Generate (::TBranch *b) = 0;
 		};
 
-		ref class TreeManager
+		public ref class TreeManager
 		{
 		public:
 			TreeManager(::TTree *tree);
