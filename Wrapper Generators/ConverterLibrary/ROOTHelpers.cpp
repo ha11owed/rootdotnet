@@ -33,7 +33,7 @@ using std::cout;
 using std::endl;
 using std::exception;
 
-std::map<std::string, std::vector<std::pair<std::string, unsigned int> > > ROOTHelpers::_all_enums;
+std::map<std::string, std::vector<std::pair<std::string, int> > > ROOTHelpers::_all_enums;
 vector<string> ROOTHelpers::_all_headers;
 vector<string> ROOTHelpers::_all_existing_headers;
 
@@ -280,7 +280,7 @@ map<string, vector<RootGlobalVariable> > ROOTHelpers::GetAllGlobals()
 class grab_enum_name
 {
 public:
-	void operator() (const pair<string, vector<pair<string, unsigned int> > > &item)
+	void operator() (const pair<string, vector<pair<string, int> > > &item)
 	{
 		_result.push_back(item.first);
 	}
@@ -307,7 +307,7 @@ void ROOTHelpers::LoadAllEnums(void)
 	TGlobal *g;
 	while ((g = static_cast<TGlobal*>(iterator.Next())) != 0) {
 		if ((g->Property() & kIsEnum) != 0) {
-			const unsigned int *pvalue = (const unsigned int *)g->GetAddress();
+			const int *pvalue = (const int *)g->GetAddress();
 			string enum_name(g->GetTypeName());
 			if (enum_name.find("::") != enum_name.npos) {
 				continue;
@@ -319,7 +319,7 @@ void ROOTHelpers::LoadAllEnums(void)
 
 ///
 /// Return the enum values for a particular enum dude.
-const vector<pair<string, unsigned int> > &ROOTHelpers::GetEnumValues(const std::string &enum_type)
+const vector<pair<string, int> > &ROOTHelpers::GetEnumValues(const std::string &enum_type)
 {
 	LoadAllEnums();
 	return _all_enums[enum_type];

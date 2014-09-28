@@ -20,13 +20,13 @@ public:
 	{}
 
 	/// If you want to fill it yourself.
-	void add (const std::string &name, const unsigned int value)
+	void add (const std::string &name, const int value)
 	{
 		_values.push_back(std::make_pair(name, value));
 		_self_fill = true;
 	}
 
-	inline const std::vector<std::pair<std::string, unsigned int> > &values() const
+	inline const std::vector<std::pair<std::string, int> > &values() const
 	{
 		update_values();
 		return _values;
@@ -54,7 +54,7 @@ private:
 	std::string _name;
 	bool _self_fill;
 
-	mutable std::vector<std::pair<std::string, unsigned int> > _values;
+	mutable std::vector<std::pair<std::string, int> > _values;
 	void update_values() const;
 
 	void init_cint_data (void) const;

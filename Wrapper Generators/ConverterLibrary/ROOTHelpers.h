@@ -20,7 +20,7 @@ public:
 
 	/// Return all enums sorted by type/value.
 	static std::vector<std::string> GetAllEnums (void);
-	static const std::vector<std::pair<std::string, unsigned int> > &GetEnumValues (const std::string &enum_type);
+	static const std::vector<std::pair<std::string, int> > &GetEnumValues (const std::string &enum_type);
 
 	/// Returns template arguments
 	static std::vector<std::string> GetTemplateArguments (const std::string &template_type);
@@ -30,7 +30,7 @@ public:
 	static const std::vector<std::string> &GetAllExistingHeaders (void);
 
 private:
-	static std::map<std::string, std::vector<std::pair<std::string, unsigned int> > > _all_enums;
+	static std::map<std::string, std::vector<std::pair<std::string, int> > > _all_enums;
 	static std::vector<std::string> _all_headers;
 	static std::vector<std::string> _all_existing_headers;
 	static void LoadAllEnums();

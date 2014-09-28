@@ -40,7 +40,7 @@ void RootEnum::update_values() const
 		return;
 	}
 
-	vector<pair<string, unsigned int> > vals = ROOTHelpers::GetEnumValues(_name);
+	vector<pair<string, int> > vals = ROOTHelpers::GetEnumValues(_name);
 	_values.insert(_values.end(), vals.begin(), vals.end());
 }
 
