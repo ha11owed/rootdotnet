@@ -302,6 +302,10 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 		methods_to_skip.insert("RooRealSumPdf::getFloorGlobal");
 	}
 
+	// Some items in the gui code
+
+	methods_to_skip.insert("TBrowserImp::GetMainFrame");
+
 	//
 	// Return the list
 	//
