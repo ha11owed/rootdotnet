@@ -16,7 +16,7 @@ namespace ROOTNET
 	namespace Utility
 	{
 
-		ref class TreeLeafExecutor;
+		public ref class TreeLeafExecutor;
 
 		ref class TreeLeafExecutorFactory abstract
 		{
