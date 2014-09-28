@@ -69,7 +69,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ForcedIncludeFiles>w32pragma.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>w32pragma.h;$(ProjectDir)make_public.hpp;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <AdditionalDependencies>libCore.lib;libCint.lib</AdditionalDependencies>
@@ -89,7 +89,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ForcedIncludeFiles>w32pragma.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>w32pragma.h;$(ProjectDir)make_public.hpp;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <AdditionalDependencies>libCore.lib;libCint.lib</AdditionalDependencies>
@@ -140,6 +140,7 @@
   <ItemGroup>
     <ClInclude Include="CPPStringArray.hpp" />
     <ClInclude Include="DynamicHelpers.h" />
+    <ClInclude Include="make_public.hpp" />
     <ClInclude Include="NetArrayTranslator.hpp" />
     <ClInclude Include="NetStringArrayTranslator.hpp" />
     <ClInclude Include="NetStringToConstCPP.hpp" />

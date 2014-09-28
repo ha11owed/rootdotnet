@@ -1,9 +1,6 @@
 #pragma once
 
 #include <string>
-class TObject;
-class TClass;
-#pragma make_public(TClass)
 
 namespace ROOTNET
 {

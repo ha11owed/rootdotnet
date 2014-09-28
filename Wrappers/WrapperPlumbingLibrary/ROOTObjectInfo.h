@@ -5,8 +5,6 @@
 /// it against us -- and will still garbage collect an item...
 ///
 
-class TObject;
-#pragma make_public(TObject)
 namespace ROOTNET
 {
 	namespace Utility

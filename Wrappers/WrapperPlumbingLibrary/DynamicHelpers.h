@@ -8,8 +8,6 @@
 #include <string>
 #include <vector>
 
-class TClass;
-#pragma make_public(TClass)
 class TMethod;
 class TObject;
 namespace Cint {

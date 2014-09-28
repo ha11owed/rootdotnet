@@ -15,8 +15,6 @@
 using namespace System;
 using namespace System::Reflection;
 
-#pragma make_public(TObject)
-
 #include <string>
 using std::string;
 

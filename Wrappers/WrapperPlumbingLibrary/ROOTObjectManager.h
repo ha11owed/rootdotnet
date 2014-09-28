@@ -7,10 +7,6 @@ using namespace System::Collections::Generic;
 
 #include "ROOTObjectInfo.h"
 
-/// The base ROOT object...
-class TObject;
-#pragma make_public(TObject)
-
 namespace ROOTNET {
 	namespace Utility {
 

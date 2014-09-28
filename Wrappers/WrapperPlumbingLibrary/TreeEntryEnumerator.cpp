@@ -1,8 +1,5 @@
 #include "TreeEntryEnumerator.hpp"
 
-class TTree;
-#pragma make_public(TTree)
-
 #ifdef nullptr
 #undef nullptr
 #endif

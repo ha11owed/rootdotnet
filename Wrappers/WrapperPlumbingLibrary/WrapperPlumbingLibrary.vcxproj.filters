@@ -155,6 +155,9 @@
     <ClInclude Include="TreeExecutorObjectConverters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="make_public.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.ico">

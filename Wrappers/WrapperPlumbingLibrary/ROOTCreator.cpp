@@ -16,8 +16,6 @@
 #include <TApplication.h>
 #include <TFunction.h>
 
-#pragma make_public(TObject)
-
 #include <string>
 using std::string;
 

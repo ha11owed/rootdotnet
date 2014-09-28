@@ -18,8 +18,6 @@
 #include <iterator>
 #include <sstream>
 
-#pragma make_public(TObject)
-
 using std::string;
 using std::vector;
 using std::ostringstream;

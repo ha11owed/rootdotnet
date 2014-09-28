@@ -20,9 +20,6 @@ using std::string;
 using std::vector;
 using std::ostringstream;
 
-class TTree;
-#pragma make_public(TTree)
-
 #ifdef nullptr
 #undef nullptr
 #endif
