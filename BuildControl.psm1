@@ -76,7 +76,7 @@ function BuildROOTNET ($rootLoc, $rootdotnetloc, $finalbuild, $fullVersion, $log
 	# Strip any pre-release crap out of the version number for including in the DLL's.
 	#
 	
-	$version = $fullVersion.Split("-")[0]
+	$version = ([string]$fullVersion).Split("-")[0]
 	
 	#
 	# Check to see if the build went forward or not
@@ -176,6 +176,7 @@ function ReleaseBuild($buildDir, $ROOTURL, $version)
     # Generate a log report of some of the stuff we disabled for later use
     #
     
+    $env:Path = "$rootsys\bin;$env:Path"
     & "$rootdotnetloc\Wrapper Generators\Release\DumpConfigInfo.exe" > "$logDir\disabled_items.txt"
     
     #
