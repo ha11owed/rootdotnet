@@ -295,12 +295,8 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 		methods_to_skip.insert("TGeoGlobalMagField::GetInstance");
 	}
 
-	// 5.34.05 and friends
-	if (svn_id <= 46856)
-	{
-		methods_to_skip.insert("RooRealSumPdf::setFloorGlobal");
-		methods_to_skip.insert("RooRealSumPdf::getFloorGlobal");
-	}
+	methods_to_skip.insert("RooRealSumPdf::setFloorGlobal");
+	methods_to_skip.insert("RooRealSumPdf::getFloorGlobal");
 
 	// Some items in the gui code
 
