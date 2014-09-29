@@ -295,6 +295,8 @@ set<string> WrapperConfigurationInfo::GetListOfBadMethods()
 		methods_to_skip.insert("TGeoGlobalMagField::GetInstance");
 	}
 
+	// This has been there a long time...
+
 	methods_to_skip.insert("RooRealSumPdf::setFloorGlobal");
 	methods_to_skip.insert("RooRealSumPdf::getFloorGlobal");
 
