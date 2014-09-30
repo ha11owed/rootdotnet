@@ -82,6 +82,7 @@ int main()
 #else
 	asked_for_class_list.push_back("TList");
 	asked_for_class_list.push_back("TRootSnifferScanRec");
+	asked_for_class_list.push_back("TIter");
 	libraries_to_load.push_back("libRHTTP");
 #endif
 

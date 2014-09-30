@@ -116,8 +116,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="ROOTSource\Globals.cpp" />
     <ClCompile Include="ROOTSource\NTCollection.cpp" />
+    <ClCompile Include="ROOTSource\NTIter.cpp" />
     <ClCompile Include="ROOTSource\NTList.cpp" />
     <ClCompile Include="ROOTSource\NTObject.cpp" />
     <ClCompile Include="ROOTSource\NTRootSnifferScanRec.cpp" />
@@ -131,6 +131,7 @@
     <ClInclude Include="ROOTSource\libRHTTP-make_public.hpp" />
     <ClInclude Include="ROOTSource\libTree-make_public.hpp" />
     <ClInclude Include="ROOTSource\NTCollection.hpp" />
+    <ClInclude Include="ROOTSource\NTIter.hpp" />
     <ClInclude Include="ROOTSource\NTList.hpp" />
     <ClInclude Include="ROOTSource\NTObject.hpp" />
     <ClInclude Include="ROOTSource\NTRootSnifferScanRec.hpp" />

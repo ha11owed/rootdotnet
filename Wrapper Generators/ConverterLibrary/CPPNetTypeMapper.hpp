@@ -77,7 +77,7 @@ public:
 		  return false;
 		}
 
-		/// True if some code has to be generated to translate betweent the two worlds
+		/// True if some code has to be generated to translate between the two worlds
 		virtual bool requires_translation (void) const = 0;
 
 		/// True if translation is required to convert from .NET to CPP
@@ -113,12 +113,12 @@ public:
 		// TODO: remove the use_interface hack. Not sure how to clean that up. We need to pass deep into the code, and only for
 		// a few of the objects, the fact that we want to return ROOTNET::Object, not ROOTNET::Interface::Object. Not clear how
 		// to do that in a "proper" manner.
-		virtual void translate_to_net (const std::string &name_net, const std::string &name_cpp, SourceEmitter &emitter, bool use_interface = true) const
+		virtual void translate_to_net (const std::string &name_net, const std::string &name_cpp, SourceEmitter &emitter, bool use_interface = true, bool is_static = false) const
 		{
 			throw std::runtime_error ("translate_to_net should never be called in base class!");
 		}
 
-		/// If any supporing CLR types have to be written out, here is the spot.
+		/// If any supporting CLR types have to be written out, here is the spot.
 		virtual void write_out_clr_types (SourceEmitter &output)
 		{
 		}

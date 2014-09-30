@@ -129,7 +129,7 @@ string TTROOTClass::cpp_core_typename() const
 /// Switch from CPP world to the .NET world (i.e. for a return type from
 /// some sort of call.
 ///
-/// WARNING: If this object doesn't inherrit from TObject yet, then 
+/// WARNING: If this object doesn't inherit from TObject yet, then 
 /// this won't correctly identify the same object that comes through twice!!
 /// this means that it is possible to have two wrapper objects pointing to the
 /// same real object, and when both try to do the delete... BOOM!
@@ -145,7 +145,7 @@ string TTROOTClass::cpp_core_typename() const
 // might not be the same though the objects are the same depending on use_interface. For now
 // the use case makes it ok, but...
 ///
-void TTROOTClass::translate_to_net (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter, bool use_interface) const
+void TTROOTClass::translate_to_net (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter, bool use_interface, bool is_static) const
 {
 	RootClassInfo info (RootClassInfoCollection::GetRootClassInfo(_class_name));
 	string tname ("ROOTNET::Interface::" + info.NETName());
@@ -162,8 +162,13 @@ void TTROOTClass::translate_to_net (const std::string &net_name, const std::stri
 		if (_modifiers == "&") {
 			emitter() << "&" << cpp_name << ");" << endl;
 		} else if (_modifiers == "") {
-			emitter() << "new ::" << _class_name << "(";
-			emitter() << cpp_name << "));" << endl;
+			if (is_static) {
+				emitter() << "&" << cpp_name << ");" << endl;
+			}
+			else {
+				emitter() << "new ::" << _class_name << "(";
+				emitter() << cpp_name << "));" << endl;
+			}
 		} else {
 			emitter() << cpp_name << ");" << endl;
 		}

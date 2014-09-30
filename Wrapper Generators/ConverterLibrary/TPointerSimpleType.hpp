@@ -8,7 +8,7 @@
 /// tells us how long the array is.
 ///
 ///  When we return an array, we have to use some sort of CLR wrapper class. Sadly, a generic
-/// or template won't work. So we are also repsonsible for generating these things on occasion.
+/// or template won't work. So we are also responsible for generating these things on occasion.
 /// Ick.
 ///
 #include "CPPNetTypeMapper.hpp"
@@ -35,7 +35,7 @@ public:
   /// Do the translation...
   void translate_to_cpp (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter) const;
   void translate_to_cpp_cleanup (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter) const;
-  void translate_to_net (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter, bool use_interface = true) const;
+  void translate_to_net (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter, bool use_interface, bool is_static) const;
 
   /// We want to write out a small customized array accessor type
   void write_out_clr_types (SourceEmitter &output);

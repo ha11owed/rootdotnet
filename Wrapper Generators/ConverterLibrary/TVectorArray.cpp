@@ -40,7 +40,7 @@ void TVectorArray::translate_to_cpp (const std::string &name_net, const std::str
 ///
 /// Given a vertex, convert it into an array!
 ///
-void TVectorArray::translate_to_net (const std::string &name_net, const std::string &name_cpp, SourceEmitter &emitter, bool use_interface) const
+void TVectorArray::translate_to_net(const std::string &name_net, const std::string &name_cpp, SourceEmitter &emitter, bool use_interface, bool is_static) const
 {
 	emitter.start_line() << net_typename() << " " << name_net << " = gcnew array<" << _simple_name << ">(" << name_cpp << ".size());" << endl;
 	emitter.start_line() << "for (unsigned int index = 0; index < " << name_cpp << ".size(); index++)" << endl;

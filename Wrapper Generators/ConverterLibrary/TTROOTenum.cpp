@@ -44,7 +44,7 @@ void TTROOTenum::translate_to_cpp(const std::string &name_net, const std::string
 ///
 /// Given a CPP name, translate back to a NET guy
 ///
-void TTROOTenum::translate_to_net(const std::string &name_net, const std::string &name_cpp, SourceEmitter &emitter, bool use_interface) const
+void TTROOTenum::translate_to_net(const std::string &name_net, const std::string &name_cpp, SourceEmitter &emitter, bool use_interface, bool is_static) const
 {
 	emitter.start_line() << net_interface_name() << " " << name_net << " = (" << net_interface_name() << ") " << name_cpp << ";" << endl;
 }

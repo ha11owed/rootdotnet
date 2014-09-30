@@ -30,6 +30,6 @@ public:
 	std::string net_interface_name (void) const;
 
 	virtual void translate_to_cpp (const std::string &name_net, const std::string &name_cpp, SourceEmitter &emitter) const;
-	virtual void translate_to_net (const std::string &name_net, const std::string &name_cpp, SourceEmitter &emitter, bool use_interface = true) const;
+	virtual void translate_to_net(const std::string &name_net, const std::string &name_cpp, SourceEmitter &emitter, bool use_interface, bool is_static) const;
 };
 

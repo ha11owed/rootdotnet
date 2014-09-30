@@ -36,7 +36,7 @@ void TVoidPointer::translate_to_cpp (const string &name_net, const string &name_
 /// This is a bit more dangerous. Here we make the assumption that the void* coming back here is
 /// a TObject* or better. If it isn't we are bound to go boom here. So the user must beware of this!
 ///
-void TVoidPointer::translate_to_net (const std::string &name_net, const std::string &name_cpp, SourceEmitter &emitter, bool use_interface) const
+void TVoidPointer::translate_to_net(const std::string &name_net, const std::string &name_cpp, SourceEmitter &emitter, bool use_interface, bool is_static) const
 {
 	emitter.start_line() << "auto " << name_net << " = ROOTNET::Utility::ROOTObjectServices::GetBestObject<ROOTNET::Interface::NTObject^>(static_cast<::TObject*>(" << name_cpp << "));" << endl;
 }

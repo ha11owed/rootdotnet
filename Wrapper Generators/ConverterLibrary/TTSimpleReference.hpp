@@ -17,7 +17,7 @@ public:
 
   /// Only for return types, and we don't do tracking references for those in .NET!
   inline bool requires_translation_to_net (void) const {
-	  return false;
+      return false;
   }
 
   /// We are definately a reference to another object!
@@ -29,25 +29,25 @@ public:
   /// The base type...
   std::string cpp_core_typename() const
   {
-	  return _base_type;
+      return _base_type;
   }
 
   /// We don't do references for return types...
   std::string net_return_type_name() const
   {
-  	  return _base_type;
+      return _base_type;
   }
 
   /// We don't need to do clean up code if our return value doesn't matter.
   bool clean_up_matters_for_return_value_only (void) const
   {
-	  return true;
+      return true;
   }
 
   /// Do the translation...
   void translate_to_cpp (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter) const;
   void translate_to_cpp_cleanup (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter) const;
-  void translate_to_net (const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter, bool use_interface = true) const;
+  void translate_to_net(const std::string &net_name, const std::string &cpp_name, SourceEmitter &emitter, bool use_interface, bool is_static) const;
 
 public:
   bool _is_const;

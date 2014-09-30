@@ -39,7 +39,7 @@ public:
 	/// Is left < right?
 	bool is_less_than (const RootClassField &right) const;
 
-	/// Reset the paraent class (the class that owns this field).
+	/// Reset the parent class (the class that owns this field).
 	void ResetParent (const RootClassInfo *parent);
 
 	/// Return true if we can possibly translate this guy
