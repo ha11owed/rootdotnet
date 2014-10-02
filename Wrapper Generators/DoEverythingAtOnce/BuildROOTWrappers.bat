@@ -47,6 +47,7 @@ if not exist FindBadRootHeadersStatus.txt (
   echo Looking for bad ROOT headers - this will take a few minutes...
   release\FindBadRootHeaders > FindBadRootheaders.log
   echo Done with finding headers > FindBadRootHeadersStatus.txt
+  echo Done looking for bad ROOT headers
 ) else (
   echo Using header scan results from last run. Remove FindBadRootHeadersStatus.txt to force re-run"
   )
