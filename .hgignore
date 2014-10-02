@@ -1,0 +1,38 @@
+syntax: glob
+*.dll
+*.pdb
+*.suo
+*.sdf
+*.tlog
+*.obj
+*.log
+*.lastbuildstate
+*.cache
+*.idb
+*.lib
+*.ilk
+*.exe
+*.metagen
+*.manifest
+*.user
+*.res
+*.rc
+*.opensdf
+RDN-*
+*-errors.txt
+Wrappers/AutoBuild/ROOT Directories.props
+Wrapper Generators/solution_template.sln
+Wrapper Generators/cpp_template_project.vcxproj
+Wrapper Generators/bad_headers.txt
+Wrapper Generators/FindBadRootHeadersStatus.txt
+Wrapper Generators/conversion_errors.txt
+*.nuspec
+*.nupkg
+nuget/ROOT.NET.Dynamic.targets
+syntax: regexp
+.*/Debug/.*
+.*/Release/.*
+.*/ipch/.*
+.*/TestResults/.*
+.*/ROOTSource/*
+.*/AutoBuild/.*
