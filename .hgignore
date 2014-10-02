@@ -27,6 +27,8 @@ Wrapper Generators/bad_headers.txt
 Wrapper Generators/FindBadRootHeadersStatus.txt
 Wrapper Generators/conversion_errors.txt
 *.nuspec
+*.nupkg
+nuget/ROOT.NET.Dynamic.targets
 syntax: regexp
 .*/Debug/.*
 .*/Release/.*
