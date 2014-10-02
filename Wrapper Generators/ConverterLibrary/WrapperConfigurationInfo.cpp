@@ -643,6 +643,21 @@ vector<string> WrapperConfigurationInfo::BadClassLibraryCrossReference(const std
 	return result;
 }
 
+namespace {
+	bool fileExists(const string &fname)
+	{
+		WIN32_FIND_DATAA FindFileData;
+		HANDLE handle = FindFirstFileA(fname.c_str(), &FindFileData);
+		bool found = handle != INVALID_HANDLE_VALUE;
+		if (found)
+		{
+			//FindClose(&handle); this will crash
+			FindClose(handle);
+		}
+		return found;
+	}
+}
+
 ///
 /// Find and get all the .libs we should be loading!
 ///
@@ -650,8 +665,6 @@ vector<string> WrapperConfigurationInfo::GetAllRootDLLS()
 {
 	///
 	/// The directory we will scan. Somehow this should be passed in or looked up with ROOTSYS. Later.
-	// TODO: load directory to scan from something real like ROOTSYS or command line.
-	/// We search for all .lib flies... And assume they can be turned into dll files...
 	///
 
 	const int root_sys_buffer_size = 1024;
@@ -659,6 +672,7 @@ vector<string> WrapperConfigurationInfo::GetAllRootDLLS()
 	::GetEnvironmentVariableA ("ROOTSYS", root_sys_buffer, root_sys_buffer_size);
 	string dir_to_scan (root_sys_buffer);
 	dir_to_scan += "\\bin";
+	string lib_dir = string(root_sys_buffer) + "\\lib";
 
 	///
 	/// Use the standard WIN32 find file code
@@ -674,11 +688,21 @@ vector<string> WrapperConfigurationInfo::GetAllRootDLLS()
 		return vector<string> ();
 	}
 
+	// Strip out the dll, make sure a .lib exists (otherwise we can never link against the classes
+	// in them), and add them to the list to return.
+
 	vector<string> result;
 	do {
 		string fname = data_finder.cFileName;
 		int end_of_lib = fname.find(".dll");
-		result.push_back(fname.substr(0,end_of_lib));
+		auto libName(fname.substr(0, end_of_lib));
+
+		if (fileExists(lib_dir + "\\" + libName + ".lib")) {
+			result.push_back(libName);
+		}
+		else {
+			cout << "Ignoring library " << libName << " because we can't find a .lib name" << endl;
+		}
 	} while (FindNextFileA(hFind, &data_finder) != 0);
 
 	FindClose(hFind);
